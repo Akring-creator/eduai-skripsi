@@ -55,10 +55,10 @@ const CreatePage = () => {
         <div className="max-w-5xl mx-auto flex md:items-center md:justify-center h-full p-6">
             <div>
                 <h1 className="text-2xl">
-                    Nama Tesmu
+                    Judul Soalmu
                 </h1>
                 <p>
-                    Kasih nama untuk tesmu, tenang nanti bisa diganti kok.
+                    Pertama, kasih nama untuk file soalmu, tenang nanti bisa diganti kok.
                 </p>
                 <Form {...form}>
                     <form
@@ -71,7 +71,7 @@ const CreatePage = () => {
                         render={({field}) => (
                             <FormItem>
                                 <FormLabel>
-                                    Judul Tes
+                                    Judul Soal
                                 </FormLabel>
                                 <FormControl>
                                     <Input
@@ -80,7 +80,7 @@ const CreatePage = () => {
                                     {...field} />
                                 </FormControl>
                                 <FormDescription>
-                                    Apa isi dari tes ini?
+                                    Soal apa yang mau kamu buat?
                                 </FormDescription>
                                 <FormMessage />
                             </FormItem>
@@ -90,13 +90,13 @@ const CreatePage = () => {
                                 <Button
                                 type="button"
                                 variant="ghost">
-                                    Cancel
+                                    Batal
                                 </Button>
                             </Link>
                                 <Button
                                 type="submit"
                                 disabled = {!isValid || isSubmitting}>
-                                    Continue
+                                    Lanjut
                                 </Button>
                         </div>
 
