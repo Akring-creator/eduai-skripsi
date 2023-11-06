@@ -41,7 +41,7 @@ const CreatePage = () => {
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
             const response = await axios.post("/api/quiz", values);
-            router.push(`/teacher/create-quiz/${response.data.id}`);
+            router.push(`/teacher/quiz/${response.data.id}`);
             toast.success("File tes sukses dibuat");
             
         } catch  {

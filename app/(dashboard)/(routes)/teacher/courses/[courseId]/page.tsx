@@ -54,7 +54,7 @@ const CourseIdPage = async ({
 
                 </h1>
                 <span className="text-sm text-slate-700">
-                    Progress Pengisisan {completionText}
+                    Progress Pengisian {completionText}
                 </span>
             </div> 
 
@@ -63,8 +63,8 @@ const CourseIdPage = async ({
             <div>
                 <div className="flex items-center gap-x-2">
                     <IconBadge icon={LayoutDashboard}/>
-                    <h2 className="text-xl">
-                        Atur Kursusmu
+                    <h2 className="text-xl font-medium">
+                        Pengaturan
                     </h2>
 
                 </div>
