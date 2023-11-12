@@ -7,10 +7,10 @@ export async function PATCH(req: Request, {params} : {params: {quizId: string}})
         // Memanggil UserID yang Login
         const { userId } = auth();
 
-        // Mengakses nilai quizId
+        // Mengakses nilai quizId, data dapat dari parameter website
         const { quizId } = params
 
-        // mengambil values yang berupa judul
+        // mengambil values yang berupa judul, datanya dapat dari values json
         const values = await req.json()
 
         // Kalau bukan usernya, batalkan

@@ -15,50 +15,54 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Pencil, Route } from "lucide-react";
+import { Pencil, PlusCircle, Route } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { Chapter, Course } from "@prisma/client";
+import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
 
 
-interface TitleFormProps {
-    initialData: {
-        title: string;
-    };
+interface ChapterFormProps {
+    initialData: Course & { chapters : Chapter[]};
     courseId : string;
 };
 
 const formSchema = z.object({
     title : z.string().min(1, {
-        message: "This is Required"
+        message: "Title is required"
     }),
 });
 
 
-
-
-export const TitleForm = (
+export const ChapterForm = (
     {
         initialData,
         courseId
-    }: TitleFormProps
+    }: ChapterFormProps
 ) => {
+
+    const [isCreating, setIsCreating] = useState(false)
+    const [isUpdating, setIsUpdating] = useState(false)
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
-        defaultValues: initialData
+        defaultValues: {
+            title : ''
+        }
 });
 const router = useRouter()
-const [isEditing, setIsEditing] = useState(false)
 
-const toggleEdit = () => setIsEditing((current) => !current)
+
+const toggleCreating = () => setIsCreating((current) => !current)
 
 const { isSubmitting, isValid } = form.formState;
 
 const onSubmit = async (values: z.infer<typeof formSchema>) =>{
     try {
-        const update = await axios.patch(`/api/courses/${courseId}`, values)
-        toast.success('Nama berhasil diubah')
-        toggleEdit()
+        const update = await axios.post(`/api/courses/${courseId}/chapters`, values)
+        toast.success('Berhasil membuat chapter')
+        toggleCreating()
         router.refresh()
 
         
@@ -71,25 +75,21 @@ const onSubmit = async (values: z.infer<typeof formSchema>) =>{
     return(
         <div className="mt-6 border bg-slate-100 rounded-md p-4">
             <div className="font-medium flex items-center justify-between">
-                Judul Kursus
-                <Button onClick={toggleEdit}variant="ghost">
-                    {isEditing ? (
+                Chapter Kursus
+                <Button onClick={toggleCreating}variant="ghost">
+                    {isCreating && (
                         <>Cancel</>
-                    ) : (
+                    )}
+                    {!isCreating && (
                         <>
-                        <Pencil className="h-4 w-4 mr-2" />
-                    Edit Judul</>
+                        <PlusCircle className="h-4 w-4 mr-2" />
+                    Tambah Chapter</>
                     )}
                     
                 </Button>
                 
             </div>
-            {!isEditing && (
-                    <p className="text-sm mt-2">
-                        {initialData.title}
-                    </p>
-                )}
-                {isEditing && (
+                {isCreating && (
                     <Form {...form}>
                         <form
                         onSubmit={form.handleSubmit(onSubmit)}
@@ -102,28 +102,39 @@ const onSubmit = async (values: z.infer<typeof formSchema>) =>{
                             <FormControl>
                                 <Input 
                                 disabled={isSubmitting}
-                                placeholder="cth: Ulangan Harian Kalkulus"
+                                placeholder="cth: Penngenalan awal mengenai kursus"
                                 {...field}/>
                             </FormControl>
                             <FormDescription>
-                                Apa yang ingin kamu ajarkan?
+                                Ceritakan lebih lanjut tentang kursusmu
                             </FormDescription>
                             <FormMessage />
                         </FormItem>
                     )} 
                         />
-                        <div className="flex items-center gap-x-2">
                         <Button
                         type="submit"
                         disabled = {!isValid || isSubmitting}>
-                            Simpan
+                            Create
                         </Button>
-                        </div>
 
                         </form>
                         
                     </Form>
                     
+                )}
+                {!isCreating && (
+                    <div className={cn(
+                        "text-sm mt-2",
+                        !initialData.chapters.length && "text-slate-500 italic"
+                    )}>
+                        {!initialData.chapters.length && "No Chapters"}
+                    </div>
+                )}
+                {!isCreating && (
+                    <p className="text-xs text-muted-foreground mt-4">
+                        Drag and drop to reorder chapters
+                    </p>
                 )}
 
         </div>

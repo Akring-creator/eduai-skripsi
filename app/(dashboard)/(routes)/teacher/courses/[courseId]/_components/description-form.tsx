@@ -106,7 +106,7 @@ const onSubmit = async (values: z.infer<typeof formSchema>) =>{
                             <FormControl>
                                 <Textarea 
                                 disabled={isSubmitting}
-                                placeholder="cth: Ulangan Harian Kalkulus"
+                                placeholder="Kursus ini tentang ...."
                                 {...field}/>
                             </FormControl>
                             <FormDescription>

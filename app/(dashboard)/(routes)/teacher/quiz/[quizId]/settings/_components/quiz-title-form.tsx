@@ -20,61 +20,76 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
+// Menyediakan wadah untuk data yang dimasukkan
+interface QuizTitleFormProps {
+    initialData: {title:string};
+    quizId: string;
+}
 
-interface TitleFormProps {
-    initialData: {
-        title: string;
-    };
-    courseId : string;
-};
-
+// Menentukan validasi dari form
 const formSchema = z.object({
-    title : z.string().min(1, {
-        message: "This is Required"
-    }),
-});
-
-
-
-
-export const TitleForm = (
-    {
-        initialData,
-        courseId
-    }: TitleFormProps
+    title : z.string().min(1, 
+        {
+            message : "This is Required"
+        })
+})
+export const QuizTitleForm = (
+    // Memasukkan data
+    {initialData, quizId} : QuizTitleFormProps
 ) => {
+
+    // Membuat objek Form
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: initialData
-});
-const router = useRouter()
-const [isEditing, setIsEditing] = useState(false)
+    });
 
-const toggleEdit = () => setIsEditing((current) => !current)
+    // Membuat objek Router untuk Navigasi
+    const router = useRouter()
 
-const { isSubmitting, isValid } = form.formState;
+    // Membuat State sebagai pengecek apakah layout nya sedang dalam tahap editi atau bukan
 
-const onSubmit = async (values: z.infer<typeof formSchema>) =>{
-    try {
-        const update = await axios.patch(`/api/courses/${courseId}`, values)
-        toast.success('Nama berhasil diubah')
-        toggleEdit()
-        router.refresh()
+    const [isEditing, setIsEditing] = useState(false)
 
-        
-    } catch {
-        toast.error('Ada Masalah')
-    }
-    console.log(values)
-}
+    // Membuat fungsi untuk mengubah nilai editing, current menandakan nilai yang sekarang
+    const toggleEdit = () => setIsEditing((current) => !current)
+
+    // Mengakses state submit dan valid dari form
+    const { isSubmitting, isValid } = form.formState
+
+    //Membuat fungsi submit ketika pengguna menekan tombol save
+
+    async function onSubmit(
+        // values berupa judul dari quiz, karena ditentukan di formSchema di atas
+        values:z.infer<typeof formSchema>
+        ) {
+        try {
+            // memanggil fungsi PATCH dari api untuk mengubah judul soal
+            const update = await axios.patch(`/api/quiz/${quizId}`, values)
+            
+            // Menampilkan pesan ke pengguna
+            toast.success('Berhasil mengubah judul')
+
+            // Mengembalikan nilai edit menjadi false
+            toggleEdit()
+
+            // merefresh halaman
+            router.refresh()
+        } catch {
+            // Memunculkan pesan error
+            toast.error('Terdapat masalah')
+        }
+    } 
+
+
 
     return(
         <div className="mt-6 border bg-slate-100 rounded-md p-4">
             <div className="font-medium flex items-center justify-between">
-                Judul Kursus
+                Judul Kuis
                 <Button onClick={toggleEdit}variant="ghost">
                     {isEditing ? (
-                        <>Cancel</>
+                        <>Batal</>
                     ) : (
                         <>
                         <Pencil className="h-4 w-4 mr-2" />
@@ -106,7 +121,7 @@ const onSubmit = async (values: z.infer<typeof formSchema>) =>{
                                 {...field}/>
                             </FormControl>
                             <FormDescription>
-                                Apa yang ingin kamu ajarkan?
+                                Kuis apa yang mau kamu buat?
                             </FormDescription>
                             <FormMessage />
                         </FormItem>

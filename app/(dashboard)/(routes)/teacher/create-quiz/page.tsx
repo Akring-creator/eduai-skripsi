@@ -41,11 +41,11 @@ const CreatePage = () => {
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
             const response = await axios.post("/api/quiz", values);
-            router.push(`/teacher/quiz/${response.data.id}`);
-            toast.success("File tes sukses dibuat");
+            router.push(`/teacher/quiz/${response.data.id}/settings`);
+            toast.success("Kuis berhasil dibuat");
             
         } catch  {
-            toast.error("Something went wrong")
+            toast.error("Terdapat kendala")
         }
         
     }
@@ -55,10 +55,10 @@ const CreatePage = () => {
         <div className="max-w-5xl mx-auto flex md:items-center md:justify-center h-full p-6">
             <div>
                 <h1 className="text-2xl">
-                    Judul Soalmu
+                    Nama kuis
                 </h1>
                 <p>
-                    Pertama, kasih nama untuk file soalmu, tenang nanti bisa diganti kok.
+                    Kasih nama untuk kuismu, tenang nanti bisa diganti kok.
                 </p>
                 <Form {...form}>
                     <form
@@ -71,7 +71,7 @@ const CreatePage = () => {
                         render={({field}) => (
                             <FormItem>
                                 <FormLabel>
-                                    Judul Soal
+                                    Nama kuis
                                 </FormLabel>
                                 <FormControl>
                                     <Input
@@ -80,7 +80,7 @@ const CreatePage = () => {
                                     {...field} />
                                 </FormControl>
                                 <FormDescription>
-                                    Soal apa yang mau kamu buat?
+                                    Ini kuis tentang apa?
                                 </FormDescription>
                                 <FormMessage />
                             </FormItem>

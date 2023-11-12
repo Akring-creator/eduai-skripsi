@@ -1,0 +1,64 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+Table Question {
+  id String [pk]
+  question String [not null]
+  imageUrl String
+  answer String [not null]
+  explanation String [not null]
+  options Option [not null]
+  quizId String [not null]
+  position Int [not null]
+  quiz Quiz [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updateAt DateTime [not null]
+}
+
+Table Option {
+  id String [pk]
+  option String [not null]
+  imageUrl String
+  questionId String [not null]
+  question Question [not null]
+}
+
+Table Quiz {
+  id String [pk]
+  userId String [not null]
+  title String [not null]
+  description String
+  imageUrl String
+  price Float
+  isPublished Boolean [not null, default: false]
+  quizCategoryId String
+  quizCategory QuizCategory
+  questions Question [not null]
+  attachments QuizAttachment [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updateAt DateTime [not null]
+}
+
+Table QuizCategory {
+  id String [pk]
+  name String [unique, not null]
+  quizes Quiz [not null]
+}
+
+Table QuizAttachment {
+  id String [pk]
+  name String [not null]
+  url String [not null]
+  quizId String [not null]
+  quiz Quiz [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updateAt DateTime [not null]
+}
+
+Ref: Question.quizId > Quiz.id [delete: Cascade]
+
+Ref: Option.questionId > Question.id [delete: Cascade]
+
+Ref: Quiz.quizCategoryId > QuizCategory.id
+
+Ref: QuizAttachment.quizId > Quiz.id [delete: Cascade]

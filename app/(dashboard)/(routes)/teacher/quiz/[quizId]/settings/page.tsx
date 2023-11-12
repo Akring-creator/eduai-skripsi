@@ -2,8 +2,14 @@ import { IconBadge } from "@/components/icon-badge";
 import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs";
 import { LayoutDashboard } from "lucide-react";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { QuizTitleForm } from "./_components/quiz-title-form";
+import { QuizDescriptionForms } from "./_components/quiz-description-form";
+import { use } from "react";
+import { QuizImageForm } from "./_components/quiz-image-form";
+import { QuizCategoryForm } from "./_components/quiz-category-form";
+import { Button } from "@/components/ui/button";
+import { FinishButton } from "./_components/button-exit";
 
 const CreateIdQuiz = async ({params}:{params : {quizId: string}}) => {
 
@@ -16,7 +22,15 @@ const CreateIdQuiz = async ({params}:{params : {quizId: string}}) => {
     //Menelusuri Database untuk menemukan baris data
     const quiz = await db.quiz.findUnique({
         where : {
-            id: params.quizId
+            id: params.quizId,
+            userId : userId
+        }
+    })
+
+    //menelusuri database category
+    const categories = await db.category.findMany({
+        orderBy:{
+            name: "asc",
         }
     })
 
@@ -29,10 +43,10 @@ const CreateIdQuiz = async ({params}:{params : {quizId: string}}) => {
     const requiredFields = [
         quiz.description,
         quiz.imageUrl,
-        quiz.price,
         quiz.quizCategoryId,
         quiz.title,
     ]
+    // Mengakses library router
 
     // Menghitung jumlah total data yang perlu diisi
     const totalFields = requiredFields.length;
@@ -42,6 +56,7 @@ const CreateIdQuiz = async ({params}:{params : {quizId: string}}) => {
 
     // Memunculkan Progress ke UI
     const completionText = `(${completedFields}/${totalFields})`
+
     return ( 
         
     <div className="p-6">
@@ -69,9 +84,24 @@ const CreateIdQuiz = async ({params}:{params : {quizId: string}}) => {
                 <QuizTitleForm
                 initialData={quiz}
                 quizId={quiz.id}/>
+                <QuizDescriptionForms
+                initialData={quiz}
+                quizId={quiz.id}
+                />
+                <QuizImageForm
+                initialData={quiz}
+                quizId={quiz.id}
+                />
+                <QuizCategoryForm
+                initialData={quiz}
+                quizId={quiz.id} 
+                options={categories.map((category) => ({
+                    label: category.name,
+                    value: category.id
+                }))}/>
+                <FinishButton 
+                quizId={quiz.id}/>
             </div>
-
-
         </div>
     </div> 
      );

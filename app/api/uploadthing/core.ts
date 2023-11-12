@@ -10,6 +10,7 @@ const handleAuth = () => {
 }
  
 // FileRouter for your app, can contain multiple FileRoutes
+// FileRouter untuk UploadThing. masukkan endpoint kesini
 export const ourFileRouter = {
     courseImage: f({ 
         image: {
@@ -26,7 +27,20 @@ export const ourFileRouter = {
 
     chapterVideo: f({ video: {maxFileCount: 1, maxFileSize: "512GB"}})
     .middleware(() => handleAuth())
-    .onUploadComplete(() => {})
+    .onUploadComplete(() => {}),
+
+    quizImage: f({ 
+        image: {
+            maxFileSize: "4MB",
+            maxFileCount: 1
+        }
+    })
+    .middleware(() => handleAuth())
+    .onUploadComplete(() => {}),
+
+    quizAttachment: f(["text", "image", "video", "audio", "pdf"])
+    .middleware(() => handleAuth())
+    .onUploadComplete(() => {}),
 
 } satisfies FileRouter;
  

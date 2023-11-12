@@ -13,7 +13,7 @@ const guestRoutes = [
   },
   {
     icon: Compass,
-    label: "Browse",
+    label: "Jelajahi",
     href: "/search",
   },
   
@@ -22,19 +22,20 @@ const guestRoutes = [
 const teacherRoutes = [
   {
     icon: List,
-    label: "Courses",
+    label: "Kursus",
     href: "/teacher/courses",
   },
   {
-    icon: BarChart,
-    label: "Analytics",
-    href: "/teacher/analytics",
-  },
-  {
     icon: FormInput,
-    label: "Soal",
+    label: "Kuis",
     href: "/teacher/quiz",
   },
+  {
+    icon: BarChart,
+    label: "Analisis",
+    href: "/teacher/analytics",
+  },
+  
 ]
 
 export const SidebarRoutes = () => {

@@ -1,19 +1,16 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
-const listofItem = ['item1', 'item2', 'item3', 'item1', 'item2', 'item3','item1', 'item2', 'item3','item1', 'item2', 'item3','item1', 'item2', 'item3']
+const listofItem = ["item"]
 
 const CoursesPage = () => {
-    return ( <div className="flex items-center gap-x-2">
-        {listofItem.map((item) => {
-            return(
-            <Button>
-                {item}
-            </Button>)
-        })}
+    return ( 
+    <div className="flex items-center gap-x-2 ml-2 mt-2">
         <Link href="/teacher/create-quiz">
-       <Button>
-            Soal Baru
+       <Button
+       type="button"
+       variant="default">
+            Kuis Baru
        </Button>
        </Link>
     </div> );

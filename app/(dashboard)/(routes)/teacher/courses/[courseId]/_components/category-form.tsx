@@ -15,93 +15,85 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Pencil, Route } from "lucide-react";
+import { Pencil, PlusCircle, Route } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { Course } from "@prisma/client";
+import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
+import { Combobox } from "@/components/ui/combobox";
 
-// Menyediakan wadah untuk data yang dimasukkan
-interface QuizTitleFormProps {
-    initialData: {title:string};
-    quizId: string;
-}
 
-// Menentukan validasi dari form
+interface CategoryFormProps {
+    initialData: Course;
+    courseId : string;
+    options: { label: string; value: string}[];
+};
+
 const formSchema = z.object({
-    title : z.string().min(1, 
-        {
-            message : "This is Required"
-        })
-})
-export const QuizTitleForm = (
-    // Memasukkan data
-    {initialData, quizId} : QuizTitleFormProps
-) => {
+    categoryId: z.string().min(1)
+});
 
-    // Membuat objek Form
+
+export const CategoryForm = (
+    {
+        initialData,
+        courseId,
+        options
+    }: CategoryFormProps
+) => {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
-        defaultValues: initialData
-    });
-
-    // Membuat objek Router untuk Navigasi
-    const router = useRouter()
-
-    // Membuat State sebagai pengecek apakah layout nya sedang dalam tahap editi atau bukan
-
-    const [isEditing, setIsEditing] = useState(false)
-
-    // Membuat fungsi untuk mengubah nilai editing, current menandakan nilai yang sekarang
-    const toggleEdit = () => setIsEditing((current) => !current)
-
-    // Mengakses state submit dan valid dari form
-    const { isSubmitting, isValid } = form.formState
-
-    //Membuat fungsi submit ketika pengguna menekan tombol save
-
-    async function onSubmit(
-        // values berupa judul dari quiz, karena ditentukan di formSchema di atas
-        values:z.infer<typeof formSchema>
-        ) {
-        try {
-            // memanggil fungsi PATCH dari api untuk mengubah judul soal
-            const update = await axios.patch(`/api/quiz/${quizId}`, values)
-            
-            // Menampilkan pesan ke pengguna
-            toast.success('Judul berhasil diubah')
-
-            // Mengembalikan nilai edit menjadi false
-            toggleEdit()
-
-            // merefresh halaman
-            router.refresh()
-        } catch {
-            // Memunculkan pesan error
-            toast.error('Terdapat masalah')
+        defaultValues: {
+            categoryId: initialData?.categoryId|| ''
         }
-    } 
+});
+const router = useRouter()
+const [isEditing, setIsEditing] = useState(false)
 
+const toggleEdit = () => setIsEditing((current) => !current)
 
+const { isSubmitting, isValid } = form.formState;
+
+const onSubmit = async (values: z.infer<typeof formSchema>) =>{
+    try {
+        const update = await axios.patch(`/api/courses/${courseId}`, values)
+        toast.success('Berhasil mengubah deskripsi')
+        toggleEdit()
+        router.refresh()
+
+        
+    } catch {
+        toast.error('Ada Masalah')
+    }
+    console.log(values)
+}
+const selectedOption = options.find((option) => option.value === initialData.categoryId)
 
     return(
         <div className="mt-6 border bg-slate-100 rounded-md p-4">
             <div className="font-medium flex items-center justify-between">
-                Judul Soal
+                Kategori Kursus
                 <Button onClick={toggleEdit}variant="ghost">
-                    {isEditing ? (
-                        <>Batal</>
-                    ) : (
+                    {isEditing && (
+                        <>Cancel</>
+                    )}
+                    {!isEditing && (
                         <>
                         <Pencil className="h-4 w-4 mr-2" />
-                    Edit Judul</>
+                    Ganti Kategori</>
                     )}
                     
                 </Button>
                 
             </div>
             {!isEditing && (
-                    <p className="text-sm mt-2">
-                        {initialData.title}
+                    <p className={cn("text-sm mt-2", 
+                    !initialData.categoryId && "text-slate-500 italic" )}>
+                        
+                        {selectedOption?.label || "Kategori Tidak Tersedia" }
+                        
                     </p>
                 )}
                 {isEditing && (
@@ -111,17 +103,16 @@ export const QuizTitleForm = (
                         className="space-y-8 mt-8">
                             <FormField 
                     control={form.control}
-                    name="title"
+                    name="categoryId"
                     render={({field}) => (
                         <FormItem>
                             <FormControl>
-                                <Input 
-                                disabled={isSubmitting}
-                                placeholder="cth: Ulangan Harian Kalkulus"
+                                <Combobox
+                                options={...options}
                                 {...field}/>
                             </FormControl>
                             <FormDescription>
-                                Soal apa yang mau kamu buat?
+                                Ceritakan lebih lanjut tentang kursusmu
                             </FormDescription>
                             <FormMessage />
                         </FormItem>

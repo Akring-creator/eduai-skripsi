@@ -2,6 +2,7 @@ import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
 
+// Untuk buat pertama kali Kuisnya
 export async function POST(req: Request) {
     try {
         const { userId } = auth();
