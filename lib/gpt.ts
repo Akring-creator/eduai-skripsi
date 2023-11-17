@@ -51,6 +51,7 @@ export async function strict_output(
     // Use OpenAI to get a response
     const response = await openai.chat.completions.create({
       temperature: temperature,
+      response_format : { "type": "json_object" },
       model: model,
       messages: [
         {

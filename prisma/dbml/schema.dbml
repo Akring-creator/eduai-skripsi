@@ -1,6 +1,78 @@
 //// ------------------------------------------------------
 //// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 //// ------------------------------------------------------
+
+Table Course {
+  id String [pk]
+  userId String [not null]
+  title String [not null]
+  description String
+  imageUrl String
+  price Float
+  isPublished Boolean [not null, default: false]
+  categoryId String
+  category Category
+  attachments Attachment [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updateAt DateTime [not null]
+  chapters Chapter [not null]
+  purchases Purchase [not null]
+}
+
+Table Chapter {
+  id String [pk]
+  title String [not null]
+  description String
+  videoUrl String
+  position Int [not null]
+  isPublished Boolean [not null, default: false]
+  isFree Boolean [not null, default: false]
+  muxData MuxData
+  courseId String [not null]
+  course Course [not null]
+  userProgress UserProgress [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updateAt DateTime [not null]
+}
+
+Table MuxData {
+  id String [pk]
+  assetId String [not null]
+  playbackId String
+  chapterId String [unique, not null]
+  chapter Chapter [not null]
+}
+
+Table UserProgress {
+  id String [pk]
+  userId String [not null]
+  chapterId String [not null]
+  chapter Chapter [not null]
+  isCompleted Boolean [not null, default: false]
+  createdAt DateTime [default: `now()`, not null]
+  updateAt DateTime [not null]
+
+  indexes {
+    (userId, chapterId) [unique]
+  }
+}
+
+Table Category {
+  id String [pk]
+  name String [unique, not null]
+  courses Course [not null]
+}
+
+Table Attachment {
+  id String [pk]
+  name String [not null]
+  url String [not null]
+  courseId String [not null]
+  course Course [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updateAt DateTime [not null]
+}
+
 Table Question {
   id String [pk]
   question String [not null]
@@ -19,6 +91,7 @@ Table Option {
   id String [pk]
   option String [not null]
   imageUrl String
+  position Int [not null, default: 0]
   questionId String [not null]
   question Question [not null]
 }
@@ -55,6 +128,37 @@ Table QuizAttachment {
   updateAt DateTime [not null]
 }
 
+Table Purchase {
+  id String [pk]
+  userId String [not null]
+  courseId String [not null]
+  course Course [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updateAt DateTime [not null]
+}
+
+Table StripeCustomer {
+  id String [pk]
+  userId String [unique, not null]
+  stripeCustomerId String [unique, not null]
+  createdAt DateTime [default: `now()`, not null]
+  updateAt DateTime [not null]
+}
+
+Enum QuestionType {
+  multiple_choice
+}
+
+Ref: Course.categoryId > Category.id
+
+Ref: Chapter.courseId > Course.id [delete: Cascade]
+
+Ref: MuxData.chapterId - Chapter.id [delete: Cascade]
+
+Ref: UserProgress.chapterId > Chapter.id [delete: Cascade]
+
+Ref: Attachment.courseId > Course.id [delete: Cascade]
+
 Ref: Question.quizId > Quiz.id [delete: Cascade]
 
 Ref: Option.questionId > Question.id [delete: Cascade]
@@ -62,3 +166,5 @@ Ref: Option.questionId > Question.id [delete: Cascade]
 Ref: Quiz.quizCategoryId > QuizCategory.id
 
 Ref: QuizAttachment.quizId > Quiz.id [delete: Cascade]
+
+Ref: Purchase.courseId > Course.id [delete: Cascade]

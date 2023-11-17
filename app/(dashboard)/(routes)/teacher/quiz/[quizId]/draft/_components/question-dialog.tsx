@@ -1,17 +1,7 @@
-import * as z from "zod";
 import axios from "axios";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import {
-    Form,
-    FormControl,
-    FormDescription,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "@/components/ui/form"
-import { Button } from "@/components/ui/button"
+import TextareaAutosize from "react-textarea-autosize";
+
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -20,33 +10,101 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Pencil } from "lucide-react"
-import { Question } from "@prisma/client";
-import { Textarea } from "@/components/ui/textarea";
+} from "@/components/ui/dialog";
+import { Pencil } from "lucide-react";
+import { Option} from "@prisma/client";
+import { ElementRef, useRef, useState } from "react";
+import OptionForm from "./option";
 
+interface Question {
+  id: string;
+  question: string;
+  imageUrl: string | null;
+  answer: string;
+  explanation: string;
+  options: Option[]; 
+  quizId: string;
+  position: number;
+  createdAt: Date;
+  updateAt: Date;
+}
 interface QuestionDialogProps {
-    question : Question | ''
+  initialData : Question
 }
 
-const questionSchema = z.object({
-    question: z.string().min(1),
-    explanation : z.string().min(10),
-})
+const QuestionDialog = ( {initialData} :QuestionDialogProps ) => {
 
+    const [editing, setIsEditing] = useState({
+      question : false,
+      answer : false
+    });
 
-const QuestionDialog = () => {
-    const form = useForm<z.infer<typeof questionSchema>>({
-          resolver: zodResolver(questionSchema),
-  });
+    const inputRef = useRef<ElementRef<"textarea">>(null);
+    const answerInputRef = useRef<ElementRef<"textarea">>(null);
+    const [value, setValue] = useState({
+      question : initialData.question,
+      answer : initialData.answer
+    })
+    const enableQuestionInput = () =>{
+      setIsEditing({
+        ...editing,
+        question : true
+        
+      });
+    
+      setTimeout(() => {
+        setValue({
+          ...value,
+          question : initialData.question
+          
+        });
+        inputRef.current?.focus();  
+      }, 0);
+    };
+    const enableAnswerInput = () =>{
+      setIsEditing({
+        ...editing,
+        answer : true
+        
+      });
+      setTimeout(() => {
+        setValue({
+          ...value,
+          answer : initialData.answer
+          
+        });
+        answerInputRef.current?.focus();  
+      }, 0);
+    }
 
-  const { isSubmitting, isValid } = form.formState;
-
-  const onSubmit = () => {
-
-  }
+    const disableInput = () => setIsEditing({
+        ...editing,
+        question : false
+        
+      })
+    const disableAnswerInput = () => setIsEditing({
+        ...editing,
+        answer: false
+        
+      })
+    const onInput = async (newquestion: string) => {
+      setValue({
+          ...value,
+          question : newquestion
+        });
+      // Hasil console.log(value)
+      const update = await axios.patch(`/api/question/${initialData.id}`, { question: value.question })
+      
+    }
+    const answerOnInput = async (newanswer: string) => {
+      setValue({
+          ...value,
+          answer : newanswer
+        });
+      // Hasil console.log(value)
+      const update = await axios.patch(`/api/question/${initialData.id}`, { answer: value.answer })
+      
+    }
  
     return ( 
     <Dialog>
@@ -60,59 +118,51 @@ const QuestionDialog = () => {
         <DialogHeader>
           <DialogTitle>Ubah Soal</DialogTitle>
           <DialogDescription>
-            Ubah soalmu baru klik simpan
+            Perubahan tersimpan otomatis
           </DialogDescription>
         </DialogHeader>
-            <Form {...form}>
-                        <form
-                        onSubmit={form.handleSubmit(onSubmit)}
-                        className="space-y-8 mt-4">
-                <FormField 
-                    control={form.control}
-                    name="question"
-                    render={({field}) => (
-                    <FormItem>
-                        <FormControl>
-                                <Textarea 
-                                disabled={isSubmitting}
-                                placeholder="Tulis Pertanyaan di sini"
-                                {...field}
-                                />
-                        </FormControl>
-                        <FormMessage />
-                    </FormItem>
-                        )} 
-                        />
-                    <FormField 
-                    control={form.control}
-                    name="explanation"
-                    render={({field}) => (
-                        <FormItem>
-                            <FormLabel>
-                                Penjelasan dari Jawaban
-                            </FormLabel>
-                            <FormControl>
-                                <Input
-                                type="text"
-                                placeholder="Penjelasan dari jawaban."
-                                disabled={isSubmitting}
-                                {...field}
-                                />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                        )}/>
-                        <div className="flex items-center gap-x-2">
-                        <Button
-                        type="submit"
-                        disabled = {!isValid || isSubmitting}>
-                            Simpan
-                        </Button>
-                        </div>
+          {!editing.question ? (
+            <div
+            onClick={enableQuestionInput}
+            className="outline-none font-bold">
+              {value.question}
+            </div>
 
-                        </form>
-                        
-            </Form>
+          ) : (
+            <TextareaAutosize
+            className="bg-transparent outline-none font-bold break-words"
+            ref={inputRef}
+            value={value.question}
+            onBlur={disableInput}
+            onChange={(e) => onInput(e.target.value)}
+            />
+
+          )}
+          {initialData.options.map((option, index) => (
+            <div key={index}>
+              <OptionForm option={option} />
+            </div>
+          ))}
+
+          {!editing.answer ? (
+            <div
+            onClick={enableAnswerInput}
+            className="outline-none font-medium">
+              {value.answer}
+            </div>
+
+          ) : (
+            <TextareaAutosize
+            className="bg-transparent outline-none font-medium break-words"
+            ref={answerInputRef}
+            value={value.answer}
+            onBlur={disableAnswerInput}
+            onChange={(e) => answerOnInput(e.target.value)}
+            />
+
+          )}
+          
+                    
         <DialogFooter>
         </DialogFooter>
       </DialogContent>

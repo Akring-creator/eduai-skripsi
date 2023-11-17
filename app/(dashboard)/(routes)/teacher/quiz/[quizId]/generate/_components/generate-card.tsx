@@ -32,7 +32,7 @@ interface QuizCardProps {
 }
 
 const formSchema= z.object({
-    materi: z.string().min(40, "Minimal 40 Karakter").max(5000, "Maksimal 5000 Karakter"),
+    materi: z.string().min(40, "Minimal 40 Karakter").max(10000, "Maksimal 5000 Karakter"),
     numberOfQuestions: z.coerce.number().min(1, "Minimal 1 Pertanyaan").max(10, "Maksimal 10 Pertanyaan"),
     numberOfOptions: z.coerce.number().min(2, "Minimal 2").max(5, "Maksimal 5"),
     guidance: z.string().max(200, "Maksimal 200 Karakter"),
@@ -69,6 +69,7 @@ export const QuizCard = ({
                 const updateToDatabase = await axios.post(`/api/quiz/${quizId}/questions`, questions.data)
                 toast.success("Soal berhasil dibuat")
                 router.push(`/teacher/quiz/${quizId}/draft`)
+                router.refresh()
                 
             }
             
@@ -79,7 +80,7 @@ export const QuizCard = ({
     }
 
     return ( 
-    <Card className="w-[700px]">
+    <Card className="w-[900px]">
         <CardHeader>
             <CardTitle className="font-bold text-2xl">
                 Buat Soal
@@ -92,7 +93,7 @@ export const QuizCard = ({
             <Form {...form}>
                         <form
                         onSubmit={form.handleSubmit(onSubmit)}
-                        className="space-y-8 mt-8">
+                        className="space-y-8 mt-2">
                 <FormField 
                     control={form.control}
                     name="materi"
@@ -101,7 +102,7 @@ export const QuizCard = ({
                         <FormControl>
                                 <Textarea 
                                 disabled={isSubmitting}
-                                placeholder="Masukkan materi, minimal 40 karakter maksimal 1000 karakter"
+                                placeholder="Masukkan materi, minimal 40 karakter "
                                 {...field}
                                 />
                         </FormControl>

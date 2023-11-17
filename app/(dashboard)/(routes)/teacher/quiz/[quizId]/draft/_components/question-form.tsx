@@ -15,13 +15,26 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Pencil, PlusCircle, Route } from "lucide-react";
+import { Loader2, Pencil, PlusCircle, Route } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { Question, Quiz } from "@prisma/client";
+import { Quiz, Option } from "@prisma/client";
 import { cn } from "@/lib/utils";
 import { QuestionsList } from "./questions-list";
+
+interface Question {
+  id: string;
+  question: string;
+  imageUrl: string | null;
+  answer: string;
+  explanation: string;
+  options: Option[]; // Tambahkan properti options dengan tipe Option[]
+  quizId: string;
+  position: number;
+  createdAt: Date;
+  updateAt: Date;
+}
 
 
 interface QuestionFormProps {
@@ -54,9 +67,13 @@ export const QuestionForm = (
       setIsUpdating(false);
     }
   }
-  console.log(initialData.questions)
     return(
         <div className="relative border bg-slate-100 rounded-md p-4">
+          {isUpdating && (
+            <div className="absolute h-full w-full top-0 right-0 bg-slate-500/20 rouded-m flex items-center justify-center">
+              <Loader2 className="animate-spin h-10 w-10 text-sky-700"/>
+            </div>
+          )}
             <div className={cn(
           "text-sm mt-2",
           !initialData.questions.length && "text-slate-500 italic"

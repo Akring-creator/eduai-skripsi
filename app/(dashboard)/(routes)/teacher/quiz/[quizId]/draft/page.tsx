@@ -31,7 +31,6 @@ const QuizDraft = async (
             }
         }
     })
-    console.log(quiz)
 
     if (!quiz) {
         return redirect('/')

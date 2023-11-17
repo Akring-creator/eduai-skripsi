@@ -7,23 +7,17 @@ import {
   Draggable,
   DropResult,
 } from "@hello-pangea/dnd";
-import { Grip, Pencil } from "lucide-react";
+import { Grip, Pencil, Trash } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import { Option } from "@prisma/client";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import QuestionDialog from "./question-dialog";
+import QuestionCard from "./question-card";
 
 // ...
-
-interface Option {
-  id: string;
-  option: string;
-  imageUrl: string | null;
-  questionId: string;
-  question: Question; // Tambahkan relasi ke Question
-}
 
 interface Question {
   id: string;
@@ -100,11 +94,11 @@ export const QuestionsList = ({
             {questions.map((question, index) => (
               <Draggable key={question.id} draggableId={question.id} index={index}>
                 {(provided) => (
-                  <Card className="w-full shadow-md mb-4 gap-x-2">
                   <div
+                    className="w-full shadow-md mb-4 gap-x-2 bg-white fullwidth"
                     ref={provided.innerRef}
                     {...provided.draggableProps}
-                  >
+                    >
                     <div className="flex items-center  text-slate-700 text-sm">
                     <div
                       className={cn(
@@ -114,38 +108,20 @@ export const QuestionsList = ({
                     >
                       <Grip className="h-5 w-5" />
                     </div>
-                    <div className="space-y-2 p-4">
-                      <div className="w-full font-medium flex items-center justify-between">
-                        
-                        Pertanyaan {question.position + 1}
-                        <QuestionDialog />
+                      <div className="space-y-2 p-4 w-full">
+                        <div className="font-medium flex items-center justify-between">
+                          Pertanyaan {question.position + 1}
+                          <Button
+                          variant='ghost'>
+                            <Trash className="h-4 w-4"/>
 
-                      </div>
-
-                      <CardHeader>
-                        <CardTitle className="font-bold text-xl">
-                        {question.question}
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="justify-center mt-2">
-                          {question.options.map((option) => (
-                            <div key={option.id} className="option p-4 rounded-md shadow-md mb-2">
-                              <p className="space-y-1 ml-5 text-slate-700 text-md">
-                                {option.option}
-                              </p>
-                            </div>
-                        ))}
+                          </Button>
                         </div>
-                        </CardContent>
-
-                    </div>
-
+                        <QuestionCard 
+                        initialData={question}/>
+                      </div>
                   </div>
-                    <div className="ml-auto pr-2 flex items-center gap-x-2">
-                    </div>
                   </div>
-                  </Card>
                 )}
                 
               </Draggable>
