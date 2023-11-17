@@ -6,7 +6,7 @@ export const Logo = () => {
         height={150}
         width={150}
         alt="logo"
-        src="/logo.svg"
+        src="/eduai-logo.svg"
         />
     )
 }
