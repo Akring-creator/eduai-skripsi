@@ -140,7 +140,9 @@ const QuestionDialog = ( {initialData} :QuestionDialogProps ) => {
           )}
           {initialData.options.map((option, index) => (
             <div key={index}>
-              <OptionForm option={option} />
+              <OptionForm 
+              optionValue={option.option}
+              optionId={option.id} />
             </div>
           ))}
 

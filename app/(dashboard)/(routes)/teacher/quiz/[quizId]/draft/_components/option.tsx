@@ -12,9 +12,6 @@ const OptionForm = ({optionValue, optionId}: OptionFormProps) => {
     const inputRef = useRef<ElementRef<"textarea">>(null);
     const [value, setValue] = useState(optionValue);
 
-    // try to fetch data
-      
-
     const enableInput = async () =>{
       setIsEditing(true);
       const response = await axios.get(`/api/question/option/${optionId}`)
