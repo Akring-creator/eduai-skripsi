@@ -1,8 +1,5 @@
 const OpenAI = require('openai');
 
-// Selanjutnya, Anda dapat menggunakan modul OpenAI di sini
-
-
 const openai = new OpenAI({
   apiKey: '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' // This is also the default, can be omitted
 });

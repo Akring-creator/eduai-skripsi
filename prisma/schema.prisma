@@ -82,6 +82,7 @@ model Category {
   id      String   @id @default(uuid())
   name    String   @unique
   courses Course[]
+  quizzes Quiz[]
 }
 
 model Attachment {
@@ -140,8 +141,8 @@ model Quiz {
   price       Float?
   isPublished Boolean @default(false)
 
-  quizCategoryId String?
-  quizCategory   QuizCategory? @relation(fields: [quizCategoryId], references: [id])
+  categoryId String?
+  category   Category? @relation(fields: [categoryId], references: [id])
 
   questions   Question[]
   attachments QuizAttachment[]
@@ -149,13 +150,7 @@ model Quiz {
   createdAt DateTime @default(now())
   updateAt  DateTime @updatedAt
 
-  @@index([quizCategoryId])
-}
-
-model QuizCategory {
-  id     String @id @default(uuid())
-  name   String @unique
-  quizes Quiz[]
+  @@index([categoryId])
 }
 
 model QuizAttachment {

@@ -18,6 +18,10 @@ export const Sidebar = ({
     const onClick = () => {
         router.push(`/teacher/quiz/${initialData.id}/generate`)
     }
+    const onClickExport = () => {
+        // Jalankan fungsi pembuatan file Word
+        
+    }
     return ( 
     <>
     {/* Kolom kedua dengan lebar 1/3 layar */}
@@ -54,7 +58,8 @@ export const Sidebar = ({
     </Button>
     <Button
     type="button"
-    variant="secondary">
+    variant="secondary"
+    onClick={onClickExport}>
         <ArrowRightToLine className="mr-2" />
         Export
     </Button>

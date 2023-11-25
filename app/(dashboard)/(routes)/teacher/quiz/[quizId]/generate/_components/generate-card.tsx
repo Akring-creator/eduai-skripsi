@@ -80,123 +80,121 @@ export const QuizCard = ({
     }
 
     return ( 
-    <Card className="w-[900px]">
-        <CardHeader>
-            <CardTitle className="font-bold text-2xl">
-                Buat Soal
-            </CardTitle>
-            <CardDescription>
-                Masukkan Materi
-            </CardDescription>
-        </CardHeader>
-        <CardContent>
-            <Form {...form}>
-                        <form
-                        onSubmit={form.handleSubmit(onSubmit)}
-                        className="space-y-8 mt-2">
-                <FormField 
-                    control={form.control}
-                    name="materi"
-                    render={({field}) => (
-                    <FormItem>
-                        <FormControl>
-                                <Textarea 
-                                disabled={isSubmitting}
-                                placeholder="Masukkan materi, minimal 40 karakter "
-                                {...field}
-                                />
-                        </FormControl>
-                        <FormMessage />
-                    </FormItem>
-                        )} 
+        <div className="w-full flex items-center">
+    <div className="space-y-2 p-4 ">
+        <div className="font-bold text-2xl">
+            Buat Soal
+        </div>
+        <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 mt-2">
+                <div className="grid grid-cols-5 gap-4">
+
+                    <div className="col-span-4">
+                        <FormField 
+                            control={form.control}
+                            name="materi"
+                            render={({field}) => (
+                                <FormItem>
+                                    <FormControl>
+                                        <Textarea 
+                                            rows={20}
+                                            disabled={isSubmitting}
+                                            placeholder="Masukkan materi, minimal 40 karakter "
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )} 
                         />
-                    <FormField 
-                    control={form.control}
-                    name="numberOfQuestions"
-                    render={({field}) => (
-                        <FormItem>
-                            <FormLabel>
-                                Jumlah Pertanyaan
-                            </FormLabel>
-                            <FormDescription>
-                                Berapa Pertanyaan yang ingin dibuat?
-                            </FormDescription>
-                            <FormControl>
-                                <Input
-                                type="number"
-                                step="1"
-                                placeholder="Min: 1"
-                                disabled={isSubmitting}
-                                {...field}
-                                />
-                            </FormControl>
-                            
-                            <FormMessage />
-                        </FormItem>
-                        )}
-                    />
-                    <FormField 
-                    control={form.control}
-                    name="numberOfOptions"
-                    render={({field}) => (
-                        <FormItem>
-                            <FormLabel>
-                                Jumlah Pilihan Jawaban
-                            </FormLabel>
-                            <FormDescription>
-                                Berapa pilihan jawaban pada setiap soal?
-                            </FormDescription>
-                            <FormControl>
-                                <Input
-                                type="number"
-                                step="1"
-                                placeholder="Min: 3"
-                                disabled={isSubmitting}
-                                {...field}
-                                />
-                            </FormControl>
-                            
-                            <FormMessage />
-                        </FormItem>
-                        )}/>
-                    <FormField 
-                    control={form.control}
-                    name="guidance"
-                    render={({field}) => (
-                        <FormItem>
-                            <FormLabel>
-                                Petunjuk Pembuatan Soal
-                            </FormLabel>
-                            <FormDescription>
-                                Soal seperti apa yang mau kamu buat?
-                            </FormDescription>
-                            <FormControl>
-                                <Input
-                                type="text"
-                                placeholder="Cth: Semua soal harus berupa hitungan."
-                                disabled={isSubmitting}
-                                {...field}
-                                />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                        )}/>
+                    </div>
+                    <div className="col-span-1 space-y-8">
+                        <FormField 
+                            control={form.control}
+                            name="numberOfQuestions"
+                            render={({field}) => (
+                                <FormItem>
+                                    <FormLabel>
+                                        Jumlah Pertanyaan
+                                    </FormLabel>
+                                    <FormDescription>
+                                        Berapa Pertanyaan yang ingin dibuat?
+                                    </FormDescription>
+                                    <FormControl>
+                                        <Input
+                                            type="number"
+                                            step="1"
+                                            placeholder="Min: 1"
+                                            disabled={isSubmitting}
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField 
+                            control={form.control}
+                            name="numberOfOptions"
+                            render={({field}) => (
+                                <FormItem>
+                                    <FormLabel>
+                                        Jumlah Pilihan Jawaban
+                                    </FormLabel>
+                                    <FormDescription>
+                                        Berapa pilihan jawaban pada setiap soal?
+                                    </FormDescription>
+                                    <FormControl>
+                                        <Input
+                                            type="number"
+                                            step="1"
+                                            placeholder="Min: 3"
+                                            disabled={isSubmitting}
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField 
+                            control={form.control}
+                            name="guidance"
+                            render={({field}) => (
+                                <FormItem>
+                                    <FormLabel>
+                                        Petunjuk Pembuatan Soal
+                                    </FormLabel>
+                                    <FormDescription>
+                                        Soal seperti apa yang mau kamu buat?
+                                    </FormDescription>
+                                    <FormControl>
+                                        <Input
+                                            type="text"
+                                            placeholder="Cth: Semua soal harus berupa hitungan."
+                                            disabled={isSubmitting}
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
                         <div className="flex items-center gap-x-2">
-                        <Button
-                        type="submit"
-                        disabled = {!isValid || isSubmitting}>
-                            Buat Soal
-                        </Button>
+                            <Button
+                                type="submit"
+                                disabled={!isValid || isSubmitting}
+                            >
+                                Buat Soal
+                            </Button>
                         </div>
-
-                        </form>
-                        
-            </Form>
-
-        </CardContent>
-    </Card> );
+                    </div>
+                </div>
+            </form>
+        </Form>
+    </div>
+</div>
+ );
 }
- 
-
-
-

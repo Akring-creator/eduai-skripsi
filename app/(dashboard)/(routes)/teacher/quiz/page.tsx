@@ -3,7 +3,7 @@ import Link from "next/link";
 
 const listofItem = ["item"]
 
-const CoursesPage = () => {
+const QuizPage = () => {
     return ( 
     <div className="flex items-center gap-x-2 ml-2 mt-2">
         <Link href="/teacher/create-quiz">
@@ -16,4 +16,4 @@ const CoursesPage = () => {
     </div> );
 }
  
-export default CoursesPage;
+export default QuizPage;

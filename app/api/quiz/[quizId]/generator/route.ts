@@ -1,8 +1,7 @@
-import { strict_output } from "@/lib/gpt"
 import { NextResponse } from "next/server"
 import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs";
-import { multipleChoice } from "@/scripts/test-gpt";
+import { multipleChoice } from "@/lib/openaimc";
 
 interface IDictionary {
     [key: string]: string;

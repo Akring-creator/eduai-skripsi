@@ -61,6 +61,7 @@ Table Category {
   id String [pk]
   name String [unique, not null]
   courses Course [not null]
+  quizzes Quiz [not null]
 }
 
 Table Attachment {
@@ -104,18 +105,12 @@ Table Quiz {
   imageUrl String
   price Float
   isPublished Boolean [not null, default: false]
-  quizCategoryId String
-  quizCategory QuizCategory
+  categoryId String
+  category Category
   questions Question [not null]
   attachments QuizAttachment [not null]
   createdAt DateTime [default: `now()`, not null]
   updateAt DateTime [not null]
-}
-
-Table QuizCategory {
-  id String [pk]
-  name String [unique, not null]
-  quizes Quiz [not null]
 }
 
 Table QuizAttachment {
@@ -163,7 +158,7 @@ Ref: Question.quizId > Quiz.id [delete: Cascade]
 
 Ref: Option.questionId > Question.id [delete: Cascade]
 
-Ref: Quiz.quizCategoryId > QuizCategory.id
+Ref: Quiz.categoryId > Category.id
 
 Ref: QuizAttachment.quizId > Quiz.id [delete: Cascade]
 

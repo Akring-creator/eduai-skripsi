@@ -46,7 +46,7 @@ export const QuizCategoryForm = (
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            quizCategoryId: initialData?.quizCategoryId|| ''
+            quizCategoryId: initialData?.categoryId|| ''
         }
 });
 const router = useRouter()
@@ -59,7 +59,7 @@ const { isSubmitting, isValid } = form.formState;
 const onSubmit = async (values: z.infer<typeof formSchema>) =>{
     try {
         const update = await axios.patch(`/api/quiz/${quizId}`, values)
-        toast.success('Berhasil mengubah kategori')
+        toast.success('Berhasil menambahkan kategori')
         toggleEdit()
         router.refresh()
 
@@ -69,7 +69,7 @@ const onSubmit = async (values: z.infer<typeof formSchema>) =>{
     }
     console.log(values)
 }
-const selectedOption = options.find((option) => option.value === initialData.quizCategoryId)
+const selectedOption = options.find((option) => option.value === initialData.categoryId)
 
     return(
         <div className="mt-6 border bg-slate-100 rounded-md p-4">
@@ -79,12 +79,12 @@ const selectedOption = options.find((option) => option.value === initialData.qui
                     {isEditing && (
                         <>Cancel</>
                     )}
-                    {!isEditing && initialData.quizCategoryId === null && (
+                    {!isEditing && initialData.categoryId === null && (
                         <>
                         <PlusCircle className="h-4 w-4 mr-2" />
                     Tambah Kategori</>
                     )}
-                    {!isEditing && initialData.quizCategoryId !== null && (
+                    {!isEditing && initialData.categoryId !== null && (
                         <>
                         <Pencil className="h-4 w-4 mr-2" />
                     Edit Kategori</>
@@ -95,7 +95,7 @@ const selectedOption = options.find((option) => option.value === initialData.qui
             </div>
             {!isEditing && (
                     <p className={cn("text-sm mt-2", 
-                    !initialData.quizCategoryId && "text-slate-500 italic" )}>
+                    !initialData.categoryId && "text-slate-500 italic" )}>
                         
                         {selectedOption?.label || "Kategori Tidak Tersedia" }
                         

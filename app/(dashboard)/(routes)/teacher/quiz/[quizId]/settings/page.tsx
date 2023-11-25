@@ -43,7 +43,7 @@ const CreateIdQuiz = async ({params}:{params : {quizId: string}}) => {
     const requiredFields = [
         quiz.description,
         quiz.imageUrl,
-        quiz.quizCategoryId,
+        quiz.categoryId,
         quiz.title,
     ]
     // Mengakses library router
@@ -63,11 +63,11 @@ const CreateIdQuiz = async ({params}:{params : {quizId: string}}) => {
         <div className="flex items-center justify-between">
             <div className="flex flex-col gap-y-2">
                 <h1 className="text-2xl font-medium">
-                    Pengaturan File
+                    Pengaturan Kuis
 
                 </h1>
                 <span className="text-sm text-slate-700">
-                    Isi semua data {completionText}
+                    data yang sudah terisi:  {completionText}
                 </span>
             </div> 
 
@@ -77,7 +77,7 @@ const CreateIdQuiz = async ({params}:{params : {quizId: string}}) => {
                 <div className="flex items-center gap-x-2">
                     <IconBadge icon={LayoutDashboard}/>
                     <h2 className="text-xl">
-                        Atur Filemu
+                        Umum
                     </h2>
 
                 </div>

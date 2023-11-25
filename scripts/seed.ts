@@ -1,20 +1,23 @@
-const { PrismaClient } = require('@prisma/client');
 
-const db = new PrismaClient();
+// async function seedingCategory() {
+//   try {
+//     await db.category.createMany({
+//       data : [
+//         { name : 'Atmosfer'},
+//         { name : 'Hidrosfer'},
+//         { name : 'Litosfer'},
+//         { name : 'Antroposfer'},
+//         { name : 'Biosfer'},
+//         { name : 'Perencanaan Wilayah'}        
+//       ]
+//     })
 
-async function getAllQuestions() {
-  const questions = await db.quiz.findMany();
-  return questions;
-}
+//   } catch (error) {
+//     console.error('ERROR :', error)
+//   } finally {
+//     await db.$disconnect();
+//   }
+// }
 
-getAllQuestions()
-  .then((questions) => {
-    console.log("Seluruh data dari tabel Question:");
-    console.log(questions);
-  })
-  .catch((error) => {
-    console.error("Terjadi kesalahan:", error);
-  })
-  .finally(async () => {
-    await db.$disconnect();
-  });
+// seedingCategory()
+
