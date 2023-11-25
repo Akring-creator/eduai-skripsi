@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Pencil, PlusCircle, Route } from "lucide-react";
+import { Loader2, Pencil, PlusCircle, Route } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
@@ -69,12 +69,34 @@ const onSubmit = async (values: z.infer<typeof formSchema>) =>{
         
     } catch {
         toast.error('Terdapat Masalah')
+    }};
+    const onReorder = async (updateData: {id: string; position: number}[]) => {
+        try {
+            setIsUpdating(true);
+            await axios.put(`/api/courses/${courseId}/chapters/reorder`, {
+                list: updateData
+            })
+            toast.success("Chapter diurutkan ulang")
+
+        } catch {
+            toast.error("Terdapat Kendala")
+        } finally {
+            setIsUpdating(false)
+        }
     }
-    console.log(values)
-}
+
+    const onEdit = (id:string) => {
+        router.push(`/teacher/courses/${courseId}/chapters/${id}`)
+    }
 
     return(
-        <div className="mt-6 border bg-slate-100 rounded-md p-4">
+
+        <div className="relative mt-6 border bg-slate-100 rounded-md p-4">
+            {isUpdating && (
+                <div className="absolute h-full w-full bg-slate-500/20 top-0 right-0 rounded-m flex items-center justify-center">
+                    <Loader2 className="animate-spin h-6 w-6 text-sky-700" />
+                </div>    
+            )}
             <div className="font-medium flex items-center justify-between">
                 Chapter Kursus
                 <Button onClick={toggleCreating}variant="ghost">
@@ -131,8 +153,8 @@ const onSubmit = async (values: z.infer<typeof formSchema>) =>{
                     )}>
                         {!initialData.chapters.length && "No Chapters"}
                         <ChapterList 
-                        onEdit = {() => {}}
-                        onReorder = {() => {}}
+                        onEdit = {onEdit}
+                        onReorder = {onReorder}
                         items = {initialData.chapters || []}
                         />
 

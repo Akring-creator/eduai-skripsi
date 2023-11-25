@@ -110,12 +110,18 @@ export const QuestionsList = ({
                     </div>
                       <div className="space-y-2 p-4 w-full">
                         <div className="font-medium flex items-center justify-between">
-                          Pertanyaan {question.position + 1}
-                          <Button
-                          variant='ghost'>
-                            <Trash className="h-4 w-4"/>
+                          Pertanyaan {index + 1}
+                          <div className="ml-auto pr-2 flex items-center gap-x-2">
+                            <Badge className="bg-sky-700">
+                              Pilihan Ganda
+                            </Badge>
 
-                          </Button>
+                            <Trash 
+                            onClick = {() => {}}
+                            className="w-4 h-4 cursor-pointer hover:opacity-75 transition"/>
+
+                          </div>
+                          
                         </div>
                         <QuestionCard 
                         initialData={question}/>

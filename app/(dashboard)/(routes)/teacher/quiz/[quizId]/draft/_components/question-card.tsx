@@ -92,7 +92,6 @@ const QuestionCard = ( {initialData} :QuestionCardProps ) => {
             className="outline-none font-bold ">
               {value.question}
             </div>
-
           ) : (
             <TextareaAutosize
             className="bg-transparent outline-none font-bold break-words w-full"
