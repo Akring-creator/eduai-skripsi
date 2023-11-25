@@ -108,6 +108,7 @@ model Question {
   question    String   @db.Text
   imageUrl    String?  @db.Text
   answer      String   @db.Text
+  isPublished Boolean  @default(true)
   explanation String   @db.Text
   options     Option[]
   quizId      String

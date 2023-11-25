@@ -79,6 +79,7 @@ Table Question {
   question String [not null]
   imageUrl String
   answer String [not null]
+  isPublished Boolean [not null, default: true]
   explanation String [not null]
   options Option [not null]
   quizId String [not null]

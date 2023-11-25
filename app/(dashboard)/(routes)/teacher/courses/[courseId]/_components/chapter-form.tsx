@@ -22,6 +22,7 @@ import { useRouter } from "next/navigation";
 import { Chapter, Course } from "@prisma/client";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
+import ChapterList from "./chapter-list";
 
 
 interface ChapterFormProps {
@@ -67,7 +68,7 @@ const onSubmit = async (values: z.infer<typeof formSchema>) =>{
 
         
     } catch {
-        toast.error('Ada Masalah')
+        toast.error('Terdapat Masalah')
     }
     console.log(values)
 }
@@ -102,7 +103,7 @@ const onSubmit = async (values: z.infer<typeof formSchema>) =>{
                             <FormControl>
                                 <Input 
                                 disabled={isSubmitting}
-                                placeholder="cth: Penngenalan awal mengenai kursus"
+                                placeholder="cth: Pengenalan Kursus"
                                 {...field}/>
                             </FormControl>
                             <FormDescription>
@@ -129,6 +130,12 @@ const onSubmit = async (values: z.infer<typeof formSchema>) =>{
                         !initialData.chapters.length && "text-slate-500 italic"
                     )}>
                         {!initialData.chapters.length && "No Chapters"}
+                        <ChapterList 
+                        onEdit = {() => {}}
+                        onReorder = {() => {}}
+                        items = {initialData.chapters || []}
+                        />
+
                     </div>
                 )}
                 {!isCreating && (
