@@ -14,7 +14,6 @@ import { Option } from '@prisma/client';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import QuestionDialog from './question-dialog';
 import QuestionCard from './question-card';
 
 // ...
@@ -36,12 +35,14 @@ interface QuestionsListProps {
   items: Question[];
   onReorder: (updateData: { id: string; position: number }[]) => void;
   onEdit: (id: string) => void;
+  quizId: string;
 }
 
 export const QuestionsList = ({
   items,
   onReorder,
   onEdit,
+  quizId,
 }: QuestionsListProps) => {
   const [isMounted, setIsMounted] = useState(false);
   const [questions, setQuestions] = useState(items);
@@ -93,18 +94,21 @@ export const QuestionsList = ({
               <Draggable
                 key={question.id}
                 draggableId={question.id}
-                index={index}>
+                index={index}
+              >
                 {(provided) => (
                   <div
                     className="w-full shadow-md mb-4 gap-x-2 bg-white fullwidth"
                     ref={provided.innerRef}
-                    {...provided.draggableProps}>
+                    {...provided.draggableProps}
+                  >
                     <div className="flex items-center  text-slate-700 text-sm">
                       <div
                         className={cn(
                           'px-2 py-3 border-r border-r-slate-200 hover:bg-slate-300 rounded-l-md transition'
                         )}
-                        {...provided.dragHandleProps}>
+                        {...provided.dragHandleProps}
+                      >
                         <Grip className="h-5 w-5" />
                       </div>
                       <div className="space-y-2 p-4 w-full">
@@ -119,7 +123,7 @@ export const QuestionsList = ({
                             />
                           </div>
                         </div>
-                        <QuestionCard initialData={question} />
+                        <QuestionCard initialData={question} quizId={quizId} />
                       </div>
                     </div>
                   </div>

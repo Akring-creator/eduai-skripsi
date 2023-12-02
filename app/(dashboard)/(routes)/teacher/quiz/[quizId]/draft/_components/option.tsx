@@ -4,20 +4,29 @@ import { ElementRef, useRef, useState } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
 
 interface OptionFormProps {
+  quizId: string;
+  questionId: string;
   optionValue: string;
   optionId: string;
 }
-const OptionForm = ({ optionValue, optionId }: OptionFormProps) => {
+const OptionForm = ({
+  quizId,
+  questionId,
+  optionValue,
+  optionId,
+}: OptionFormProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const inputRef = useRef<ElementRef<'textarea'>>(null);
   const [value, setValue] = useState(optionValue);
 
   const enableInput = async () => {
     setIsEditing(true);
-    const response = await axios.get(`/api/question/option/${optionId}`);
+    const response = await axios.get(
+      `/api/quiz/${quizId}/questions/${questionId}/option/${optionId}`
+    );
 
     setTimeout(() => {
-      console.log(response.data.option);
+      // console.log(response.data.option);
       setValue(response.data.option);
       inputRef.current?.focus();
     }, 0);
@@ -25,9 +34,12 @@ const OptionForm = ({ optionValue, optionId }: OptionFormProps) => {
   const disableInput = async () => {
     setIsEditing(false);
     console.log(value);
-    const update = await axios.patch(`/api/question/option/${optionId}`, {
-      option: value,
-    });
+    const update = await axios.patch(
+      `/api/quiz/${quizId}/questions/${questionId}/option/${optionId}`,
+      {
+        option: value,
+      }
+    );
   };
   const onInput = (newoption: string) => {
     setValue(newoption);
@@ -42,7 +54,7 @@ const OptionForm = ({ optionValue, optionId }: OptionFormProps) => {
         </div>
       ) : (
         <TextareaAutosize
-          className="bg-transparent outline-none font-medium break-words w-full"
+          className="bg-transparent outline-none break-words w-full"
           ref={inputRef}
           value={value}
           onBlur={disableInput}

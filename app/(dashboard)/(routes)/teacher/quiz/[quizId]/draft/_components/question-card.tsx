@@ -1,16 +1,5 @@
 import axios from 'axios';
 import TextareaAutosize from 'react-textarea-autosize';
-
-import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
 import { Pencil } from 'lucide-react';
 import { Option } from '@prisma/client';
 import { ElementRef, useRef, useState } from 'react';
@@ -30,9 +19,11 @@ interface Question {
 }
 interface QuestionCardProps {
   initialData: Question;
+  quizId: string;
 }
 
-const QuestionCard = ({ initialData }: QuestionCardProps) => {
+const QuestionCard = ({ initialData, quizId }: QuestionCardProps) => {
+  const questionId = initialData.id;
   const [editing, setIsEditing] = useState({
     question: false,
     answer: false,
@@ -48,7 +39,9 @@ const QuestionCard = ({ initialData }: QuestionCardProps) => {
       ...editing,
       question: true,
     });
-    const response = await axios.get(`/api/question/${initialData.id}`);
+    const response = await axios.get(
+      `/api/quiz/${quizId}/questions/${questionId}`
+    );
 
     setTimeout(() => {
       setValue({
@@ -64,9 +57,12 @@ const QuestionCard = ({ initialData }: QuestionCardProps) => {
       ...editing,
       question: false,
     });
-    const update = await axios.patch(`/api/question/${initialData.id}`, {
-      question: value.question,
-    });
+    const update = await axios.patch(
+      `/api/quiz/${quizId}/questions/${questionId}`,
+      {
+        question: value.question,
+      }
+    );
   };
 
   const onInput = async (newquestion: string) => {
@@ -84,7 +80,8 @@ const QuestionCard = ({ initialData }: QuestionCardProps) => {
         {!editing.question ? (
           <div
             onClick={enableQuestionInput}
-            className="outline-none font-bold ">
+            className="outline-none font-bold "
+          >
             {value.question}
           </div>
         ) : (
@@ -100,7 +97,12 @@ const QuestionCard = ({ initialData }: QuestionCardProps) => {
 
       {initialData.options.map((option, index) => (
         <div key={index}>
-          <OptionForm optionId={option.id} optionValue={option.option} />
+          <OptionForm
+            optionId={option.id}
+            optionValue={option.option}
+            questionId={questionId}
+            quizId={quizId}
+          />
         </div>
       ))}
     </div>

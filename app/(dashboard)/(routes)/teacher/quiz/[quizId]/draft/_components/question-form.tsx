@@ -1,20 +1,6 @@
 'use client';
 
-import * as z from 'zod';
 import axios from 'axios';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
 import { Loader2, Pencil, PlusCircle, Route } from 'lucide-react';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
@@ -71,12 +57,14 @@ export const QuestionForm = ({ initialData, quizId }: QuestionFormProps) => {
         className={cn(
           'text-sm mt-2',
           !initialData.questions.length && 'text-slate-500 italic'
-        )}>
+        )}
+      >
         {!initialData.questions.length && 'Tidak ada Soal'}
         <QuestionsList
           onEdit={() => {}}
           onReorder={onReorder}
           items={initialData.questions}
+          quizId={quizId}
         />
       </div>
     </div>

@@ -1,14 +1,6 @@
 'use client';
 
 import { z } from 'zod';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
@@ -27,6 +19,7 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
+import Link from 'next/link';
 
 interface QuizCardProps {
   quizId: string;
@@ -82,25 +75,24 @@ export const QuizCard = ({ quizId }: QuizCardProps) => {
     }
   }
 
-  const backToQuizHandler = () => {
-    router.push(`/teacher/quiz/${quizId}/draft`);
-  };
-
   return (
     <div className="relative bg-slate-100 w-full h-full flex items-center">
       <div className="space-y-2 p-4 ">
+        <Link
+          href={`/teacher/quiz/${quizId}/draft`}
+          className="flex items-center text-sm hover:opacity-75 transition mb-6"
+        >
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Kembali ke Kuis
+        </Link>
         <div className="font-bold text-2xl flex items-center space-x-2">
-          <ArrowLeft
-            onClick={backToQuizHandler}
-            className="h-6 w-6 cursor-pointer hover:opacity-75"
-          />
-
-          <span>Buat Soal</span>
+          Pembuatan Soal
         </div>
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-8 mt-2">
+            className="space-y-8 mt-2"
+          >
             <div className="grid grid-cols-5 gap-4">
               <div className="col-span-4">
                 <FormField
@@ -140,7 +132,6 @@ export const QuizCard = ({ quizId }: QuizCardProps) => {
                           {...field}
                         />
                       </FormControl>
-
                       <FormMessage />
                     </FormItem>
                   )}
@@ -163,7 +154,6 @@ export const QuizCard = ({ quizId }: QuizCardProps) => {
                           {...field}
                         />
                       </FormControl>
-
                       <FormMessage />
                     </FormItem>
                   )}

@@ -4,19 +4,33 @@ import { NextResponse } from 'next/server';
 
 export async function GET(
   req: Request,
-  { params }: { params: { questionId: string } }
+  { params }: { params: { quizId: string; questionId: string } }
 ) {
   try {
+    // mendapatkan info login pengguna
     const { userId } = auth();
-    const { questionId } = params;
 
     if (!userId) {
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
+    // Memastikan bahwa pengguna merupakan pemiliki Quiz
+    const quizOwner = await db.quiz.findUnique({
+      where: {
+        id: params.quizId,
+        userId,
+      },
+    });
+
+    if (!quizOwner) {
+      return new NextResponse('Unauthorized', { status: 401 });
+    }
+
+    // Mengakses Question di Quiz
     const question = await db.question.findUnique({
       where: {
-        id: questionId,
+        id: params.questionId,
+        quizId: params.quizId,
       },
     });
     return NextResponse.json(question);
@@ -27,20 +41,34 @@ export async function GET(
 }
 export async function PATCH(
   req: Request,
-  { params }: { params: { questionId: string } }
+  { params }: { params: { quizId: string; questionId: string } }
 ) {
   try {
+    // Memastikan pengguna login dan mengambil data Json
     const { userId } = auth();
-    const { questionId } = params;
     const values = await req.json();
 
     if (!userId) {
       return new NextResponse('Unauthorized', { status: 401 });
     }
-    console.log(values);
+
+    // Memastikan bahwa pengguna merupakan pemiliki Quiz
+    const quizOwner = await db.quiz.findUnique({
+      where: {
+        id: params.quizId,
+        userId,
+      },
+    });
+
+    if (!quizOwner) {
+      return new NextResponse('Unauthorized', { status: 401 });
+    }
+
+    // Mengupdate Pertanyaan
     const question = await db.question.update({
       where: {
-        id: questionId,
+        id: params.questionId,
+        quizId: params.quizId,
       },
       data: {
         ...values,

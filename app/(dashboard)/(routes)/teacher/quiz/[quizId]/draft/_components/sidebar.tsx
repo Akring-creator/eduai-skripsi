@@ -28,7 +28,7 @@ export const Sidebar = ({ initialData, quizId }: SidebarProps) => {
   };
   return (
     <>
-      <div className="bg-slate-100 p-4 rounded">
+      <div className="bg-slate-100 border p-4 rounded">
         {/* Wadah untuk gambar */}
         <div className="mb-4">
           <img
@@ -52,7 +52,8 @@ export const Sidebar = ({ initialData, quizId }: SidebarProps) => {
           type="button"
           variant="secondary"
           onClick={onClickGenerate}
-          className="hover:opacity-75">
+          className="hover:opacity-75"
+        >
           <Pencil name="pencil" className="mr-2" />
           Buat Soal
         </Button>
@@ -60,7 +61,8 @@ export const Sidebar = ({ initialData, quizId }: SidebarProps) => {
           type="button"
           variant="secondary"
           onClick={onClickSettings}
-          className="hover:opacity-75">
+          className="hover:opacity-75"
+        >
           <Settings name="settings" className="mr-2" />
           Setting
         </Button>
@@ -68,7 +70,8 @@ export const Sidebar = ({ initialData, quizId }: SidebarProps) => {
           type="button"
           variant="secondary"
           onClick={onClickExport}
-          className="hover:opacity-75">
+          className="hover:opacity-75"
+        >
           <ArrowRightToLine className="mr-2" />
           Export
         </Button>
