@@ -1,4 +1,3 @@
-
 // async function seedingCategory() {
 //   try {
 //     await db.category.createMany({
@@ -8,7 +7,7 @@
 //         { name : 'Litosfer'},
 //         { name : 'Antroposfer'},
 //         { name : 'Biosfer'},
-//         { name : 'Perencanaan Wilayah'}        
+//         { name : 'Perencanaan Wilayah'}
 //       ]
 //     })
 
@@ -20,4 +19,3 @@
 // }
 
 // seedingCategory()
-

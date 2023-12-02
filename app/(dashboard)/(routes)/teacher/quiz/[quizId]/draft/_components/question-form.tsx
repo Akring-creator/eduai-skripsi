@@ -1,27 +1,27 @@
-"use client";
+'use client';
 
-import * as z from "zod";
-import axios from "axios";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import * as z from 'zod';
+import axios from 'axios';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
 import {
-    Form,
-    FormControl,
-    FormDescription,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Loader2, Pencil, PlusCircle, Route } from "lucide-react";
-import { useState } from "react";
-import toast from "react-hot-toast";
-import { useRouter } from "next/navigation";
-import { Quiz, Option } from "@prisma/client";
-import { cn } from "@/lib/utils";
-import { QuestionsList } from "./questions-list";
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Loader2, Pencil, PlusCircle, Route } from 'lucide-react';
+import { useState } from 'react';
+import toast from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
+import { Quiz, Option } from '@prisma/client';
+import { cn } from '@/lib/utils';
+import { QuestionsList } from './questions-list';
 
 interface Question {
   id: string;
@@ -36,55 +36,50 @@ interface Question {
   updateAt: Date;
 }
 
-
 interface QuestionFormProps {
-    initialData: Quiz & { questions : Question[]};
-    quizId : string;
-};
+  initialData: Quiz & { questions: Question[] };
+  quizId: string;
+}
 
-export const QuestionForm = (
-    {
-        initialData,
-       quizId
-    }: QuestionFormProps
-) => {
-    const [isUpdating, setIsUpdating] = useState(false);
-    const router = useRouter();
-    
-    const onReorder = async (updateData: { id: string; position: number }[]) => {
+export const QuestionForm = ({ initialData, quizId }: QuestionFormProps) => {
+  const [isUpdating, setIsUpdating] = useState(false);
+  const router = useRouter();
+
+  const onReorder = async (updateData: { id: string; position: number }[]) => {
     try {
-      
       setIsUpdating(true);
 
       await axios.put(`/api/quiz/${quizId}/questions/reorder`, {
-        list: updateData
+        list: updateData,
       });
-      toast.success("Question reordered");
+      toast.success('Question reordered');
       router.refresh();
     } catch {
-      toast.error("Something went wrong");
+      toast.error('Something went wrong');
     } finally {
       setIsUpdating(false);
     }
-  }
-    return(
-        <div className="relative border bg-slate-100 rounded-md p-4">
-          {isUpdating && (
-            <div className="absolute h-full w-full top-0 right-0 bg-slate-500/20 rouded-m flex items-center justify-center">
-              <Loader2 className="animate-spin h-10 w-10 text-sky-700"/>
-            </div>
-          )}
-            <div className={cn(
-          "text-sm mt-2",
-          !initialData.questions.length && "text-slate-500 italic"
-        )}>
-          {!initialData.questions.length && "Tidak ada Soal"}
-          <QuestionsList
-            onEdit={() => {}}
-            onReorder={onReorder}
-            items={initialData.questions}
-          />
+  };
+  return (
+    <div className="relative border bg-slate-100 rounded-md p-4">
+      {isUpdating && (
+        <div className="absolute h-full w-full top-0 right-0 bg-slate-500/20 rouded-m flex items-center justify-center">
+          <Loader2 className="animate-spin h-10 w-10 text-sky-700" />
         </div>
-        </div>
-    )
-}
+      )}
+      <div
+        className={cn(
+          'text-sm mt-2',
+          !initialData.questions.length && 'text-slate-500 italic'
+        )}
+      >
+        {!initialData.questions.length && 'Tidak ada Soal'}
+        <QuestionsList
+          onEdit={() => {}}
+          onReorder={onReorder}
+          items={initialData.questions}
+        />
+      </div>
+    </div>
+  );
+};

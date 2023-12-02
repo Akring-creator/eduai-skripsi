@@ -1,47 +1,45 @@
-"use client";
+'use client';
 
-import { BarChart, Compass, Layout, List, FormInput } from "lucide-react";
-import { usePathname } from "next/navigation";
+import { BarChart, Compass, Layout, List, FormInput } from 'lucide-react';
+import { usePathname } from 'next/navigation';
 
-import { SidebarItem } from "./sidebar-item";
+import { SidebarItem } from './sidebar-item';
 
 const guestRoutes = [
   {
     icon: Layout,
-    label: "Dashboard",
-    href: "/",
+    label: 'Dashboard',
+    href: '/',
   },
   {
     icon: Compass,
-    label: "Jelajahi",
-    href: "/search",
+    label: 'Jelajahi',
+    href: '/search',
   },
-  
 ];
 
 const teacherRoutes = [
   {
     icon: List,
-    label: "Kursus",
-    href: "/teacher/courses",
+    label: 'Kursus',
+    href: '/teacher/courses',
   },
   {
     icon: FormInput,
-    label: "Kuis",
-    href: "/teacher/quiz",
+    label: 'Kuis',
+    href: '/teacher/quiz',
   },
   {
     icon: BarChart,
-    label: "Analisis",
-    href: "/teacher/analytics",
+    label: 'Analisis',
+    href: '/teacher/analytics',
   },
-  
-]
+];
 
 export const SidebarRoutes = () => {
   const pathname = usePathname();
 
-  const isTeacherPage = pathname?.includes("/teacher");
+  const isTeacherPage = pathname?.includes('/teacher');
 
   const routes = isTeacherPage ? teacherRoutes : guestRoutes;
 
@@ -56,5 +54,5 @@ export const SidebarRoutes = () => {
         />
       ))}
     </div>
-  )
-}
+  );
+};

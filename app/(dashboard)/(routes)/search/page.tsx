@@ -1,9 +1,5 @@
 const SearchPage = () => {
-    return(
-        <div>
-            Search Page
-        </div>
-    )
-}
+  return <div>Search Page</div>;
+};
 
-export default SearchPage
+export default SearchPage;

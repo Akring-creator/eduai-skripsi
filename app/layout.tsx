@@ -1,22 +1,21 @@
-import './globals.css'
-import { Inter } from 'next/font/google'
-import { ClerkProvider } from '@clerk/nextjs'
-import { ToastProvider } from '@/components/providers/toaster-providers'
-import { Metadata } from 'next'
+import './globals.css';
+import { Inter } from 'next/font/google';
+import { ClerkProvider } from '@clerk/nextjs';
+import { ToastProvider } from '@/components/providers/toaster-providers';
+import { Metadata } from 'next';
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ subsets: ['latin'] });
 
-export const metadata : Metadata = {
+export const metadata: Metadata = {
   title: 'EduAI',
   description: 'Education with Technology',
-  icons : './favicon.ico'
-}
+  icons: './favicon.ico',
+};
 
- 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <ClerkProvider>
@@ -24,8 +23,8 @@ export default function RootLayout({
         <body className={inter.className}>
           <ToastProvider />
           {children}
-          </body>
-    </html>
+        </body>
+      </html>
     </ClerkProvider>
-  )
+  );
 }

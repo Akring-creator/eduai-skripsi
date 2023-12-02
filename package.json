@@ -31,7 +31,7 @@
     "docx": "^8.2.4",
     "docxtemplater": "^3.41.0",
     "encoding": "^0.1.13",
-    "eslint": "8.52.0",
+    "eslint": "^8.52.0",
     "eslint-config-next": "13.4.12",
     "fs": "^0.0.1-security",
     "lucide-react": "^0.290.0",
@@ -54,6 +54,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "eslint-config-prettier": "^9.0.0",
     "prettier": "^3.0.3",
     "prisma": "^5.5.2",
     "prisma-dbml-generator": "^0.10.0"
