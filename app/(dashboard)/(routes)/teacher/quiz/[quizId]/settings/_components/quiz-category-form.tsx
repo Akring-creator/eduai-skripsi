@@ -92,8 +92,7 @@ export const QuizCategoryForm = ({
           className={cn(
             'text-sm mt-2',
             !initialData.categoryId && 'text-slate-500 italic'
-          )}
-        >
+          )}>
           {selectedOption?.label || 'Kategori Tidak Tersedia'}
         </p>
       )}
@@ -101,8 +100,7 @@ export const QuizCategoryForm = ({
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-8 mt-8"
-          >
+            className="space-y-8 mt-8">
             <FormField
               control={form.control}
               name="categoryId"

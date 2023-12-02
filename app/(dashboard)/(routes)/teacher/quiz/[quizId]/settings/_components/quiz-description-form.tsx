@@ -89,8 +89,7 @@ export const QuizDescriptionForms = ({
           className={cn(
             'text-sm mt-2',
             !initialData.description && 'text-slate-500 italic'
-          )}
-        >
+          )}>
           {initialData.description || 'Tidak ada deskripsi'}
         </p>
       )}
@@ -98,8 +97,7 @@ export const QuizDescriptionForms = ({
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-8 mt-8"
-          >
+            className="space-y-8 mt-8">
             <FormField
               control={form.control}
               name="description"

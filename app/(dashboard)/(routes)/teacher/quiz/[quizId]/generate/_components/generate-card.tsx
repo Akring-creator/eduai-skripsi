@@ -100,8 +100,7 @@ export const QuizCard = ({ quizId }: QuizCardProps) => {
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-8 mt-2"
-          >
+            className="space-y-8 mt-2">
             <div className="grid grid-cols-5 gap-4">
               <div className="col-span-4">
                 <FormField

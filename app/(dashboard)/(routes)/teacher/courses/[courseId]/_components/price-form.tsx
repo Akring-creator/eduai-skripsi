@@ -78,8 +78,7 @@ export const PriceForm = ({ initialData, courseId }: PriceFormProps) => {
           className={cn(
             'text-sm mt-2',
             !initialData.price && 'text-slate-500 italic'
-          )}
-        >
+          )}>
           {initialData.price ? formatPrice(initialData.price) : 'No price'}
         </p>
       )}
@@ -87,8 +86,7 @@ export const PriceForm = ({ initialData, courseId }: PriceFormProps) => {
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-8 mt-8"
-          >
+            className="space-y-8 mt-8">
             <FormField
               control={form.control}
               name="price"

@@ -93,21 +93,18 @@ export const QuestionsList = ({
               <Draggable
                 key={question.id}
                 draggableId={question.id}
-                index={index}
-              >
+                index={index}>
                 {(provided) => (
                   <div
                     className="w-full shadow-md mb-4 gap-x-2 bg-white fullwidth"
                     ref={provided.innerRef}
-                    {...provided.draggableProps}
-                  >
+                    {...provided.draggableProps}>
                     <div className="flex items-center  text-slate-700 text-sm">
                       <div
                         className={cn(
                           'px-2 py-3 border-r border-r-slate-200 hover:bg-slate-300 rounded-l-md transition'
                         )}
-                        {...provided.dragHandleProps}
-                      >
+                        {...provided.dragHandleProps}>
                         <Grip className="h-5 w-5" />
                       </div>
                       <div className="space-y-2 p-4 w-full">

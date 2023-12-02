@@ -84,8 +84,7 @@ const QuestionCard = ({ initialData }: QuestionCardProps) => {
         {!editing.question ? (
           <div
             onClick={enableQuestionInput}
-            className="outline-none font-bold "
-          >
+            className="outline-none font-bold ">
             {value.question}
           </div>
         ) : (

@@ -71,8 +71,7 @@ export const QuestionForm = ({ initialData, quizId }: QuestionFormProps) => {
         className={cn(
           'text-sm mt-2',
           !initialData.questions.length && 'text-slate-500 italic'
-        )}
-      >
+        )}>
         {!initialData.questions.length && 'Tidak ada Soal'}
         <QuestionsList
           onEdit={() => {}}

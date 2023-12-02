@@ -34,8 +34,7 @@ export const Combobox = ({ options, value, onChange }: ComboboxProps) => {
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-full justify-between"
-        >
+          className="w-full justify-between">
           {value
             ? options.find((option) => option.value === value)?.label
             : 'Select option...'}
@@ -53,8 +52,7 @@ export const Combobox = ({ options, value, onChange }: ComboboxProps) => {
                 onSelect={() => {
                   onChange(option.value === value ? '' : option.value);
                   setOpen(false);
-                }}
-              >
+                }}>
                 <Check
                   className={cn(
                     'mr-2 h-4 w-4',
