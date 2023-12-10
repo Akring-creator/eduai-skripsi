@@ -1,17 +1,15 @@
 'use client';
 
-import * as z from 'zod';
-import axios from 'axios';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
+import { FileUpload } from '@/components/file-upload';
 import { Button } from '@/components/ui/button';
-import { ImageIcon, Pencil, PlusCircle, Route, Video } from 'lucide-react';
+import MuxPlayer from '@mux/mux-player-react';
+import { Chapter, MuxData } from '@prisma/client';
+import axios from 'axios';
+import { Pencil, PlusCircle, Video } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
-import { useRouter } from 'next/navigation';
-import { Chapter, Course, MuxData } from '@prisma/client';
-import Image from 'next/image';
-import { FileUpload } from '@/components/file-upload';
+import * as z from 'zod';
 
 interface ChapterVideoFormProps {
   initialData: Chapter & { muxData: MuxData | null };
@@ -74,7 +72,9 @@ export const ChapterVideoForm = ({
             <Video className="h-10 w-10 text-slate-500" />
           </div>
         ) : (
-          <div className="relative aspect-video mt-2">Videoooo</div>
+          <div className="relative aspect-video mt-2">
+            <MuxPlayer playbackId={initialData?.muxData?.playbackId || ''} />
+          </div>
         ))}
       {isEditing && (
         <div>
