@@ -1,7 +1,7 @@
 const OpenAI = require('openai');
 
 const openai = new OpenAI({
-  apiKey: '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', // This is also the default, can be omitted
+  apiKey: process.env.OPENAI_API_KEY, // This is also the default, can be omitted
 });
 
 export const multipleChoice = async (

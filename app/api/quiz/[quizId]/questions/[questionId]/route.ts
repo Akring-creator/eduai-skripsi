@@ -2,6 +2,51 @@ import { db } from '@/lib/db';
 import { auth } from '@clerk/nextjs';
 import { NextResponse } from 'next/server';
 
+export async function DELETE(
+  req: Request,
+  { params }: { params: { quizId: string; questionId: string } }
+) {
+  try {
+    const { userId } = auth();
+    if (!userId) {
+      return new NextResponse('Unauthorized', { status: 401 });
+    }
+
+    // Memastikan bahwa pengguna merupakan pemiliki Quiz
+    const quizOwner = await db.quiz.findUnique({
+      where: {
+        id: params.quizId,
+        userId,
+      },
+    });
+
+    if (!quizOwner) {
+      return new NextResponse('Unauthorized', { status: 401 });
+    }
+
+    const question = await db.question.findUnique({
+      where: {
+        id: params.questionId,
+        quizId: params.quizId,
+      },
+    });
+
+    if (!question) {
+      return new NextResponse('Not Found', { status: 404 });
+    }
+
+    const deletedquestion = await db.question.delete({
+      where: {
+        id: params.questionId,
+        quizId: params.quizId,
+      },
+    });
+
+    return NextResponse.json(deletedquestion);
+  } catch (error) {
+    return new NextResponse('Internal Server Error', { status: 500 });
+  }
+}
 export async function GET(
   req: Request,
   { params }: { params: { quizId: string; questionId: string } }

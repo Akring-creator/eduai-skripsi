@@ -11,10 +11,8 @@ import { Grip, Pencil, Trash } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 import { Option } from '@prisma/client';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import QuestionCard from './question-card';
+import QuestionAction from './question-actions';
 
 // ...
 
@@ -114,14 +112,10 @@ export const QuestionsList = ({
                       <div className="space-y-2 p-4 w-full">
                         <div className="font-medium flex items-center justify-between">
                           Pertanyaan {index + 1}
-                          <div className="ml-auto pr-2 flex items-center gap-x-2">
-                            <Badge className="bg-sky-700">Pilihan Ganda</Badge>
-
-                            <Trash
-                              onClick={() => {}}
-                              className="w-4 h-4 cursor-pointer hover:opacity-75 transition"
-                            />
-                          </div>
+                          <QuestionAction
+                            quizId={quizId}
+                            questionId={question.id}
+                          />
                         </div>
                         <QuestionCard initialData={question} quizId={quizId} />
                       </div>

@@ -3,18 +3,6 @@ import { db } from '@/lib/db';
 import { auth } from '@clerk/nextjs';
 import { multipleChoice } from '@/lib/openaimc';
 
-interface IDictionary {
-  [key: string]: string;
-}
-
-interface QuestionsFormat {
-  question: string;
-  answer: string;
-  explanation: string;
-  quizId: string;
-  options: string[];
-}
-
 export const POST = async (
   req: Request,
   { params }: { params: { quizId: string } }
@@ -50,7 +38,7 @@ export const POST = async (
 
     return NextResponse.json(questions);
   } catch (error) {
-    console.log('[GENERATOR]', error);
+    console.log('[QUESTION_GENERATOR]', error);
     return new NextResponse('Internal Error', { status: 500 });
   }
 };
