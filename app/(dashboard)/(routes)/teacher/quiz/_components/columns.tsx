@@ -68,7 +68,7 @@ export const columns: ColumnDef<Quiz>[] = [
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <Link href={`/teacher/quiz/${id}`}>
+            <Link href={`/teacher/quiz/${id}/draft`}>
               <DropdownMenuItem>
                 <Pencil className="h-4 w-4 mr-2" />
                 Edit
