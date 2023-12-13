@@ -80,7 +80,7 @@ const CreateIdQuiz = async ({ params }: { params: { quizId: string } }) => {
             </span>
           </div>
           <QuizActions
-            disable={isComplete}
+            disable={!isComplete}
             quizId={params.quizId}
             isPublished={quiz.isPublished}
           />
