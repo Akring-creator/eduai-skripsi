@@ -28,10 +28,10 @@ export const QuizActions = ({
 
       if (isPublished) {
         await axios.patch(`/api/quiz/${quizId}/unpublish`);
-        toast.success('Kuis Dipublikasikan');
+        toast.success('Kuis Diprivat');
       } else {
         await axios.patch(`/api/quiz/${quizId}/publish`);
-        toast.success('Kuis Diprivat');
+        toast.success('Kuis Dipublikasikan');
         confetti.onOpen();
       }
 
@@ -46,7 +46,7 @@ export const QuizActions = ({
     try {
       setIsLoading(true);
       await axios.delete(`/api/quiz/${quizId}`);
-      toast.success('Course Dihapus');
+      toast.success('Kuis Dihapus');
       // router.refresh();
       router.push(`/teacher/quiz`);
     } catch {

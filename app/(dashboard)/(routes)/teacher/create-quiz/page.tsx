@@ -39,7 +39,7 @@ const CreatePage = () => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       const response = await axios.post('/api/quiz', values);
-      router.push(`/teacher/quiz/${response.data.id}/settings`);
+      router.push(`/teacher/quiz/${response.data.id}/draft`);
       toast.success('Kuis berhasil dibuat');
     } catch {
       toast.error('Terdapat kendala');
@@ -54,7 +54,8 @@ const CreatePage = () => {
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-8 mt-8">
+            className="space-y-8 mt-8"
+          >
             <FormField
               control={form.control}
               name="title"
