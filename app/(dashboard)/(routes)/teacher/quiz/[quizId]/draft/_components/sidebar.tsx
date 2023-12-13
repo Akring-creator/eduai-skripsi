@@ -43,7 +43,7 @@ export const Sidebar = ({ initialData, quizId }: SidebarProps) => {
           <h2 className="text-xl font-semibold mb-2">{initialData.title}</h2>
           <Settings
             name="settings"
-            className=" w-5 h-5 mr-2 hover:opacity-75 text-slate-700"
+            className=" w-5 h-5 mr-2 text-slate-700 hover:opacity-75 cursor-pointer "
             onClick={onClickSettings}
           />
         </div>
