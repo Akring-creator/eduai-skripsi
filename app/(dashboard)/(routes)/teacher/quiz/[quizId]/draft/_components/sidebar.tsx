@@ -33,7 +33,11 @@ export const Sidebar = ({ initialData, quizId }: SidebarProps) => {
         {/* Wadah untuk gambar */}
         <div className="mb-4">
           <img
-            src={initialData.imageUrl ? initialData.imageUrl : ''}
+            src={
+              initialData.imageUrl
+                ? initialData.imageUrl
+                : 'https://uploadthing.com/f/d02b1c91-dd8b-4caf-a629-199f39f3662f-9lxp8g.png'
+            }
             alt="Gambar"
             className="w-full h-auto rounded"
           />
@@ -47,7 +51,13 @@ export const Sidebar = ({ initialData, quizId }: SidebarProps) => {
             onClick={onClickSettings}
           />
         </div>
-        <p className="text-gray-700">{initialData.description}</p>
+
+        <p className="text-gray-700">
+          {initialData.description
+            ? initialData.description
+            : 'Tidak Ada Deskripsi'}
+        </p>
+
         <span className="text-sm text-slate-700">
           Terakhir diubah: {initialData.updateAt.toDateString()}
         </span>
