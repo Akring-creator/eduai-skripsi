@@ -5,6 +5,7 @@ import { IconBadge } from '@/components/icon-badge';
 import { LibrarySquare } from 'lucide-react';
 import Sidebar from './_components/sidebar';
 import { QuestionForm } from './_components/question-form';
+import { Banner } from '@/components/banners';
 
 const QuizDraft = async ({ params }: { params: { quizId: string } }) => {
   // Memastikan Autentifikasi
@@ -36,7 +37,10 @@ const QuizDraft = async ({ params }: { params: { quizId: string } }) => {
   }
 
   return (
-    <div>
+    <>
+      {!quiz.isPublished && (
+        <Banner label="Kuis ini tidak publik dan hanya bisa dilihat secara pribadi" />
+      )}
       <div className="p-6">
         <div className="flex gap-6 mt-10">
           <div className="w-3/4 pr-4">
@@ -47,7 +51,7 @@ const QuizDraft = async ({ params }: { params: { quizId: string } }) => {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
