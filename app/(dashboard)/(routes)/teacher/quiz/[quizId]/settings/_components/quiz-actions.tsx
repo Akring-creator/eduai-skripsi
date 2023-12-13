@@ -10,13 +10,13 @@ import { useState } from 'react';
 import toast from 'react-hot-toast';
 
 interface QuizActionsProps {
-  disabled: boolean;
   quizId: string;
+  disable: boolean;
   isPublished: boolean;
 }
 export const QuizActions = ({
-  disabled,
   quizId,
+  disable,
   isPublished,
 }: QuizActionsProps) => {
   const router = useRouter();
@@ -57,16 +57,11 @@ export const QuizActions = ({
   };
   return (
     <div className="flex items-center gap-x-2">
-      <Button
-        onClick={onClick}
-        disabled={disabled || isLoading}
-        variant="outline"
-        size="sm"
-      >
+      <Button onClick={onClick} disabled={disable || isLoading} size="sm">
         {isPublished ? 'Buat Privat' : 'Buat Publik'}
       </Button>
       <ConfirmModal onConfirm={onDelete}>
-        <Button size="sm" disabled={isLoading}>
+        <Button size="sm" disabled={isLoading} variant="outline">
           <Trash className="h-4 w-4" />
         </Button>
       </ConfirmModal>

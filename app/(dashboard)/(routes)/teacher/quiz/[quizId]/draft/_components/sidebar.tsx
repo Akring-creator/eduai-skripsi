@@ -9,6 +9,7 @@ import {
   Settings,
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { QuizActions } from '../../settings/_components/quiz-actions';
 
 interface SidebarProps {
   initialData: Quiz;
@@ -38,8 +39,14 @@ export const Sidebar = ({ initialData, quizId }: SidebarProps) => {
           />
         </div>
         {/* Tempat judul */}
-        <h2 className="text-xl font-semibold mb-2">{initialData.title}</h2>
-        {/* Tempat deskripsi */}
+        <div className="flex items-center justify-between">
+          <h2 className="text-xl font-semibold mb-2">{initialData.title}</h2>
+          <Settings
+            name="settings"
+            className=" w-5 h-5 mr-2 hover:opacity-75 text-slate-700"
+            onClick={onClickSettings}
+          />
+        </div>
         <p className="text-gray-700">{initialData.description}</p>
         <span className="text-sm text-slate-700">
           Terakhir diubah: {initialData.updateAt.toDateString()}
@@ -50,29 +57,19 @@ export const Sidebar = ({ initialData, quizId }: SidebarProps) => {
       <div className="px-4 py-2 rounded flex items-center justify-center space-x-2">
         <Button
           type="button"
-          variant="secondary"
+          variant="outline"
           onClick={onClickGenerate}
           className="hover:opacity-75"
         >
-          <Pencil name="pencil" className="mr-2" />
+          <Pencil className=" w-4 h-4 mr-2" />
           Buat Soal
         </Button>
         <Button
           type="button"
-          variant="secondary"
-          onClick={onClickSettings}
-          className="hover:opacity-75"
-        >
-          <Settings name="settings" className="mr-2" />
-          Setting
-        </Button>
-        <Button
-          type="button"
-          variant="secondary"
           onClick={onClickExport}
           className="hover:opacity-75"
         >
-          <ArrowRightToLine className="mr-2" />
+          <ArrowRightToLine className="w-4 h-4 mr-2" />
           Export
         </Button>
       </div>

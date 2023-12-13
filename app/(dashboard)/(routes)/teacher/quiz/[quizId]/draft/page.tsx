@@ -39,7 +39,7 @@ const QuizDraft = async ({ params }: { params: { quizId: string } }) => {
   return (
     <>
       {!quiz.isPublished && (
-        <Banner label="Kuis ini tidak publik dan hanya bisa dilihat secara pribadi" />
+        <Banner label="Kuis ini tidak publik dan hanya bisa dilihat secara privat" />
       )}
       <div className="p-6">
         <div className="flex gap-6 mt-10">

@@ -1,15 +1,15 @@
+import { Banner } from '@/components/banners';
 import { IconBadge } from '@/components/icon-badge';
 import { db } from '@/lib/db';
 import { auth } from '@clerk/nextjs';
-import { LayoutDashboard } from 'lucide-react';
-import { redirect, useRouter } from 'next/navigation';
-import { QuizTitleForm } from './_components/quiz-title-form';
-import { QuizDescriptionForms } from './_components/quiz-description-form';
-import { use } from 'react';
-import { QuizImageForm } from './_components/quiz-image-form';
+import { ArrowLeft, LayoutDashboard } from 'lucide-react';
+import Link from 'next/link';
+import { redirect } from 'next/navigation';
+import { QuizActions } from './_components/quiz-actions';
 import { QuizCategoryForm } from './_components/quiz-category-form';
-import { Button } from '@/components/ui/button';
-import { FinishButton } from './_components/button-exit';
+import { QuizDescriptionForms } from './_components/quiz-description-form';
+import { QuizImageForm } from './_components/quiz-image-form';
+import { QuizTitleForm } from './_components/quiz-title-form';
 
 const CreateIdQuiz = async ({ params }: { params: { quizId: string } }) => {
   // Mengecek apakah user yang mengakses adalah user yang sama
@@ -56,37 +56,56 @@ const CreateIdQuiz = async ({ params }: { params: { quizId: string } }) => {
   // Memunculkan Progress ke UI
   const completionText = `(${completedFields}/${totalFields})`;
 
+  // Mengecek apakah data sudah terisi semua
+  const isComplete = requiredFields.every(Boolean);
+
   return (
-    <div className="p-6">
-      <div className="flex items-center justify-between">
-        <div className="flex flex-col gap-y-2">
-          <h1 className="text-2xl font-medium">Pengaturan Kuis</h1>
-          <span className="text-sm text-slate-700">
-            data yang sudah terisi: {completionText}
-          </span>
-        </div>
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-16">
-        <div>
-          <div className="flex items-center gap-x-2">
-            <IconBadge icon={LayoutDashboard} />
-            <h2 className="text-xl">Umum</h2>
+    <>
+      {!quiz.isPublished && (
+        <Banner label="Kuis ini tidak publik dan hanya bisa dilihat secara privat" />
+      )}
+      <div className="p-6">
+        <Link
+          href={`/teacher/quiz/${quiz.id}/draft`}
+          className="flex items-center text-sm hover:opacity-75 transition mb-6"
+        >
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Kembali ke Kuis
+        </Link>
+        <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-y-2">
+            <h1 className="text-2xl font-medium">Pengaturan Kuis</h1>
+            <span className="text-sm text-slate-700">
+              data yang sudah terisi: {completionText}
+            </span>
           </div>
-          <QuizTitleForm initialData={quiz} quizId={quiz.id} />
-          <QuizDescriptionForms initialData={quiz} quizId={quiz.id} />
-          <QuizImageForm initialData={quiz} quizId={quiz.id} />
-          <QuizCategoryForm
-            initialData={quiz}
-            quizId={quiz.id}
-            options={categories.map((category) => ({
-              label: category.name,
-              value: category.id,
-            }))}
+          <QuizActions
+            disable={isComplete}
+            quizId={params.quizId}
+            isPublished={quiz.isPublished}
           />
-          <FinishButton quizId={quiz.id} />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-16">
+          <div>
+            <div className="flex items-center gap-x-2">
+              <IconBadge icon={LayoutDashboard} />
+              <h2 className="text-xl">Umum</h2>
+            </div>
+            <QuizTitleForm initialData={quiz} quizId={quiz.id} />
+            <QuizDescriptionForms initialData={quiz} quizId={quiz.id} />
+            <QuizImageForm initialData={quiz} quizId={quiz.id} />
+            <QuizCategoryForm
+              initialData={quiz}
+              quizId={quiz.id}
+              options={categories.map((category) => ({
+                label: category.name,
+                value: category.id,
+              }))}
+            />
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
