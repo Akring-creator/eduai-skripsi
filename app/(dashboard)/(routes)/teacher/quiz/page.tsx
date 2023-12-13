@@ -5,7 +5,7 @@ const listofItem = ['item'];
 
 const QuizPage = () => {
   return (
-    <div className="flex items-center gap-x-2 ml-2 mt-2">
+    <div className="p-6">
       <Link href="/teacher/create-quiz">
         <Button type="button" variant="default">
           Kuis Baru
