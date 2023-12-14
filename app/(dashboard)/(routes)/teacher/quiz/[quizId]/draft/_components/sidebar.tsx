@@ -1,6 +1,6 @@
 'use client';
 import { Button } from '@/components/ui/button';
-import { Quiz } from '@prisma/client';
+import { Quiz, Option } from '@prisma/client';
 import {
   ArrowRightToLine,
   HardDriveUpload,
@@ -9,10 +9,24 @@ import {
   Settings,
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { QuizActions } from '../../settings/_components/quiz-actions';
+import ExportToWordHandler from './export-button';
+import { auth } from '@clerk/nextjs';
 
+// Cant use Question Format from prisma
+interface Question {
+  id: string;
+  question: string;
+  imageUrl: string | null;
+  answer: string;
+  explanation: string;
+  options: Option[]; // Tambahkan properti options dengan tipe Option[]
+  quizId: string;
+  position: number;
+  createdAt: Date;
+  updateAt: Date;
+}
 interface SidebarProps {
-  initialData: Quiz;
+  initialData: Quiz & { questions: Question[] };
   quizId: string;
 }
 
@@ -74,14 +88,7 @@ export const Sidebar = ({ initialData, quizId }: SidebarProps) => {
           <Pencil className=" w-4 h-4 mr-2" />
           Buat Soal
         </Button>
-        <Button
-          type="button"
-          onClick={onClickExport}
-          className="hover:opacity-75"
-        >
-          <ArrowRightToLine className="w-4 h-4 mr-2" />
-          Export
-        </Button>
+        <ExportToWordHandler initialData={initialData} />
       </div>
     </>
   );

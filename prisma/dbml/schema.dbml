@@ -94,6 +94,7 @@ Table Option {
   option String [not null]
   imageUrl String
   position Int [not null, default: 0]
+  isKeyAnswer Boolean [not null, default: false]
   questionId String [not null]
   question Question [not null]
 }

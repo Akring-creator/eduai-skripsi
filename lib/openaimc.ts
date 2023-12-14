@@ -40,16 +40,18 @@ export const multipleChoice = async (
         const value = content[key];
         const { question, options, answer, explanation } = value;
 
-        // Membuat objek JavaScript langsung tanpa perlu menggunakan JSON.parse()
-        const questionFormat = {
-          question,
-          options, // Menggunakan string JSON yang sudah dibuat sebelumnya
-          answer,
-          explanation,
-          quizId: quizId,
-        };
+        if (options.includes(answer)) {
+          // Membuat objek JavaScript langsung tanpa perlu menggunakan JSON.parse()
+          const questionFormat = {
+            question,
+            options, // Menggunakan string JSON yang sudah dibuat sebelumnya
+            answer,
+            explanation,
+            quizId: quizId,
+          };
 
-        result.push(questionFormat);
+          result.push(questionFormat);
+        }
       }
     }
     return result;

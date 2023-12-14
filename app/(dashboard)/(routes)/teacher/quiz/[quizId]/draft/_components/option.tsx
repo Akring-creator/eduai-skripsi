@@ -1,11 +1,12 @@
 import { cn } from '@/lib/utils';
-import { Key } from 'lucide-react';
+import { Badge, BadgeCheck, BadgeCheckIcon, Key, KeyRound } from 'lucide-react';
 import axios from 'axios';
 import { useSearchParams } from 'next/navigation';
 import { ElementRef, useRef, useState } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
 
 interface OptionFormProps {
+  isKeyAnswer: Boolean;
   quizId: string;
   questionId: string;
   optionValue: string;
@@ -16,6 +17,7 @@ const OptionForm = ({
   questionId,
   optionValue,
   optionId,
+  isKeyAnswer,
 }: OptionFormProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const inputRef = useRef<ElementRef<'textarea'>>(null);
@@ -75,7 +77,14 @@ const OptionForm = ({
           )}
         </div>
       </div>
-      <Key className="ml-2 h-4 w-4 text-gray-800" />
+      <div
+        className={cn(
+          'ml-2 h-6 w-6 text-slate-500 hover:cursor-pointer',
+          isKeyAnswer && 'text-sky-700'
+        )}
+      >
+        {isKeyAnswer ? <BadgeCheckIcon /> : <Badge />}
+      </div>
     </div>
   );
 };

@@ -58,12 +58,12 @@ export const QuizCard = ({ quizId }: QuizCardProps) => {
         `/api/quiz/${quizId}/generator`,
         values
       );
+      console.log(questions);
       if (questions.data.length === 0) {
         toast.error('Coba lagi');
       } else {
-        console.log(questions.data);
-        const updateToDatabase = await axios.post(
-          `/api/quiz/${quizId}/questions`,
+        await axios.post(
+          `/api/quiz/${quizId}/questions/multiple-choice`,
           questions.data
         );
         toast.success('Soal berhasil dibuat');

@@ -137,6 +137,7 @@ const QuestionCard = ({ initialData, quizId }: QuestionCardProps) => {
       {initialData.options.map((option, index) => (
         <div key={index}>
           <OptionForm
+            isKeyAnswer={option.isKeyAnswer}
             optionId={option.id}
             optionValue={option.option}
             questionId={questionId}

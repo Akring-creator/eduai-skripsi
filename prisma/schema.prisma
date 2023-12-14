@@ -126,6 +126,7 @@ model Option {
   option   String  @db.Text
   imageUrl String? @db.Text
   position Int     @default(0)
+  isKeyAnswer Boolean @default(false)
 
   questionId String
   question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
