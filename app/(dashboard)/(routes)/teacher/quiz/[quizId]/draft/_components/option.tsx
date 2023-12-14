@@ -1,5 +1,7 @@
+import { cn } from '@/lib/utils';
 import { Option } from '@prisma/client';
 import axios from 'axios';
+import { useSearchParams } from 'next/navigation';
 import { ElementRef, useRef, useState } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
 
@@ -18,6 +20,9 @@ const OptionForm = ({
   const [isEditing, setIsEditing] = useState(false);
   const inputRef = useRef<ElementRef<'textarea'>>(null);
   const [value, setValue] = useState(optionValue);
+  const searchParams = useSearchParams();
+  const currentOptionId = searchParams.get('optionId');
+  console.log(currentOptionId);
 
   const enableInput = async () => {
     setIsEditing(true);
@@ -47,14 +52,19 @@ const OptionForm = ({
     // Hasil console.log(value)
   };
   return (
-    <div className="p-3 ml-2 shadow-md font-medium outline-2 w-full">
+    <div
+      className={cn(
+        'mt-2 mr-2 p-3 ml-2 font-medium border border-slate-200 w-90 transition duration-300 ease-in-out transform hover:scale-105',
+        isEditing ? 'border-sky-700' : 'hover:border-gray-400'
+      )}
+    >
       {!isEditing ? (
-        <div onClick={enableInput} className="">
-          <p>{value}</p>
+        <div onClick={enableInput} className="cursor-pointer">
+          <p className="text-gray-700">{value}</p>
         </div>
       ) : (
         <TextareaAutosize
-          className="bg-transparent outline-none break-words w-full"
+          className="bg-transparent outline-none break-words w-full text-gray-800"
           ref={inputRef}
           value={value}
           onBlur={disableInput}
