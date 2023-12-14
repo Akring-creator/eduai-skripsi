@@ -1,0 +1,10 @@
+{
+  "functions": {
+    "api/quiz/[quizId]/generator/route-background.ts": {
+      "maxDuration": 300
+    },
+    "lib/openaimc-background.ts": {
+      "maxDuration": 300
+    }
+  }
+}
