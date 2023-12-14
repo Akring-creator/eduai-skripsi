@@ -73,7 +73,9 @@ class DocumentCreator {
                   question.options.map((option: any, index: number) => {
                     const utfValue = 65 + index;
                     const char = String.fromCharCode(utfValue);
-                    keyAnswer = char;
+                    if (option.isKeyAnswer) {
+                      keyAnswer = char;
+                    }
                     arr.push(this.createOptions(option.option, char));
                   });
                   const keyAnswerFormatted = `Kunci Jawaban: ${keyAnswer}.`;
