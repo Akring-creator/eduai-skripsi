@@ -4,6 +4,7 @@ import { ClerkProvider } from '@clerk/nextjs';
 import { ToastProvider } from '@/components/providers/toaster-providers';
 import { Metadata } from 'next';
 import { ConfettiProvider } from '@/components/providers/confetti-provider';
+import MaintenancePage from './maintenance/page';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -18,6 +19,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  // if (process.env.NEXT_PUBLIC_MAINTENANCE_MODE === 'false') {
   return (
     <ClerkProvider>
       <html lang="en">
@@ -29,4 +31,7 @@ export default function RootLayout({
       </html>
     </ClerkProvider>
   );
+  // } else {
+  //   return <MaintenancePage />;
+  // }
 }
