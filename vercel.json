@@ -2,9 +2,6 @@
   "functions": {
     "app/api/**/*": {
       "maxDuration": 300
-    },
-    "lib/**/*": {
-      "maxDuration": 300
     }
   }
 }
