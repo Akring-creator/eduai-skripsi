@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils';
-import { Option } from '@prisma/client';
+import { Key } from 'lucide-react';
 import axios from 'axios';
 import { useSearchParams } from 'next/navigation';
 import { ElementRef, useRef, useState } from 'react';
@@ -52,25 +52,30 @@ const OptionForm = ({
     // Hasil console.log(value)
   };
   return (
-    <div
-      className={cn(
-        'mt-2 mr-2 p-3 ml-2 font-medium border border-slate-200 w-90 transition duration-300 ease-in-out transform hover:scale-105',
-        isEditing ? 'border-sky-700' : 'hover:border-gray-400'
-      )}
-    >
-      {!isEditing ? (
-        <div onClick={enableInput} className="cursor-pointer">
-          <p className="text-gray-700">{value}</p>
+    <div className="flex items-center justify-between w-90 ">
+      <div
+        className={cn(
+          'mt-2 mr-4 p-3 ml-2 font-medium border border-slate-200 w-full transition duration-300 ease-in-out transform hover:scale-105',
+          isEditing ? 'border-sky-700' : 'hover:border-gray-400'
+        )}
+      >
+        <div>
+          {!isEditing ? (
+            <div onClick={enableInput} className="cursor-pointer">
+              <p className="text-gray-700">{value}</p>
+            </div>
+          ) : (
+            <TextareaAutosize
+              className="bg-transparent outline-none break-words w-full text-gray-800"
+              ref={inputRef}
+              value={value}
+              onBlur={disableInput}
+              onChange={(e) => onInput(e.target.value)}
+            />
+          )}
         </div>
-      ) : (
-        <TextareaAutosize
-          className="bg-transparent outline-none break-words w-full text-gray-800"
-          ref={inputRef}
-          value={value}
-          onBlur={disableInput}
-          onChange={(e) => onInput(e.target.value)}
-        />
-      )}
+      </div>
+      <Key className="ml-2 h-4 w-4 text-gray-800" />
     </div>
   );
 };
