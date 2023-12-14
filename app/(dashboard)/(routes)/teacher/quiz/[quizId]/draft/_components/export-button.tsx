@@ -20,13 +20,9 @@ const {
   UnderlineType,
 } = docx;
 
-enum QuestionType {
-  multipleChoice,
-  shortAnswer,
-}
 interface Question {
   id: string;
-  questionType: QuestionType;
+  questionType: string;
   question: string;
   imageUrl: string | null;
   answer: string;
@@ -67,7 +63,7 @@ class DocumentCreator {
               .map((question: Question, index: number) => {
                 const arr = [];
                 const questionNumber = index + 1;
-                if (question.questionType.toString() == 'multipleChoice') {
+                if (question.questionType === 'multipleChoice') {
                   arr.push(
                     this.createQuestion(
                       `${questionNumber}: ${question.question}`
@@ -86,7 +82,7 @@ class DocumentCreator {
                     this.createParagraph(keyAnswerFormatted),
                     this.createParagraph(explanation)
                   );
-                } else if (question.questionType.toString() == 'shortAnswer') {
+                } else if (question.questionType === 'shortAnswer') {
                   arr.push(
                     this.createQuestion(
                       `${questionNumber}. ${question.question}?`
