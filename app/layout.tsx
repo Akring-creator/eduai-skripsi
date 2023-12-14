@@ -8,7 +8,7 @@ import { ConfettiProvider } from '@/components/providers/confetti-provider';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'EduAI',
+  title: 'EdTek',
   description: 'Education with Technology',
   icons: './favicon.ico',
 };
