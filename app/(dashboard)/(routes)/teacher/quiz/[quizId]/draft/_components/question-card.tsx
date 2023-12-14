@@ -26,13 +26,14 @@ const QuestionCard = ({ initialData, quizId }: QuestionCardProps) => {
   const questionId = initialData.id;
   const [editing, setIsEditing] = useState({
     question: false,
-    answer: false,
+    explanation: false,
   });
 
-  const inputRef = useRef<ElementRef<'textarea'>>(null);
+  const inputQuestionRef = useRef<ElementRef<'textarea'>>(null);
+  const inputExplanationRef = useRef<ElementRef<'textarea'>>(null);
   const [value, setValue] = useState({
     question: initialData.question,
-    answer: initialData.answer,
+    explanation: initialData.explanation,
   });
   const enableQuestionInput = async () => {
     setIsEditing({
@@ -48,11 +49,27 @@ const QuestionCard = ({ initialData, quizId }: QuestionCardProps) => {
         ...value,
         question: response.data.question,
       });
-      inputRef.current?.focus();
+      inputQuestionRef.current?.focus();
     }, 0);
   };
+  const enableExplanationInput = async () => {
+    setIsEditing({
+      ...editing,
+      explanation: true,
+    });
+    const response = await axios.get(
+      `/api/quiz/${quizId}/questions/${questionId}`
+    );
 
-  const disableInput = async () => {
+    setTimeout(() => {
+      setValue({
+        ...value,
+        explanation: response.data.explanation,
+      });
+      inputExplanationRef.current?.focus();
+    }, 0);
+  };
+  const disableQuestionInput = async () => {
     setIsEditing({
       ...editing,
       question: false,
@@ -65,10 +82,32 @@ const QuestionCard = ({ initialData, quizId }: QuestionCardProps) => {
     );
   };
 
-  const onInput = async (newquestion: string) => {
+  const disableExplanationInput = async () => {
+    setIsEditing({
+      ...editing,
+      explanation: false,
+    });
+    const update = await axios.patch(
+      `/api/quiz/${quizId}/questions/${questionId}`,
+      {
+        explanation: value.explanation,
+      }
+    );
+  };
+
+  const onQuestionInput = async (newQuestion: string) => {
     setValue({
       ...value,
-      question: newquestion,
+      question: newQuestion,
+    });
+    // const update = await axios.patch(`/api/question/${initialData.id}`, { question: newquestion })
+    // Hasil console.log(value)
+  };
+
+  const onExplanationInput = async (newExplanation: string) => {
+    setValue({
+      ...value,
+      explanation: newExplanation,
     });
     // const update = await axios.patch(`/api/question/${initialData.id}`, { question: newquestion })
     // Hasil console.log(value)
@@ -87,10 +126,10 @@ const QuestionCard = ({ initialData, quizId }: QuestionCardProps) => {
         ) : (
           <TextareaAutosize
             className="bg-transparent outline-none font-bold break-words w-full"
-            ref={inputRef}
+            ref={inputQuestionRef}
             value={value.question}
-            onBlur={disableInput}
-            onChange={(e) => onInput(e.target.value)}
+            onBlur={disableQuestionInput}
+            onChange={(e) => onQuestionInput(e.target.value)}
           />
         )}
       </div>
@@ -105,6 +144,25 @@ const QuestionCard = ({ initialData, quizId }: QuestionCardProps) => {
           />
         </div>
       ))}
+      <div className="p-2 mt-2 font-medium">
+        <p className="font-bold">Pembahasan:</p>
+
+        <div className="mb-4 w-full">
+          {!editing.explanation ? (
+            <div onClick={enableExplanationInput} className="outline-none">
+              {value.explanation}
+            </div>
+          ) : (
+            <TextareaAutosize
+              className="bg-transparent outline-none break-words w-full"
+              ref={inputExplanationRef}
+              value={value.explanation}
+              onBlur={disableExplanationInput}
+              onChange={(e) => onExplanationInput(e.target.value)}
+            />
+          )}
+        </div>
+      </div>
     </div>
   );
 };
