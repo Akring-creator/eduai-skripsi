@@ -77,6 +77,7 @@ Table Attachment {
 Table Question {
   id String [pk]
   question String [not null]
+  questionType QuestionType [not null, default: 'multipleChoice']
   imageUrl String
   answer String [not null]
   isPublished Boolean [not null, default: true]
@@ -143,7 +144,8 @@ Table StripeCustomer {
 }
 
 Enum QuestionType {
-  multiple_choice
+  multipleChoice
+  shortAnswer
 }
 
 Ref: Course.categoryId > Category.id

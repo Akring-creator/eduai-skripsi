@@ -125,6 +125,8 @@ class DocumentCreator {
 }
 
 const ExportToWordHandler = ({ initialData }: ExportToWordHandlerProps) => {
+  console.log(initialData.questions[1].options);
+
   const questions = [
     {
       type: 'pilihan ganda',
