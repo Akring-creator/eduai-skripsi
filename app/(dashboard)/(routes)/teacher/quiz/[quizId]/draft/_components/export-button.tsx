@@ -20,8 +20,13 @@ const {
   UnderlineType,
 } = docx;
 
+enum QuestionType {
+  multipleChoice,
+  shortAnswer,
+}
 interface Question {
   id: string;
+  questionType: QuestionType;
   question: string;
   imageUrl: string | null;
   answer: string;
@@ -37,32 +42,51 @@ interface ExportToWordHandlerProps {
   initialData: Quiz & { questions: Question[] };
 }
 class DocumentCreator {
-  create(questions: any) {
+  create(initialData: Quiz & { questions: Question[] }) {
     const document = new Document({
+      title: initialData.title,
+      description: initialData.description,
+      style: {
+        default: {
+          document: {
+            run: {
+              size: '12pt',
+              font: 'Times New Roman',
+            },
+            paragraph: {
+              alignment: AlignmentType.JUSTIFIED,
+            },
+          },
+        },
+      },
       sections: [
         {
           children: [
-            this.createHeading('Kuis Pilihan Ganda'),
-            ...questions
-              .map((question: any, index: number) => {
+            this.createQuizTitle(initialData.title),
+            ...initialData.questions
+              .map((question: Question, index: number) => {
                 const arr = [];
                 const questionNumber = index + 1;
-                if (question.type === 'pilihan ganda') {
+                if (question.questionType.toString() == 'multipleChoice') {
                   arr.push(
                     this.createQuestion(
                       `${questionNumber}: ${question.question}`
                     )
                   );
-                  question.options.map((option: string, index: number) => {
-                    arr.push(this.createOptions(option, index));
+                  let keyAnswer = '';
+                  question.options.map((option: any, index: number) => {
+                    const utfValue = 65 + index;
+                    const char = String.fromCharCode(utfValue);
+                    keyAnswer = char;
+                    arr.push(this.createOptions(option.option, char));
                   });
-                  const answer = `Kunci Jawaban: ${question.answer}`;
+                  const keyAnswerFormatted = `Kunci Jawaban: ${keyAnswer}.`;
                   const explanation = `Penjelasan: ${question.explanation}`;
                   arr.push(
-                    this.createParagraph(answer),
+                    this.createParagraph(keyAnswerFormatted),
                     this.createParagraph(explanation)
                   );
-                } else if (question.type === 'isian singkat') {
+                } else if (question.questionType.toString() == 'shortAnswer') {
                   arr.push(
                     this.createQuestion(
                       `${questionNumber}. ${question.question}?`
@@ -88,11 +112,16 @@ class DocumentCreator {
     return document;
   }
 
-  createHeading(text: any) {
+  createQuizTitle(text: string) {
     return new Paragraph({
-      text: text,
-      heading: HeadingLevel.HEADING_1,
-      thematicBreak: true,
+      children: [
+        new TextRun({
+          text: text,
+          size: 24,
+          bold: true,
+        }),
+      ],
+      alignment: AlignmentType.CENTER,
     });
   }
 
@@ -103,20 +132,20 @@ class DocumentCreator {
   }
   createParagraph(text: any) {
     return new Paragraph({
-      children: [new TextRun(text)],
+      children: [
+        new TextRun({
+          text: text,
+        }),
+      ],
       spacing: {
         after: 100,
       },
     });
   }
-  createOptions(text: string, index: number) {
-    const utfValue = 65 + index;
-    const char = String.fromCharCode(utfValue);
+  createOptions(text: string, char: string) {
     const formatted = `${char}. ${text}`;
     return new Paragraph({
-      children: [
-        new TextRun({ children: [new Tab(), new TextRun(formatted)] }),
-      ],
+      children: [new TextRun({ text: formatted })],
       spacing: {
         after: 100,
       },
@@ -125,32 +154,8 @@ class DocumentCreator {
 }
 
 const ExportToWordHandler = ({ initialData }: ExportToWordHandlerProps) => {
-  console.log(initialData.questions[1].options);
-
-  const questions = [
-    {
-      type: 'pilihan ganda',
-      question: 'Berapa Hasil 1 + 1',
-      options: ['1', '2', '3', '4', '5'],
-      answer: '2',
-      explanation: '1 + 1 sama dengan 2',
-    },
-    {
-      type: 'pilihan ganda',
-      question: 'Berapa Hasil 40 - 3',
-      options: ['36', '37', '38', '34', '33'],
-      answer: '37',
-      explanation: '40 - 3 sama dengan 37',
-    },
-    {
-      type: 'isian singkat',
-      question: 'Berapa Hasil 186 + 13',
-      answer: '199',
-      explanation: '186 + 13 sama dengan 199',
-    },
-  ];
   const documentCreator = new DocumentCreator();
-  const doc = documentCreator.create(questions);
+  const doc = documentCreator.create(initialData);
   const makeDocx = () => {
     Packer.toBuffer(doc).then((buffer: any) => {
       const blob = new Blob([buffer], {
@@ -158,7 +163,7 @@ const ExportToWordHandler = ({ initialData }: ExportToWordHandlerProps) => {
       });
       const link = document.createElement('a');
       link.href = window.URL.createObjectURL(blob);
-      link.download = 'My_Document.docx';
+      link.download = `${initialData.title}.docx`;
       link.click();
     });
   };

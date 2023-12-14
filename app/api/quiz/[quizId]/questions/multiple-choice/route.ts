@@ -40,6 +40,7 @@ export const POST = async (
 
       const newQuestion = await db.question.create({
         data: {
+          questionType: 'multipleChoice',
           question: data.question,
           answer: data.answer,
           explanation: data.explanation,

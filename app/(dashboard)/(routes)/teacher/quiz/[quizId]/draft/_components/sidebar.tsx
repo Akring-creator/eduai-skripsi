@@ -13,9 +13,14 @@ import ExportToWordHandler from './export-button';
 import { auth } from '@clerk/nextjs';
 
 // Cant use Question Format from prisma
+enum QuestionType {
+  multipleChoice,
+  shortAnswer,
+}
 interface Question {
   id: string;
   question: string;
+  questionType: QuestionType;
   imageUrl: string | null;
   answer: string;
   explanation: string;
