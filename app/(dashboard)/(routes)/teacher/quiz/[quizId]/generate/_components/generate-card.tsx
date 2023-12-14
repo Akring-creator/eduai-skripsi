@@ -168,8 +168,7 @@ export const QuizCard = ({ quizId }: QuizCardProps) => {
                         Soal seperti apa yang mau kamu buat?
                       </FormDescription>
                       <FormControl>
-                        <Input
-                          type="text"
+                        <Textarea
                           placeholder="Cth: Semua soal harus berupa hitungan."
                           disabled={isSubmitting}
                           {...field}
