@@ -150,40 +150,46 @@ const QuestionCard = ({ initialData, quizId }: QuestionCardProps) => {
           {showAllQuestionSection ? <ChevronUp /> : <ChevronDown />}
         </div>
       </div>
-      {showAllQuestionSection && (
-        <div>
-          {initialData.options.map((option, index) => (
-            <div key={index}>
-              <OptionForm
-                isKeyAnswer={option.isKeyAnswer}
-                optionId={option.id}
-                optionValue={option.option}
-                questionId={questionId}
-                quizId={quizId}
-              />
-            </div>
-          ))}
-          <div className="p-2 mt-2 font-medium">
-            <p className="font-bold">Pembahasan:</p>
+      {/* {showAllQuestionSection && ( */}
+      <div
+        className={`transition-all ${
+          showAllQuestionSection
+            ? 'max-h-full opacity-100'
+            : 'max-h-0 opacity-0 overflow-hidden'
+        }`}
+      >
+        {initialData.options.map((option, index) => (
+          <div key={index}>
+            <OptionForm
+              isKeyAnswer={option.isKeyAnswer}
+              optionId={option.id}
+              optionValue={option.option}
+              questionId={questionId}
+              quizId={quizId}
+            />
+          </div>
+        ))}
+        <div className="p-2 mt-2 font-medium">
+          <p className="font-bold">Pembahasan:</p>
 
-            <div className="mb-4 w-full">
-              {!editing.explanation ? (
-                <div onClick={enableExplanationInput} className="outline-none">
-                  {value.explanation}
-                </div>
-              ) : (
-                <TextareaAutosize
-                  className="bg-transparent outline-none break-words w-full"
-                  ref={inputExplanationRef}
-                  value={value.explanation}
-                  onBlur={disableExplanationInput}
-                  onChange={(e) => onExplanationInput(e.target.value)}
-                />
-              )}
-            </div>
+          <div className="mb-4 w-full">
+            {!editing.explanation ? (
+              <div onClick={enableExplanationInput} className="outline-none">
+                {value.explanation}
+              </div>
+            ) : (
+              <TextareaAutosize
+                className="bg-transparent outline-none break-words w-full"
+                ref={inputExplanationRef}
+                value={value.explanation}
+                onBlur={disableExplanationInput}
+                onChange={(e) => onExplanationInput(e.target.value)}
+              />
+            )}
           </div>
         </div>
-      )}
+      </div>
+      {/* )} */}
       {/* Bagian 2 */}
     </div>
   );
