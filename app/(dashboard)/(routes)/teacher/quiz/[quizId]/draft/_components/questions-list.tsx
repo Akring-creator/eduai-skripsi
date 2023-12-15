@@ -7,7 +7,14 @@ import {
   Draggable,
   DropResult,
 } from '@hello-pangea/dnd';
-import { Grip, Pencil, Trash } from 'lucide-react';
+import {
+  ChevronDown,
+  ChevronDownCircle,
+  ChevronUp,
+  Grip,
+  Pencil,
+  Trash,
+} from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 import { Option } from '@prisma/client';
@@ -75,10 +82,6 @@ export const QuestionsList = ({
     onReorder(bulkUpdateData);
   };
 
-  const toggleEdit = (questionId: string) => {
-    return console.log(questionId);
-  };
-
   if (!isMounted) {
     return null;
   }
@@ -111,7 +114,10 @@ export const QuestionsList = ({
                       </div>
                       <div className="space-y-2 p-4 w-full">
                         <div className="font-medium flex items-center justify-between">
-                          Pertanyaan {index + 1}
+                          <div className="flex gap-x-2">
+                            Pertanyaan {index + 1}
+                          </div>
+
                           <QuestionAction
                             quizId={quizId}
                             questionId={question.id}

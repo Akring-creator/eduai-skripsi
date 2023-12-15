@@ -1,9 +1,10 @@
 import axios from 'axios';
 import TextareaAutosize from 'react-textarea-autosize';
-import { Pencil } from 'lucide-react';
+import { ChevronDown, ChevronUp, Pencil } from 'lucide-react';
 import { Option } from '@prisma/client';
 import { ElementRef, useRef, useState } from 'react';
 import OptionForm from './option';
+import { cn } from '@/lib/utils';
 
 interface Question {
   id: string;
@@ -28,6 +29,7 @@ const QuestionCard = ({ initialData, quizId }: QuestionCardProps) => {
     question: false,
     explanation: false,
   });
+  const [showAllQuestionSection, setShowAllQuestionSection] = useState(false);
 
   const inputQuestionRef = useRef<ElementRef<'textarea'>>(null);
   const inputExplanationRef = useRef<ElementRef<'textarea'>>(null);
@@ -94,6 +96,9 @@ const QuestionCard = ({ initialData, quizId }: QuestionCardProps) => {
       }
     );
   };
+  const toggleShowAllQuestionSection = () => {
+    setShowAllQuestionSection(!showAllQuestionSection);
+  };
 
   const onQuestionInput = async (newQuestion: string) => {
     setValue({
@@ -115,55 +120,71 @@ const QuestionCard = ({ initialData, quizId }: QuestionCardProps) => {
 
   return (
     <div className="p-2">
-      <div className="text-xl mb-4 w-full">
-        {!editing.question ? (
-          <div
-            onClick={enableQuestionInput}
-            className="outline-none font-bold "
-          >
-            {value.question}
-          </div>
-        ) : (
-          <TextareaAutosize
-            className="bg-transparent outline-none font-bold break-words w-full"
-            ref={inputQuestionRef}
-            value={value.question}
-            onBlur={disableQuestionInput}
-            onChange={(e) => onQuestionInput(e.target.value)}
-          />
-        )}
-      </div>
-
-      {initialData.options.map((option, index) => (
-        <div key={index}>
-          <OptionForm
-            isKeyAnswer={option.isKeyAnswer}
-            optionId={option.id}
-            optionValue={option.option}
-            questionId={questionId}
-            quizId={quizId}
-          />
-        </div>
-      ))}
-      <div className="p-2 mt-2 font-medium">
-        <p className="font-bold">Pembahasan:</p>
-
-        <div className="mb-4 w-full">
-          {!editing.explanation ? (
-            <div onClick={enableExplanationInput} className="outline-none">
-              {value.explanation}
+      <div className="flex items-center justify-between">
+        <div className="text-xl mb-4 w-90">
+          {/* Bagian 1 */}
+          {!editing.question ? (
+            <div
+              onClick={enableQuestionInput}
+              className="outline-none font-bold "
+            >
+              {value.question}
             </div>
           ) : (
             <TextareaAutosize
-              className="bg-transparent outline-none break-words w-full"
-              ref={inputExplanationRef}
-              value={value.explanation}
-              onBlur={disableExplanationInput}
-              onChange={(e) => onExplanationInput(e.target.value)}
+              className="bg-transparent outline-none font-bold break-words w-full"
+              ref={inputQuestionRef}
+              value={value.question}
+              onBlur={disableQuestionInput}
+              onChange={(e) => onQuestionInput(e.target.value)}
             />
           )}
         </div>
+        <div
+          onClick={toggleShowAllQuestionSection}
+          className={cn(
+            'text-slate-500 hover:opacity-70 cursor-pointer',
+            showAllQuestionSection && 'text-sky-700'
+          )}
+        >
+          {showAllQuestionSection ? <ChevronUp /> : <ChevronDown />}
+        </div>
       </div>
+      {showAllQuestionSection && (
+        <div>
+          {initialData.options.map((option, index) => (
+            <div key={index}>
+              <OptionForm
+                isKeyAnswer={option.isKeyAnswer}
+                optionId={option.id}
+                optionValue={option.option}
+                questionId={questionId}
+                quizId={quizId}
+              />
+            </div>
+          ))}
+          <div className="p-2 mt-2 font-medium">
+            <p className="font-bold">Pembahasan:</p>
+
+            <div className="mb-4 w-full">
+              {!editing.explanation ? (
+                <div onClick={enableExplanationInput} className="outline-none">
+                  {value.explanation}
+                </div>
+              ) : (
+                <TextareaAutosize
+                  className="bg-transparent outline-none break-words w-full"
+                  ref={inputExplanationRef}
+                  value={value.explanation}
+                  onBlur={disableExplanationInput}
+                  onChange={(e) => onExplanationInput(e.target.value)}
+                />
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Bagian 2 */}
     </div>
   );
 };
