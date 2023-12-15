@@ -22,9 +22,7 @@ const OptionForm = ({
   const [isEditing, setIsEditing] = useState(false);
   const inputRef = useRef<ElementRef<'textarea'>>(null);
   const [value, setValue] = useState(optionValue);
-  const searchParams = useSearchParams();
-  const currentOptionId = searchParams.get('optionId');
-  console.log(currentOptionId);
+  const [keyAnswer, setKeyAnswer] = useState(isKeyAnswer);
 
   const enableInput = async () => {
     setIsEditing(true);
@@ -40,8 +38,7 @@ const OptionForm = ({
   };
   const disableInput = async () => {
     setIsEditing(false);
-    console.log(value);
-    const update = await axios.patch(
+    await axios.patch(
       `/api/quiz/${quizId}/questions/${questionId}/option/${optionId}`,
       {
         option: value,
@@ -53,6 +50,20 @@ const OptionForm = ({
 
     // Hasil console.log(value)
   };
+
+  const onClickKeyAnswer = async () => {
+    const updatedValue = !keyAnswer; // Mengubah nilai isKeyAnswer menjadi kebalikannya
+
+    await axios.patch(
+      `/api/quiz/${quizId}/questions/${questionId}/option/${optionId}`,
+      {
+        isKeyAnswer: updatedValue,
+      }
+    );
+
+    setKeyAnswer(updatedValue);
+  };
+
   return (
     <div className="flex items-center justify-between w-90 ">
       <div
@@ -80,10 +91,11 @@ const OptionForm = ({
       <div
         className={cn(
           'ml-2 h-6 w-6 text-slate-500 hover:cursor-pointer',
-          isKeyAnswer && 'text-sky-700'
+          keyAnswer && 'text-sky-700'
         )}
+        onClick={onClickKeyAnswer}
       >
-        {isKeyAnswer ? <BadgeCheckIcon /> : <Badge />}
+        {keyAnswer ? <BadgeCheckIcon /> : <Badge />}
       </div>
     </div>
   );
