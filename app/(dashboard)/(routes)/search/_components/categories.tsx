@@ -17,7 +17,7 @@ import {
 } from 'react-icons/fc';
 
 import { IconType } from 'react-icons';
-import CategoryItem from './category-item';
+import { CategoryItem } from './category-item';
 interface CategoriesProps {
   items: Category[];
 }
@@ -37,7 +37,14 @@ const iconMap: Record<Category['name'], IconType> = {
 };
 const Categories = ({ items }: CategoriesProps) => {
   return (
-    <div className="flex items-center gap-x-2 overflow-x-auto pb-2">
+    <div
+      className="flex items-center gap-x-2 overflow-x-auto pb-2 scrollbar-h-2
+    scrollbar-thumb-rounded-fullscrollbar-track-rounded-full
+    scrollbar
+    scrollbar-thumb-slate-500
+    scrollbar-track-slate-100 
+    hover:scrollbar-thumb-sky-700 "
+    >
       {items.map((item) => (
         <CategoryItem
           key={item.id}
