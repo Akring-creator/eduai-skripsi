@@ -21,7 +21,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 import { useRouter } from 'next/navigation';
-import ExportToWordHandler from './export-button';
+import ExportToWordHandler from '../../export/_components/export-button';
 import { auth } from '@clerk/nextjs';
 import Link from 'next/link';
 import { useState } from 'react';
