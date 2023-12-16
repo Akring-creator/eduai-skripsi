@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation';
 import { db } from '@/lib/db';
 import { IconBadge } from '@/components/icon-badge';
 import { LibrarySquare } from 'lucide-react';
-import Sidebar from './_components/sidebar';
+import { Metadata } from './_components/metadata';
 import { QuestionForm } from './_components/question-form';
 import { Banner } from '@/components/banners';
 
@@ -42,12 +42,10 @@ const QuizDraft = async ({ params }: { params: { quizId: string } }) => {
         <Banner label="Kuis ini tidak publik dan hanya bisa dilihat secara privat" />
       )}
       <div className="p-6">
-        <div className="flex gap-6 mt-10">
-          <div className="w-3/4 pr-4">
+        <div className="flex gap-6 mt-2">
+          <div className="w-full pr-4">
+            <Metadata initialData={quiz} />
             <QuestionForm initialData={quiz} quizId={quiz.id} />
-          </div>
-          <div className="w-1/4 pl-4">
-            <Sidebar initialData={quiz} quizId={quiz.id} />
           </div>
         </div>
       </div>

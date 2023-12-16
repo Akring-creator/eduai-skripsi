@@ -1,7 +1,6 @@
 import { cn } from '@/lib/utils';
 import { Badge, BadgeCheck, BadgeCheckIcon, Key, KeyRound } from 'lucide-react';
 import axios from 'axios';
-import { useSearchParams } from 'next/navigation';
 import { ElementRef, useRef, useState } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
 
