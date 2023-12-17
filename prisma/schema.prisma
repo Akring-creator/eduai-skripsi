@@ -102,6 +102,7 @@ model Attachment {
 enum QuestionType {
   multipleChoice
   shortAnswer
+  longAnswer
 }
 
 model Question {

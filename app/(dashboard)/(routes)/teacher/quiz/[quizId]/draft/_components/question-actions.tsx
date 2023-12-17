@@ -80,10 +80,11 @@ const QuestionAction = ({
   const onChangeType = async (value: string) => {
     try {
       setLoadingUpdateType(true);
-      setQuestionType(value);
+
       await axios.patch(`/api/quiz/${quizId}/questions/${questionId}`, {
-        questionType: questionType,
+        questionType: value,
       });
+      setQuestionType(value);
     } catch (error) {
       toast.error('Terdapat Kendala');
       router.refresh();
