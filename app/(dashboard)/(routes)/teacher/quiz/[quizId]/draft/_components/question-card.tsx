@@ -5,6 +5,7 @@ import { Option } from '@prisma/client';
 import { ElementRef, useRef, useState } from 'react';
 import OptionForm from './option';
 import { cn } from '@/lib/utils';
+import { Textarea } from '@/components/ui/textarea';
 
 interface Question {
   id: string;
@@ -120,9 +121,8 @@ const QuestionCard = ({ initialData, quizId }: QuestionCardProps) => {
 
   return (
     <div className="p-2">
-      <div className="flex items-center justify-between">
-        <div className="text-xl mb-4 w-90">
-          {/* Bagian 1 */}
+      <div className="flex items-center justify-between w-90">
+        <div className="text-xl mb-4 w-full">
           {!editing.question ? (
             <div
               onClick={enableQuestionInput}
@@ -132,7 +132,7 @@ const QuestionCard = ({ initialData, quizId }: QuestionCardProps) => {
             </div>
           ) : (
             <TextareaAutosize
-              className="bg-transparent outline-none font-bold break-words w-full"
+              className="w-full bg-transparent outline-none font-bold break-words "
               ref={inputQuestionRef}
               value={value.question}
               onBlur={disableQuestionInput}
@@ -143,14 +143,13 @@ const QuestionCard = ({ initialData, quizId }: QuestionCardProps) => {
         <div
           onClick={toggleShowAllQuestionSection}
           className={cn(
-            'text-slate-500 hover:opacity-70 cursor-pointer',
+            'w-6 text-slate-500 hover:opacity-70 cursor-pointer',
             showAllQuestionSection && 'text-sky-700'
           )}
         >
           {showAllQuestionSection ? <ChevronUp /> : <ChevronDown />}
         </div>
       </div>
-      {/* {showAllQuestionSection && ( */}
       <div
         className={`transition-all ${
           showAllQuestionSection

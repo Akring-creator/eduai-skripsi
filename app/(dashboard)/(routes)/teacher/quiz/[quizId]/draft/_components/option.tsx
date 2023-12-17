@@ -25,14 +25,14 @@ const OptionForm = ({
 
   const enableInput = async () => {
     setIsEditing(true);
-    const response = await axios.get(
-      `/api/quiz/${quizId}/questions/${questionId}/option/${optionId}`
-    );
 
-    setTimeout(() => {
-      // console.log(response.data.option);
-      setValue(response.data.option);
+    setTimeout(async () => {
       inputRef.current?.focus();
+      // console.log(response.data.option);
+      const response = await axios.get(
+        `/api/quiz/${quizId}/questions/${questionId}/option/${optionId}`
+      );
+      setValue(response.data.option);
     }, 0);
   };
   const disableInput = async () => {

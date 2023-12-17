@@ -28,6 +28,7 @@ interface Question {
   question: string;
   imageUrl: string | null;
   answer: string;
+  questionType: string;
   explanation: string;
   options: Option[]; // Tambahkan properti options dengan tipe Option[]
   quizId: string;
@@ -121,6 +122,7 @@ export const QuestionsList = ({
                           <QuestionAction
                             quizId={quizId}
                             questionId={question.id}
+                            initialData={question}
                           />
                         </div>
                         <QuestionCard initialData={question} quizId={quizId} />

@@ -3,20 +3,95 @@
 import { ConfirmModal } from '@/components/modals/confirm-modal';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+  AlertDialogPortal,
+} from '@/components/ui/alert-dialog'; // Pastikan untuk mengimpor komponen-komponen dari pustaka atau framework dialog yang kamu gunakan
+
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuTrigger,
+  DropdownMenuPortal,
+  DropdownMenuItem,
+  DropdownMenuSubTrigger,
+  DropdownMenuSubContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+} from '@/components/ui/dropdown-menu';
 import axios from 'axios';
-import { Trash } from 'lucide-react';
+import {
+  ArrowUpDown,
+  BadgeCheck,
+  ChevronRight,
+  ListMinus,
+  ListPlus,
+  MoreHorizontal,
+  PenLine,
+  Plus,
+  Trash,
+} from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
-
+import { Option } from '@prisma/client';
+interface Question {
+  id: string;
+  question: string;
+  imageUrl: string | null;
+  answer: string;
+  questionType: string;
+  explanation: string;
+  options: Option[]; // Tambahkan properti options dengan tipe Option[]
+  quizId: string;
+  position: number;
+  createdAt: Date;
+  updateAt: Date;
+}
 interface QuestionActionsProps {
   quizId: string;
   questionId: string;
+  initialData: Question;
 }
 
-const QuestionAction = ({ quizId, questionId }: QuestionActionsProps) => {
+const QuestionAction = ({
+  quizId,
+  questionId,
+  initialData,
+}: QuestionActionsProps) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [questionType, setQuestionType] = useState(initialData.questionType);
+  const [loadingUpdateType, setLoadingUpdateType] = useState(false);
+  console.log(questionType);
+
+  const onChangeType = async (value: string) => {
+    try {
+      setLoadingUpdateType(true);
+      setQuestionType(value);
+      await axios.patch(`/api/quiz/${quizId}/questions/${questionId}`, {
+        questionType: questionType,
+      });
+    } catch (error) {
+      toast.error('Terdapat Kendala');
+      router.refresh();
+    } finally {
+      setLoadingUpdateType(false);
+    }
+  };
+
   const onDelete = async () => {
     try {
       setIsLoading(true);
@@ -29,14 +104,76 @@ const QuestionAction = ({ quizId, questionId }: QuestionActionsProps) => {
       setIsLoading(false);
     }
   };
+
   return (
-    <div className=" flex items-center gap-x-2">
+    <div className="flex items-center gap-x-2">
       <Badge className="bg-sky-700">Pilihan Ganda</Badge>
-      <ConfirmModal onConfirm={onDelete}>
-        <Button size="sm" disabled={isLoading} variant="outline">
-          <Trash className="w-4 h-4" />
-        </Button>
-      </ConfirmModal>
+      <AlertDialog>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild disabled={isLoading}>
+            <Button size="sm" variant="ghost">
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem>
+              <ListPlus className="h-3 w-3 mr-2" />
+              <p className="text-xs">Tambah Option</p>
+            </DropdownMenuItem>
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger disabled={loadingUpdateType}>
+                <ArrowUpDown className="h-3 w-3 mr-2" />
+                <p className="text-xs">Ganti Tipe</p>
+              </DropdownMenuSubTrigger>
+              <DropdownMenuSubContent>
+                <DropdownMenuLabel className="text-xs">
+                  Bentuk Standar
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator></DropdownMenuSeparator>
+                <DropdownMenuRadioGroup
+                  value={questionType}
+                  onValueChange={(value) => onChangeType(value)}
+                >
+                  <DropdownMenuRadioItem value="multipleChoice">
+                    <p className="text-xs">Pilihan Ganda</p>
+                  </DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="shortAnswer">
+                    <p className="text-xs">Isian Singkat</p>
+                  </DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="longAnswer">
+                    <p className="text-xs">Uraian</p>
+                  </DropdownMenuRadioItem>
+                </DropdownMenuRadioGroup>
+              </DropdownMenuSubContent>
+            </DropdownMenuSub>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={(event) => event.stopPropagation()}>
+              <AlertDialogTrigger>
+                <DropdownMenuItem>
+                  <Trash className="h-3 w-3 mr-2 text-red-500" />
+                  <p className="text-red-500 text-xs">Hapus Soal</p>
+                </DropdownMenuItem>
+              </AlertDialogTrigger>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <AlertDialogPortal>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Apakah kamu yakin?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Tindakan ini bersifat permanen
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel onClick={(event) => event.stopPropagation()}>
+                Cancel
+              </AlertDialogCancel>
+              <AlertDialogAction onClick={onDelete}>Continue</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogPortal>
+      </AlertDialog>
     </div>
   );
 };
