@@ -89,6 +89,7 @@ const QuestionAction = ({ quizId, questionId }: QuestionActionsProps) => {
                 </DropdownMenuSubContent>
               </DropdownMenuPortal>
             </DropdownMenuSub>
+            <DropdownMenuSeparator />
             <DropdownMenuItem>
               <Trash className="h-3 w-3 mr-2 text-red-500" onClick={onDelete} />
               <p className="text-red-500 text-xs">Hapus Soal</p>
