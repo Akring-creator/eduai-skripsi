@@ -4,6 +4,19 @@ import { ConfirmModal } from '@/components/modals/confirm-modal';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+  AlertDialogPortal,
+} from '@/components/ui/alert-dialog'; // Pastikan untuk mengimpor komponen-komponen dari pustaka atau framework dialog yang kamu gunakan
+
+import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
@@ -40,6 +53,12 @@ interface QuestionActionsProps {
 const QuestionAction = ({ quizId, questionId }: QuestionActionsProps) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
   const onDelete = async () => {
     try {
       setIsLoading(true);
@@ -52,27 +71,32 @@ const QuestionAction = ({ quizId, questionId }: QuestionActionsProps) => {
       setIsLoading(false);
     }
   };
+
+  const onItemClick = (event: any) => {
+    event.stopPropagation(); // Menghentikan propagasi event agar dropdown tidak tertutup otomatis
+  };
+
   return (
-    <div className=" flex items-center gap-x-2">
+    <div className="flex items-center gap-x-2">
       <Badge className="bg-sky-700">Pilihan Ganda</Badge>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button size="sm" disabled={isLoading} variant="ghost">
-            <MoreHorizontal className="h-4 w-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuPortal>
-          <DropdownMenuContent>
-            <DropdownMenuItem>
-              <ListPlus className="h-3 w-3 mr-2" />
-              <p className="text-xs">Tambah Option</p>
-            </DropdownMenuItem>
-            <DropdownMenuSub>
-              <DropdownMenuSubTrigger>
-                <ArrowUpDown className="h-3 w-3 mr-2" />
-                <p className="text-xs">Ganti Tipe</p>
-              </DropdownMenuSubTrigger>
-              <DropdownMenuPortal>
+      <AlertDialog>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild onClick={toggleDropdown}>
+            <Button size="sm" disabled={isLoading} variant="ghost">
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          {isDropdownOpen && (
+            <DropdownMenuContent>
+              <DropdownMenuItem>
+                <ListPlus className="h-3 w-3 mr-2" />
+                <p className="text-xs">Tambah Option</p>
+              </DropdownMenuItem>
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger>
+                  <ArrowUpDown className="h-3 w-3 mr-2" />
+                  <p className="text-xs">Ganti Tipe</p>
+                </DropdownMenuSubTrigger>
                 <DropdownMenuSubContent>
                   <DropdownMenuItem>
                     <BadgeCheck className="h-3 w-3 mr-2" />
@@ -87,17 +111,36 @@ const QuestionAction = ({ quizId, questionId }: QuestionActionsProps) => {
                     <p className="text-xs">Essay</p>
                   </DropdownMenuItem>
                 </DropdownMenuSubContent>
-              </DropdownMenuPortal>
-            </DropdownMenuSub>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <Trash className="h-3 w-3 mr-2 text-red-500" onClick={onDelete} />
-              <p className="text-red-500 text-xs">Hapus Soal</p>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenuPortal>
-      </DropdownMenu>
-      {/*  */}
+              </DropdownMenuSub>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={(event) => event.stopPropagation()}>
+                <AlertDialogTrigger>
+                  <DropdownMenuItem>
+                    <Trash className="h-3 w-3 mr-2 text-red-500" />
+                    <p className="text-red-500 text-xs">Hapus Soal</p>
+                  </DropdownMenuItem>
+                </AlertDialogTrigger>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          )}
+        </DropdownMenu>
+        <AlertDialogPortal>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Apakah kamu yakin?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Tindakan ini bersifat permanen
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel onClick={(event) => event.stopPropagation()}>
+                Cancel
+              </AlertDialogCancel>
+              <AlertDialogAction onClick={onDelete}>Continue</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogPortal>
+      </AlertDialog>
     </div>
   );
 };
