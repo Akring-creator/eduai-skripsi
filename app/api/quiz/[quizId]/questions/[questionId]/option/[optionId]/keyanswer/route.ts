@@ -33,6 +33,7 @@ export async function PATCH(
         isKeyAnswer: true,
       },
     });
+
     if (existedKeyAnswer) {
       const option = await db.option.update({
         where: {
@@ -44,6 +45,7 @@ export async function PATCH(
         },
       });
     }
+
     const option = await db.option.update({
       where: {
         id: params.optionId,

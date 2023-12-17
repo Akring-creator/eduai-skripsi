@@ -28,6 +28,8 @@ import {
   DropdownMenuItem,
   DropdownMenuSubTrigger,
   DropdownMenuSubContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
 } from '@/components/ui/dropdown-menu';
 import axios from 'axios';
 import {
@@ -44,19 +46,50 @@ import {
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
-
+import { Option } from '@prisma/client';
+interface Question {
+  id: string;
+  question: string;
+  imageUrl: string | null;
+  answer: string;
+  questionType: string;
+  explanation: string;
+  options: Option[]; // Tambahkan properti options dengan tipe Option[]
+  quizId: string;
+  position: number;
+  createdAt: Date;
+  updateAt: Date;
+}
 interface QuestionActionsProps {
   quizId: string;
   questionId: string;
+  initialData: Question;
 }
 
-const QuestionAction = ({ quizId, questionId }: QuestionActionsProps) => {
+const QuestionAction = ({
+  quizId,
+  questionId,
+  initialData,
+}: QuestionActionsProps) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [questionType, setQuestionType] = useState(initialData.questionType);
+  const [loadingUpdateType, setLoadingUpdateType] = useState(false);
+  console.log(questionType);
 
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
+  const onChangeType = async (value: string) => {
+    try {
+      setLoadingUpdateType(true);
+      setQuestionType(value);
+      await axios.patch(`/api/quiz/${quizId}/questions/${questionId}`, {
+        questionType: questionType,
+      });
+    } catch (error) {
+      toast.error('Terdapat Kendala');
+      router.refresh();
+    } finally {
+      setLoadingUpdateType(false);
+    }
   };
 
   const onDelete = async () => {
@@ -72,57 +105,57 @@ const QuestionAction = ({ quizId, questionId }: QuestionActionsProps) => {
     }
   };
 
-  const onItemClick = (event: any) => {
-    event.stopPropagation(); // Menghentikan propagasi event agar dropdown tidak tertutup otomatis
-  };
-
   return (
     <div className="flex items-center gap-x-2">
       <Badge className="bg-sky-700">Pilihan Ganda</Badge>
       <AlertDialog>
         <DropdownMenu>
-          <DropdownMenuTrigger asChild onClick={toggleDropdown}>
-            <Button size="sm" disabled={isLoading} variant="ghost">
+          <DropdownMenuTrigger asChild disabled={isLoading}>
+            <Button size="sm" variant="ghost">
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          {isDropdownOpen && (
-            <DropdownMenuContent>
-              <DropdownMenuItem>
-                <ListPlus className="h-3 w-3 mr-2" />
-                <p className="text-xs">Tambah Option</p>
-              </DropdownMenuItem>
-              <DropdownMenuSub>
-                <DropdownMenuSubTrigger>
-                  <ArrowUpDown className="h-3 w-3 mr-2" />
-                  <p className="text-xs">Ganti Tipe</p>
-                </DropdownMenuSubTrigger>
-                <DropdownMenuSubContent>
-                  <DropdownMenuItem>
-                    <BadgeCheck className="h-3 w-3 mr-2" />
+          <DropdownMenuContent>
+            <DropdownMenuItem>
+              <ListPlus className="h-3 w-3 mr-2" />
+              <p className="text-xs">Tambah Option</p>
+            </DropdownMenuItem>
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger disabled={loadingUpdateType}>
+                <ArrowUpDown className="h-3 w-3 mr-2" />
+                <p className="text-xs">Ganti Tipe</p>
+              </DropdownMenuSubTrigger>
+              <DropdownMenuSubContent>
+                <DropdownMenuLabel className="text-xs">
+                  Bentuk Standar
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator></DropdownMenuSeparator>
+                <DropdownMenuRadioGroup
+                  value={questionType}
+                  onValueChange={(value) => onChangeType(value)}
+                >
+                  <DropdownMenuRadioItem value="multipleChoice">
                     <p className="text-xs">Pilihan Ganda</p>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <PenLine className="h-3 w-3 mr-2" />
+                  </DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="shortAnswer">
                     <p className="text-xs">Isian Singkat</p>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <ListMinus className="h-3 w-3 mr-2" />
-                    <p className="text-xs">Essay</p>
-                  </DropdownMenuItem>
-                </DropdownMenuSubContent>
-              </DropdownMenuSub>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={(event) => event.stopPropagation()}>
-                <AlertDialogTrigger>
-                  <DropdownMenuItem>
-                    <Trash className="h-3 w-3 mr-2 text-red-500" />
-                    <p className="text-red-500 text-xs">Hapus Soal</p>
-                  </DropdownMenuItem>
-                </AlertDialogTrigger>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          )}
+                  </DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="longAnswer">
+                    <p className="text-xs">Uraian</p>
+                  </DropdownMenuRadioItem>
+                </DropdownMenuRadioGroup>
+              </DropdownMenuSubContent>
+            </DropdownMenuSub>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={(event) => event.stopPropagation()}>
+              <AlertDialogTrigger>
+                <DropdownMenuItem>
+                  <Trash className="h-3 w-3 mr-2 text-red-500" />
+                  <p className="text-red-500 text-xs">Hapus Soal</p>
+                </DropdownMenuItem>
+              </AlertDialogTrigger>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
         </DropdownMenu>
         <AlertDialogPortal>
           <AlertDialogContent>

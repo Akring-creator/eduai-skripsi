@@ -78,6 +78,10 @@ export async function PATCH(
       },
     });
 
+    // Check if there is existed key,
+    // Kalau udah ada, set false kan
+    // baru yang baru di set true
+
     return NextResponse.json(option);
   } catch (error) {
     console.log('[OPTION]', error);

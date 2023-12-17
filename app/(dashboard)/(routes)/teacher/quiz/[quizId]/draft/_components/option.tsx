@@ -25,14 +25,14 @@ const OptionForm = ({
 
   const enableInput = async () => {
     setIsEditing(true);
-    const response = await axios.get(
-      `/api/quiz/${quizId}/questions/${questionId}/option/${optionId}`
-    );
 
-    setTimeout(() => {
-      // console.log(response.data.option);
-      setValue(response.data.option);
+    setTimeout(async () => {
       inputRef.current?.focus();
+      // console.log(response.data.option);
+      const response = await axios.get(
+        `/api/quiz/${quizId}/questions/${questionId}/option/${optionId}`
+      );
+      setValue(response.data.option);
     }, 0);
   };
   const disableInput = async () => {
@@ -67,7 +67,7 @@ const OptionForm = ({
     <div className="flex items-center justify-between w-90 ">
       <div
         className={cn(
-          'mt-2 mr-5 p-3 ml-2 font-medium border border-slate-200 w-full transition duration-300 ease-in-out transform hover:scale-105',
+          'mt-2 mr-4 p-3 ml-2 font-medium border border-slate-200 w-full transition duration-300 ease-in-out transform hover:scale-105',
           isEditing ? 'border-sky-700' : 'hover:border-gray-400'
         )}
       >
