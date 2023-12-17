@@ -15,6 +15,7 @@ interface Question {
   question: string;
   imageUrl: string | null;
   answer: string;
+  questionType: string;
   explanation: string;
   options: Option[]; // Tambahkan properti options dengan tipe Option[]
   quizId: string;
