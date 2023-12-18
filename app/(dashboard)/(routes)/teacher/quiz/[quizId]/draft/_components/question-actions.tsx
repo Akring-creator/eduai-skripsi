@@ -62,40 +62,45 @@ interface Question {
 }
 interface QuestionActionsProps {
   quizId: string;
-  questionId: string;
   initialData: Question;
+  qType: string; // Tambahkan properti questionType
+  onEdit: (value: string) => void;
+  onUpdate: (value: boolean) => void;
 }
 
 const QuestionAction = ({
   quizId,
-  questionId,
   initialData,
+  qType,
+  onEdit,
+  onUpdate,
 }: QuestionActionsProps) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [questionType, setQuestionType] = useState(initialData.questionType);
-  const [loadingUpdateType, setLoadingUpdateType] = useState(false);
+  const [questionType, setQuestionType] = useState(qType);
   console.log(questionType);
 
   const onChangeType = async (value: string) => {
     try {
-      setLoadingUpdateType(true);
-      setQuestionType(value);
-      await axios.patch(`/api/quiz/${quizId}/questions/${questionId}`, {
-        questionType: questionType,
+      onUpdate(true);
+
+      await axios.patch(`/api/quiz/${quizId}/questions/${initialData.id}`, {
+        questionType: value,
       });
+      setQuestionType(value);
+      onEdit(value);
     } catch (error) {
       toast.error('Terdapat Kendala');
       router.refresh();
     } finally {
-      setLoadingUpdateType(false);
+      onUpdate(false);
     }
   };
 
   const onDelete = async () => {
     try {
       setIsLoading(true);
-      await axios.delete(`/api/quiz/${quizId}/questions/${questionId}`);
+      await axios.delete(`/api/quiz/${quizId}/questions/${initialData.id}`);
       toast.success('Soal dihapus');
       router.refresh();
     } catch {
@@ -107,7 +112,14 @@ const QuestionAction = ({
 
   return (
     <div className="flex items-center gap-x-2">
-      <Badge className="bg-sky-700">Pilihan Ganda</Badge>
+      {qType === 'multipleChoice' ? (
+        <Badge className="bg-sky-700">Pilihan Ganda</Badge>
+      ) : qType === 'shortAnswer' ? (
+        <Badge className="bg-emerald-700">Isian Singkat</Badge>
+      ) : qType === 'longAnswer' ? (
+        <Badge className="bg-fuchsia-700">Uraian</Badge>
+      ) : null}
+
       <AlertDialog>
         <DropdownMenu>
           <DropdownMenuTrigger asChild disabled={isLoading}>
@@ -121,7 +133,7 @@ const QuestionAction = ({
               <p className="text-xs">Tambah Option</p>
             </DropdownMenuItem>
             <DropdownMenuSub>
-              <DropdownMenuSubTrigger disabled={loadingUpdateType}>
+              <DropdownMenuSubTrigger>
                 <ArrowUpDown className="h-3 w-3 mr-2" />
                 <p className="text-xs">Ganti Tipe</p>
               </DropdownMenuSubTrigger>

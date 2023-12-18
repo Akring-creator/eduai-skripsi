@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation';
 import { db } from '@/lib/db';
 import { IconBadge } from '@/components/icon-badge';
 import { LibrarySquare } from 'lucide-react';
-import { Metadata } from './_components/metadata';
+import { Metadata } from './_components/quiz-metadata';
 import { QuestionForm } from './_components/question-form';
 import { Banner } from '@/components/banners';
 

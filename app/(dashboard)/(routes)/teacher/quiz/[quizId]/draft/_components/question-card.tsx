@@ -3,15 +3,18 @@ import TextareaAutosize from 'react-textarea-autosize';
 import { ChevronDown, ChevronUp, Pencil } from 'lucide-react';
 import { Option } from '@prisma/client';
 import { ElementRef, useRef, useState } from 'react';
-import OptionForm from './option';
+import OptionForm from './question-options';
 import { cn } from '@/lib/utils';
 import { Textarea } from '@/components/ui/textarea';
+import { ShortAnswer } from './short-answer';
+import { db } from '@/lib/db';
 
 interface Question {
   id: string;
   question: string;
   imageUrl: string | null;
   answer: string;
+  questionType: string;
   explanation: string;
   options: Option[];
   quizId: string;
@@ -22,9 +25,10 @@ interface Question {
 interface QuestionCardProps {
   initialData: Question;
   quizId: string;
+  qType: string;
 }
 
-const QuestionCard = ({ initialData, quizId }: QuestionCardProps) => {
+const QuestionCard = ({ initialData, quizId, qType }: QuestionCardProps) => {
   const questionId = initialData.id;
   const [editing, setIsEditing] = useState({
     question: false,
@@ -38,6 +42,15 @@ const QuestionCard = ({ initialData, quizId }: QuestionCardProps) => {
     question: initialData.question,
     explanation: initialData.explanation,
   });
+
+  const correctAnswer = initialData.options.find(
+    (option) => option.isKeyAnswer === true
+  );
+  const [keyAnswerId, setKeyAnswerId] = useState(correctAnswer?.id);
+
+  const onKeyAnswerUpdate = (value: string) => {
+    setKeyAnswerId(value);
+  };
   const enableQuestionInput = async () => {
     setIsEditing({
       ...editing,
@@ -115,8 +128,6 @@ const QuestionCard = ({ initialData, quizId }: QuestionCardProps) => {
       ...value,
       explanation: newExplanation,
     });
-    // const update = await axios.patch(`/api/question/${initialData.id}`, { question: newquestion })
-    // Hasil console.log(value)
   };
 
   return (
@@ -157,19 +168,39 @@ const QuestionCard = ({ initialData, quizId }: QuestionCardProps) => {
             : 'max-h-0 opacity-0 overflow-hidden'
         }`}
       >
-        {initialData.options.map((option, index) => (
-          <div key={index}>
-            <OptionForm
-              isKeyAnswer={option.isKeyAnswer}
-              optionId={option.id}
-              optionValue={option.option}
+        {qType === 'multipleChoice' ? (
+          <div>
+            {initialData.options.map((option, index) => (
+              <div key={index}>
+                <OptionForm
+                  keyAnswerId={keyAnswerId!}
+                  optionId={option.id}
+                  onKeyUpdate={(value) => onKeyAnswerUpdate(value)}
+                  questionId={questionId}
+                  quizId={quizId}
+                />
+              </div>
+            ))}
+          </div>
+        ) : qType === 'shortAnswer' ? (
+          <div>
+            <ShortAnswer
+              optionId={keyAnswerId!}
               questionId={questionId}
               quizId={quizId}
             />
           </div>
-        ))}
-        <div className="p-2 mt-2 font-medium">
-          <p className="font-bold">Pembahasan:</p>
+        ) : null}
+
+        <div
+          className={cn(
+            'p-2 mt-2 text-sm',
+            qType === 'longAnswer' && 'text-base'
+          )}
+        >
+          <p className="font-bold">
+            {qType === 'longAnswer' ? 'Jawaban:' : 'Pembahasan:'}
+          </p>
 
           <div className="mb-4 w-full">
             {!editing.explanation ? (
