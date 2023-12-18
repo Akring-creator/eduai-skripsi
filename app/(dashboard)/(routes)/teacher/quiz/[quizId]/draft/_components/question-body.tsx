@@ -29,6 +29,7 @@ export const QuestionBody = ({
 }: QuestionBodyProps) => {
   const [qType, setQType] = useState(initialData.questionType);
   const [isUpdatingQ, setIsUpdating] = useState(false);
+
   const editQuestionType = (value: string) => {
     setQType(value);
   };

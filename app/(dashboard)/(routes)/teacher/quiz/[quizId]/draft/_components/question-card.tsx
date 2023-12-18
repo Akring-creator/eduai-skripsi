@@ -6,6 +6,8 @@ import { ElementRef, useRef, useState } from 'react';
 import OptionForm from './question-options';
 import { cn } from '@/lib/utils';
 import { Textarea } from '@/components/ui/textarea';
+import { ShortAnswer } from './short-answer';
+import { db } from '@/lib/db';
 
 interface Question {
   id: string;
@@ -40,6 +42,15 @@ const QuestionCard = ({ initialData, quizId, qType }: QuestionCardProps) => {
     question: initialData.question,
     explanation: initialData.explanation,
   });
+
+  const correctAnswer = initialData.options.find(
+    (option) => option.isKeyAnswer === true
+  );
+  const [keyAnswerId, setKeyAnswerId] = useState(correctAnswer?.id);
+
+  const onKeyAnswerUpdate = (value: string) => {
+    setKeyAnswerId(value);
+  };
   const enableQuestionInput = async () => {
     setIsEditing({
       ...editing,
@@ -157,24 +168,39 @@ const QuestionCard = ({ initialData, quizId, qType }: QuestionCardProps) => {
             : 'max-h-0 opacity-0 overflow-hidden'
         }`}
       >
-        {qType === 'multipleChoice' && (
+        {qType === 'multipleChoice' ? (
           <div>
             {initialData.options.map((option, index) => (
               <div key={index}>
                 <OptionForm
-                  isKeyAnswer={option.isKeyAnswer}
+                  keyAnswerId={keyAnswerId!}
                   optionId={option.id}
-                  optionValue={option.option}
+                  onKeyUpdate={(value) => onKeyAnswerUpdate(value)}
                   questionId={questionId}
                   quizId={quizId}
                 />
               </div>
             ))}
           </div>
-        )}
+        ) : qType === 'shortAnswer' ? (
+          <div>
+            <ShortAnswer
+              optionId={keyAnswerId!}
+              questionId={questionId}
+              quizId={quizId}
+            />
+          </div>
+        ) : null}
 
-        <div className="p-2 mt-2 font-medium">
-          <p className="font-bold">Pembahasan:</p>
+        <div
+          className={cn(
+            'p-2 mt-2 text-sm',
+            qType === 'longAnswer' && 'text-base'
+          )}
+        >
+          <p className="font-bold">
+            {qType === 'longAnswer' ? 'Jawaban:' : 'Pembahasan:'}
+          </p>
 
           <div className="mb-4 w-full">
             {!editing.explanation ? (

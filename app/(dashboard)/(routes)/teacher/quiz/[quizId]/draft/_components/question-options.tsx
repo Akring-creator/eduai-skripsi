@@ -1,27 +1,42 @@
 import { cn } from '@/lib/utils';
 import { Badge, BadgeCheck, BadgeCheckIcon, Key, KeyRound } from 'lucide-react';
 import axios from 'axios';
-import { ElementRef, useRef, useState } from 'react';
+import { ElementRef, useEffect, useRef, useState } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
 
 interface OptionFormProps {
-  isKeyAnswer: Boolean;
   quizId: string;
   questionId: string;
-  optionValue: string;
   optionId: string;
+  keyAnswerId: string;
+  onKeyUpdate: (value: string) => void;
 }
 const OptionForm = ({
   quizId,
   questionId,
-  optionValue,
   optionId,
-  isKeyAnswer,
+  keyAnswerId,
+  onKeyUpdate,
 }: OptionFormProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const inputRef = useRef<ElementRef<'textarea'>>(null);
-  const [value, setValue] = useState(optionValue);
-  const [keyAnswer, setKeyAnswer] = useState(isKeyAnswer);
+  const [value, setValue] = useState('');
+  const getOption = async () => {
+    try {
+      const response = await axios.get(
+        `/api/quiz/${quizId}/questions/${questionId}/option/${optionId}`
+      );
+      const option = response.data.option; // Mengambil data dari respons API
+      setValue(option); // Mengatur nilai state dengan hasil panggilan API
+    } catch (error) {
+      // Tangani error jika terjadi
+      console.error('Error fetching option:', error);
+    }
+  };
+
+  useEffect(() => {
+    getOption(); // Panggil fungsi getOption saat komponen dimuat
+  }, []);
 
   const enableInput = async () => {
     setIsEditing(true);
@@ -51,16 +66,15 @@ const OptionForm = ({
   };
 
   const onClickKeyAnswer = async () => {
-    const updatedValue = !keyAnswer; // Mengubah nilai isKeyAnswer menjadi kebalikannya
-
-    await axios.patch(
-      `/api/quiz/${quizId}/questions/${questionId}/option/${optionId}`,
-      {
-        isKeyAnswer: updatedValue,
-      }
-    );
-
-    setKeyAnswer(updatedValue);
+    if (optionId !== keyAnswerId) {
+      await axios.patch(
+        `/api/quiz/${quizId}/questions/${questionId}/option/${optionId}/keyanswer`,
+        {
+          isKeyAnswer: true,
+        }
+      );
+      onKeyUpdate(optionId);
+    } // Mengubah nilai isKeyAnswer menjadi kebalikannya
   };
 
   return (
@@ -90,11 +104,11 @@ const OptionForm = ({
       <div
         className={cn(
           'ml-2 h-6 w-6 text-slate-500 hover:cursor-pointer',
-          keyAnswer && 'text-sky-700'
+          optionId === keyAnswerId && 'text-sky-700'
         )}
         onClick={onClickKeyAnswer}
       >
-        {keyAnswer ? <BadgeCheckIcon /> : <Badge />}
+        {optionId === keyAnswerId ? <BadgeCheckIcon /> : <Badge />}
       </div>
     </div>
   );
