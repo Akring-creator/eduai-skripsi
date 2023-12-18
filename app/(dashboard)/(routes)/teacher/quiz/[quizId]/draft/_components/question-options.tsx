@@ -81,7 +81,7 @@ const OptionForm = ({
     <div className="flex items-center justify-between w-90 ">
       <div
         className={cn(
-          'mt-2 mr-4 p-3 ml-2 font-medium border border-slate-200 w-full transition duration-300 ease-in-out transform hover:scale-105',
+          'mt-2 mr-6 p-3 ml-2 font-medium border border-slate-200 w-full transition duration-300 ease-in-out transform hover:scale-105',
           isEditing ? 'border-sky-700' : 'hover:border-gray-400'
         )}
       >
