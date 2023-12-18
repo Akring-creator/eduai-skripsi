@@ -18,8 +18,8 @@ import {
 
 import { cn } from '@/lib/utils';
 import { Option } from '@prisma/client';
-import QuestionCard from './question-card';
-import QuestionAction from './question-actions';
+
+import { QuestionBody } from './question-body';
 
 // ...
 
@@ -113,20 +113,11 @@ export const QuestionsList = ({
                       >
                         <Grip className="h-5 w-5" />
                       </div>
-                      <div className="space-y-2 p-4 w-full">
-                        <div className="font-medium flex items-center justify-between">
-                          <div className="flex gap-x-2">
-                            Pertanyaan {index + 1}
-                          </div>
-
-                          <QuestionAction
-                            quizId={quizId}
-                            questionId={question.id}
-                            initialData={question}
-                          />
-                        </div>
-                        <QuestionCard initialData={question} quizId={quizId} />
-                      </div>
+                      <QuestionBody
+                        index={index}
+                        initialData={question}
+                        quizId={quizId}
+                      />
                     </div>
                   </div>
                 )}

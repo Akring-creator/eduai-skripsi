@@ -3,7 +3,7 @@ import TextareaAutosize from 'react-textarea-autosize';
 import { ChevronDown, ChevronUp, Pencil } from 'lucide-react';
 import { Option } from '@prisma/client';
 import { ElementRef, useRef, useState } from 'react';
-import OptionForm from './option';
+import OptionForm from './question-options';
 import { cn } from '@/lib/utils';
 import { Textarea } from '@/components/ui/textarea';
 
@@ -12,6 +12,7 @@ interface Question {
   question: string;
   imageUrl: string | null;
   answer: string;
+  questionType: string;
   explanation: string;
   options: Option[];
   quizId: string;
@@ -22,9 +23,10 @@ interface Question {
 interface QuestionCardProps {
   initialData: Question;
   quizId: string;
+  qType: string;
 }
 
-const QuestionCard = ({ initialData, quizId }: QuestionCardProps) => {
+const QuestionCard = ({ initialData, quizId, qType }: QuestionCardProps) => {
   const questionId = initialData.id;
   const [editing, setIsEditing] = useState({
     question: false,
@@ -115,8 +117,6 @@ const QuestionCard = ({ initialData, quizId }: QuestionCardProps) => {
       ...value,
       explanation: newExplanation,
     });
-    // const update = await axios.patch(`/api/question/${initialData.id}`, { question: newquestion })
-    // Hasil console.log(value)
   };
 
   return (
@@ -157,17 +157,22 @@ const QuestionCard = ({ initialData, quizId }: QuestionCardProps) => {
             : 'max-h-0 opacity-0 overflow-hidden'
         }`}
       >
-        {initialData.options.map((option, index) => (
-          <div key={index}>
-            <OptionForm
-              isKeyAnswer={option.isKeyAnswer}
-              optionId={option.id}
-              optionValue={option.option}
-              questionId={questionId}
-              quizId={quizId}
-            />
+        {qType === 'multipleChoice' && (
+          <div>
+            {initialData.options.map((option, index) => (
+              <div key={index}>
+                <OptionForm
+                  isKeyAnswer={option.isKeyAnswer}
+                  optionId={option.id}
+                  optionValue={option.option}
+                  questionId={questionId}
+                  quizId={quizId}
+                />
+              </div>
+            ))}
           </div>
-        ))}
+        )}
+
         <div className="p-2 mt-2 font-medium">
           <p className="font-bold">Pembahasan:</p>
 

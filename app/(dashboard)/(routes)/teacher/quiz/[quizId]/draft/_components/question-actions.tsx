@@ -62,18 +62,20 @@ interface Question {
 }
 interface QuestionActionsProps {
   quizId: string;
-  questionId: string;
   initialData: Question;
+  qType: string; // Tambahkan properti questionType
+  onEdit: (value: string) => void;
 }
 
 const QuestionAction = ({
   quizId,
-  questionId,
   initialData,
+  qType,
+  onEdit,
 }: QuestionActionsProps) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [questionType, setQuestionType] = useState(initialData.questionType);
+  const [questionType, setQuestionType] = useState(qType);
   const [loadingUpdateType, setLoadingUpdateType] = useState(false);
   console.log(questionType);
 
@@ -81,10 +83,11 @@ const QuestionAction = ({
     try {
       setLoadingUpdateType(true);
 
-      await axios.patch(`/api/quiz/${quizId}/questions/${questionId}`, {
+      await axios.patch(`/api/quiz/${quizId}/questions/${initialData.id}`, {
         questionType: value,
       });
       setQuestionType(value);
+      onEdit(value);
     } catch (error) {
       toast.error('Terdapat Kendala');
       router.refresh();
@@ -96,7 +99,7 @@ const QuestionAction = ({
   const onDelete = async () => {
     try {
       setIsLoading(true);
-      await axios.delete(`/api/quiz/${quizId}/questions/${questionId}`);
+      await axios.delete(`/api/quiz/${quizId}/questions/${initialData.id}`);
       toast.success('Soal dihapus');
       router.refresh();
     } catch {
