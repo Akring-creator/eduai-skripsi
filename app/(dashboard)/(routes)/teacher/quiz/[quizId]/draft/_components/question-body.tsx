@@ -3,6 +3,7 @@ import QuestionAction from './question-actions';
 import QuestionCard from './question-card';
 import { Option } from '@prisma/client';
 import axios from 'axios';
+import { Loader2 } from 'lucide-react';
 interface Question {
   id: string;
   question: string;
@@ -27,9 +28,14 @@ export const QuestionBody = ({
   index,
 }: QuestionBodyProps) => {
   const [qType, setQType] = useState(initialData.questionType);
+  const [isUpdatingQ, setIsUpdating] = useState(false);
   const editQuestionType = (value: string) => {
     setQType(value);
   };
+  const onUpdate = (value: boolean) => {
+    setIsUpdating(value);
+  };
+
   async () => {
     await axios.patch(`/api/quiz/${quizId}/questions/${initialData.id}`, {
       position: index,
@@ -45,9 +51,28 @@ export const QuestionBody = ({
           initialData={initialData}
           qType={qType}
           onEdit={(value) => editQuestionType(value)}
+          onUpdate={(value) => onUpdate(value)}
         />
       </div>
-      <QuestionCard initialData={initialData} quizId={quizId} qType={qType} />
+
+      <div className="relative">
+        {isUpdatingQ && (
+          <div className="absolute inset-0 bg-slate-500/20 rounded-md flex items-center justify-center">
+            <Loader2 className="animate-spin h-10 w-10 text-slate-500" />
+          </div>
+        )}
+
+        <div
+          className={`${isUpdatingQ ? 'cursor-not-allowed' : 'cursor-default'}
+           ${isUpdatingQ ? 'opacity-60' : 'opacity-100'}`}
+        >
+          <QuestionCard
+            initialData={initialData}
+            quizId={quizId}
+            qType={qType}
+          />
+        </div>
+      </div>
     </div>
   );
 };
