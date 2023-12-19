@@ -35,7 +35,7 @@ const iconMap: Record<Category['name'], IconType> = {
   Kimia: FcMindMap,
   Sosiologi: FcConferenceCall,
 };
-const Categories = ({ items }: CategoriesProps) => {
+export const Categories = ({ items }: CategoriesProps) => {
   return (
     <div className="flex items-center gap-x-2 overflow-x-auto pb-2 ">
       {/* <div className="scrollbar-h-2 scrollbar scrollbar-thumb-rounded-fullscrollbar-track-rounded-full scrollbar-thumb-slate-500 scrollbar-track-slate-100 hover:scrollbar-thumb-sky-700 "> */}
@@ -51,5 +51,3 @@ const Categories = ({ items }: CategoriesProps) => {
     </div>
   );
 };
-
-export default Categories;
