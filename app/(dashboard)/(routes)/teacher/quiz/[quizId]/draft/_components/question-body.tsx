@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import QuestionAction from './question-actions';
 import QuestionCard from './question-card';
 import { Option } from '@prisma/client';
@@ -37,11 +37,21 @@ export const QuestionBody = ({
     setIsUpdating(value);
   };
 
-  async () => {
-    await axios.patch(`/api/quiz/${quizId}/questions/${initialData.id}`, {
-      position: index,
-    });
-  };
+  useEffect(() => {
+    const updateQuestionPosition = async () => {
+      try {
+        await axios.patch(`/api/quiz/${quizId}/questions/${initialData.id}`, {
+          position: index,
+        });
+      } catch (error) {
+        // Handle error jika diperlukan
+        console.error('Error updating question position:', error);
+      }
+    };
+
+    updateQuestionPosition();
+  }, [index]);
+
   return (
     <div className="space-y-2 p-4 w-full">
       <div className="font-medium flex items-center justify-between">
