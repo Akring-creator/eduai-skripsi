@@ -23,6 +23,7 @@ export const CategoryItem = ({
 
   const currentCategoryId = searchParams.get('categoryId');
   const currentTitle = searchParams.get('title');
+  const currentObject = searchParams.get('object');
 
   const isSelected = currentCategoryId === value;
 
