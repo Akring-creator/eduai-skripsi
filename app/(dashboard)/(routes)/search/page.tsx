@@ -1,4 +1,3 @@
-'use client';
 import { auth } from '@clerk/nextjs';
 import { redirect, useSearchParams } from 'next/navigation';
 
@@ -8,7 +7,6 @@ import { getCourses } from '@/actions/get-courses';
 import { CoursesList } from '@/components/courses-list';
 
 import { Categories } from './_components/categories';
-import { useState } from 'react';
 
 interface SearchPageProps {
   searchParams: {
@@ -18,8 +16,6 @@ interface SearchPageProps {
 }
 
 const SearchPage = async ({ searchParams }: SearchPageProps) => {
-  const [searchType, setSearchType] = useState('Kursus');
-
   const { userId } = auth();
 
   if (!userId) {
@@ -40,11 +36,12 @@ const SearchPage = async ({ searchParams }: SearchPageProps) => {
   return (
     <>
       <div className="px-6 pt-6 md:hidden md:mb-0 block">
-        <SearchInput onChangeSearchType={(value) => setSearchType(value)} />
+        <SearchInput />
       </div>
       <div className="p-6 space-y-4">
         <Categories items={categories} />
-        {searchType === 'Kursus' ? <CoursesList items={courses} /> : null}
+        {/* {searchType === 'Kursus' ? <CoursesList items={courses} /> : null} */}
+        <CoursesList items={courses} />
       </div>
     </>
   );

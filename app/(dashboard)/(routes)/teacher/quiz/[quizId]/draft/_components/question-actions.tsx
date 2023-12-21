@@ -78,7 +78,6 @@ const QuestionAction = ({
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [questionType, setQuestionType] = useState(qType);
-  console.log(questionType);
 
   const onChangeType = async (value: string) => {
     try {

@@ -24,11 +24,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Button } from './ui/button';
 
-interface SearchInputProps {
-  onChangeSearchType: (value: string) => void;
-}
-
-export const SearchInput = ({ onChangeSearchType }: SearchInputProps) => {
+export const SearchInput = () => {
   const [value, setValue] = useState('');
   const [objectType, setObjectType] = useState('Kursus');
   const debouncedValue = useDebounce(value);
@@ -40,7 +36,6 @@ export const SearchInput = ({ onChangeSearchType }: SearchInputProps) => {
   const currentCategoryId = searchParams.get('categoryId');
   const objectTypeToggle = (value: string) => {
     setObjectType(value);
-    onChangeSearchType(value);
   };
 
   useEffect(() => {

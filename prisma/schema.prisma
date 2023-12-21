@@ -39,7 +39,7 @@ model Course {
 model Chapter {
   id          String  @id @default(uuid())
   title       String
-  description String? @db.Text
+  description String? @db.MediumText
   videoUrl    String? @db.Text
   position    Int
   isPublished Boolean @default(false)
@@ -109,12 +109,12 @@ enum QuestionType {
 
 model Question {
   id          String   @id @default(uuid())
-  question    String   @db.Text
+  question    String   @db.MediumText
   questionType QuestionType 
   imageUrl    String?  @db.Text
   answer      String   @db.Text
   isPublished Boolean  @default(true)
-  explanation String   @db.Text
+  explanation String   @db.MediumText
   options     Option[]
   quizId      String
   
