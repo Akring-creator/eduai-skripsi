@@ -1,5 +1,5 @@
 import { auth } from '@clerk/nextjs';
-import { redirect, useSearchParams } from 'next/navigation';
+import { redirect } from 'next/navigation';
 
 import { db } from '@/lib/db';
 import { SearchInput } from '@/components/search-input';
@@ -40,7 +40,6 @@ const SearchPage = async ({ searchParams }: SearchPageProps) => {
       </div>
       <div className="p-6 space-y-4">
         <Categories items={categories} />
-        {/* {searchType === 'Kursus' ? <CoursesList items={courses} /> : null} */}
         <CoursesList items={courses} />
       </div>
     </>
