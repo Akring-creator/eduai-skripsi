@@ -8,6 +8,9 @@ import { cn } from '@/lib/utils';
 import { Textarea } from '@/components/ui/textarea';
 import { ShortAnswer } from './short-answer';
 import { db } from '@/lib/db';
+import { Editor } from '@/components/editor';
+import { Preview } from '@/components/preview';
+import { Button } from '@/components/ui/button';
 
 interface Question {
   id: string;
@@ -36,7 +39,7 @@ const QuestionCard = ({ initialData, quizId, qType }: QuestionCardProps) => {
   });
   const [showAllQuestionSection, setShowAllQuestionSection] = useState(false);
 
-  const inputQuestionRef = useRef<ElementRef<'textarea'>>(null);
+  const inputQuestionRef = useRef<HTMLDivElement>(null);
   const inputExplanationRef = useRef<ElementRef<'textarea'>>(null);
   const [value, setValue] = useState({
     question: initialData.question,
@@ -61,11 +64,11 @@ const QuestionCard = ({ initialData, quizId, qType }: QuestionCardProps) => {
     );
 
     setTimeout(() => {
+      inputQuestionRef.current?.focus();
       setValue({
         ...value,
         question: response.data.question,
       });
-      inputQuestionRef.current?.focus();
     }, 0);
   };
   const enableExplanationInput = async () => {
@@ -78,18 +81,20 @@ const QuestionCard = ({ initialData, quizId, qType }: QuestionCardProps) => {
     );
 
     setTimeout(() => {
+      inputExplanationRef.current?.focus();
       setValue({
         ...value,
         explanation: response.data.explanation,
       });
-      inputExplanationRef.current?.focus();
     }, 0);
   };
-  const disableQuestionInput = async () => {
+  const saveDatatoDatabase = async () => {
+    console.log('OnBlur Terpanggil');
     setIsEditing({
       ...editing,
       question: false,
     });
+    console.log(editing.question);
     const update = await axios.patch(
       `/api/quiz/${quizId}/questions/${questionId}`,
       {
@@ -115,12 +120,11 @@ const QuestionCard = ({ initialData, quizId, qType }: QuestionCardProps) => {
   };
 
   const onQuestionInput = async (newQuestion: string) => {
+    console.log(newQuestion);
     setValue({
       ...value,
       question: newQuestion,
     });
-    // const update = await axios.patch(`/api/question/${initialData.id}`, { question: newquestion })
-    // Hasil console.log(value)
   };
 
   const onExplanationInput = async (newExplanation: string) => {
@@ -135,20 +139,29 @@ const QuestionCard = ({ initialData, quizId, qType }: QuestionCardProps) => {
       <div className="flex items-center justify-between w-90">
         <div className="text-xl mb-4 w-full">
           {!editing.question ? (
-            <div
-              onClick={enableQuestionInput}
-              className="outline-none font-bold "
-            >
-              {value.question}
+            <div onClick={enableQuestionInput} className="outline-none">
+              {!showAllQuestionSection ? (
+                <Preview value={value.question} oneline />
+              ) : (
+                <Preview value={value.question} oneline={false} />
+              )}
             </div>
           ) : (
-            <TextareaAutosize
-              className="w-full bg-transparent outline-none font-bold break-words "
-              ref={inputQuestionRef}
-              value={value.question}
-              onBlur={disableQuestionInput}
-              onChange={(e) => onQuestionInput(e.target.value)}
-            />
+            <div className="gap-y-2">
+              <div ref={inputQuestionRef} className="w-full bg-black ">
+                <Editor
+                  value={value.question}
+                  onChange={(e) => onQuestionInput(e)}
+                />
+              </div>
+              <Button
+                className="mt-2"
+                variant="outline"
+                onClick={saveDatatoDatabase}
+              >
+                Save
+              </Button>
+            </div>
           )}
         </div>
         <div
@@ -219,8 +232,6 @@ const QuestionCard = ({ initialData, quizId, qType }: QuestionCardProps) => {
           </div>
         </div>
       </div>
-      {/* )} */}
-      {/* Bagian 2 */}
     </div>
   );
 };
