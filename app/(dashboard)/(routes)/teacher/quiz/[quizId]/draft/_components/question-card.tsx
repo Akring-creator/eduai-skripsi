@@ -140,7 +140,11 @@ const QuestionCard = ({ initialData, quizId, qType }: QuestionCardProps) => {
         <div className="text-xl mb-4 w-full">
           {!editing.question ? (
             <div onClick={enableQuestionInput} className="outline-none">
-              <Preview value={value.question} />
+              {!showAllQuestionSection ? (
+                <Preview value={value.question} oneline />
+              ) : (
+                <Preview value={value.question} oneline={false} />
+              )}
             </div>
           ) : (
             <div className="gap-y-2">
