@@ -38,6 +38,7 @@
     "clsx": "^2.0.0",
     "cmdk": "^0.2.0",
     "docx": "^8.2.4",
+    "docx-templates": "^4.11.3",
     "docxtemplater": "^3.41.0",
     "encoding": "^0.1.13",
     "eslint": "^8.52.0",
@@ -64,6 +65,7 @@
     "tailwindcss-animate": "^1.0.7",
     "typescript": "5.2.2",
     "uploadthing": "^5.7.4",
+    "yaqrcode": "^0.2.1",
     "zod": "^3.22.4",
     "zustand": "^4.4.7"
   },
