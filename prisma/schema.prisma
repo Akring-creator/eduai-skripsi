@@ -176,6 +176,7 @@ model QuizAttachment {
   @@index([quizId])
 }
 
+
 model Purchase {
   id     String @id @default(uuid())
   userId String
@@ -186,6 +187,7 @@ model Purchase {
   createdAt DateTime @default(now())
   updateAt  DateTime @updatedAt
 
+  @@unique([userId, courseId])
   @@index([courseId])
 }
 
@@ -196,4 +198,87 @@ model StripeCustomer {
 
   createdAt DateTime @default(now())
   updateAt  DateTime @updatedAt
+}
+
+// Part schema for Modul Ajar
+
+enum studentTarget {
+  general
+  disability
+  highAchiever
+}
+
+enum learningModel {
+  offlineDistanceClass
+  onlineDistanceClass
+  inClass
+  blended
+}
+
+enum PancasilaStudentsProfile {
+  independent
+  faithful
+  diversity
+  cooperative
+  creative
+  criticalThinker
+
+}
+
+model Subject {
+  id String @id @default(uuid())
+  name String @db.Text
+
+  learningModule LearningModule[]
+
+}
+
+model Element{
+  id  String @id @default(uuid())
+  name String @db.Text
+  expectedOutcome String @db.Text
+  learningOutcomeId String
+  learningOutcome LearningOutcome  @relation(fields: [learningOutcomeId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updateAt  DateTime @updatedAt
+  @@index([learningOutcomeId])
+}
+
+model Phase{
+  id String @id @default(uuid())
+  name String @db.Text
+  minClass Int
+  maxClass Int
+
+  learningOutcome LearningOutcome[]
+  learningModule LearningModule[]
+}
+
+model LearningOutcome {
+  id String @id @default(uuid())
+  subject String @db.Text
+  generalOutcome String @db.Text
+  phaseId String?
+  phase  Phase? @relation(fields: [phaseId], references: [id])
+  element Element[]
+  createdAt DateTime @default(now())
+  updateAt  DateTime @updatedAt
+
+  @@index([phaseId])
+}
+
+model LearningModule {
+  id String @id @default(uuid())
+  title String @db.Text
+  phaseId String
+  phase Phase @relation(fields: [phaseId], references: [id])
+  class Int
+  subjectId String
+  subject Subject @relation(fields: [subjectId], references: [id])
+
+
+  @@unique([phaseId, subjectId])
+  @@index([phaseId])
+  @@index([subjectId])
 }

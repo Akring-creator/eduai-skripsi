@@ -133,6 +133,10 @@ Table Purchase {
   course Course [not null]
   createdAt DateTime [default: `now()`, not null]
   updateAt DateTime [not null]
+
+  indexes {
+    (userId, courseId) [unique]
+  }
 }
 
 Table StripeCustomer {
@@ -143,10 +147,82 @@ Table StripeCustomer {
   updateAt DateTime [not null]
 }
 
+Table Subject {
+  id String [pk]
+  name String [not null]
+  learningModule LearningModule [not null]
+}
+
+Table Element {
+  id String [pk]
+  name String [not null]
+  expectedOutcome String [not null]
+  learningOutcomeId String [not null]
+  learningOutcome LearningOutcome [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updateAt DateTime [not null]
+}
+
+Table Phase {
+  id String [pk]
+  name String [not null]
+  minClass Int [not null]
+  maxClass Int [not null]
+  learningOutcome LearningOutcome [not null]
+  learningModule LearningModule [not null]
+}
+
+Table LearningOutcome {
+  id String [pk]
+  subject String [not null]
+  generalOutcome String [not null]
+  phaseId String
+  phase Phase
+  element Element [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updateAt DateTime [not null]
+}
+
+Table LearningModule {
+  id String [pk]
+  title String [not null]
+  phaseId String [not null]
+  phase Phase [not null]
+  class Int [not null]
+  subjectId String [not null]
+  subject Subject [not null]
+
+  indexes {
+    (phaseId, subjectId) [unique]
+  }
+}
+
 Enum QuestionType {
   multipleChoice
   shortAnswer
   longAnswer
+}
+
+Enum studentTarget {
+  general
+  disability
+  highAchiever
+}
+
+Enum learningModel {
+  offlineDistanceClass
+  onlineDistanceClass
+  inClass
+  blended
+}
+
+Enum PancasilaStudentsProfile {
+  independent
+  faithful
+  diversity
+  cooperative
+  creative
+  criticalThinker
 }
 
 Ref: Course.categoryId > Category.id
@@ -168,3 +244,11 @@ Ref: Quiz.categoryId > Category.id
 Ref: QuizAttachment.quizId > Quiz.id [delete: Cascade]
 
 Ref: Purchase.courseId > Course.id [delete: Cascade]
+
+Ref: Element.learningOutcomeId > LearningOutcome.id [delete: Cascade]
+
+Ref: LearningOutcome.phaseId > Phase.id
+
+Ref: LearningModule.phaseId > Phase.id
+
+Ref: LearningModule.subjectId > Subject.id
