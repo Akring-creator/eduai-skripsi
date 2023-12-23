@@ -6,8 +6,6 @@ import { redirect } from 'next/navigation';
 import { DataTable } from './_components/data-table';
 import { columns } from './_components/columns';
 
-const listofItem = ['item'];
-
 const QuizPage = async () => {
   const { userId } = auth();
   if (!userId) {

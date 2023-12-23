@@ -1,6 +1,6 @@
 'use client';
 import { Button } from '@/components/ui/button';
-import { Quiz, Option } from '@prisma/client';
+import { Quiz, Option, Question } from '@prisma/client';
 import {
   PlusIcon,
   HardDriveUpload,
@@ -27,21 +27,8 @@ import { useState } from 'react';
 
 // Cant use Question Format from prisma
 
-interface Question {
-  id: string;
-  question: string;
-  questionType: string;
-  imageUrl: string | null;
-  answer: string;
-  explanation: string;
-  options: Option[]; // Tambahkan properti options dengan tipe Option[]
-  quizId: string;
-  position: number;
-  createdAt: Date;
-  updateAt: Date;
-}
 interface MetadataProps {
-  initialData: Quiz & { questions: Question[] };
+  initialData: Quiz & { questions: (Question & { options: Option[] })[] };
 }
 
 export const Metadata = ({ initialData }: MetadataProps) => {

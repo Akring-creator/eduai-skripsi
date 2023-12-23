@@ -46,23 +46,11 @@ import {
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
-import { Option } from '@prisma/client';
-interface Question {
-  id: string;
-  question: string;
-  imageUrl: string | null;
-  answer: string;
-  questionType: string;
-  explanation: string;
-  options: Option[]; // Tambahkan properti options dengan tipe Option[]
-  quizId: string;
-  position: number;
-  createdAt: Date;
-  updateAt: Date;
-}
+import { Option, Question } from '@prisma/client';
+
 interface QuestionActionsProps {
   quizId: string;
-  initialData: Question;
+  initialData: Question & { options: Option[] };
   qType: string; // Tambahkan properti questionType
   onEdit: (value: string) => void;
   onUpdate: (value: boolean) => void;

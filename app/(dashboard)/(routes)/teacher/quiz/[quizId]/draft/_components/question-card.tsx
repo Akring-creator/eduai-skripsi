@@ -1,7 +1,7 @@
 import axios from 'axios';
 import TextareaAutosize from 'react-textarea-autosize';
 import { ChevronDown, ChevronUp, Pencil } from 'lucide-react';
-import { Option } from '@prisma/client';
+import { Option, Question } from '@prisma/client';
 import { ElementRef, useRef, useState } from 'react';
 import OptionForm from './question-options';
 import { cn } from '@/lib/utils';
@@ -12,21 +12,8 @@ import { Editor } from '@/components/editor';
 import { Preview } from '@/components/preview';
 import { Button } from '@/components/ui/button';
 
-interface Question {
-  id: string;
-  question: string;
-  imageUrl: string | null;
-  answer: string;
-  questionType: string;
-  explanation: string;
-  options: Option[];
-  quizId: string;
-  position: number;
-  createdAt: Date;
-  updateAt: Date;
-}
 interface QuestionCardProps {
-  initialData: Question;
+  initialData: Question & { options: Option[] };
   quizId: string;
   qType: string;
 }

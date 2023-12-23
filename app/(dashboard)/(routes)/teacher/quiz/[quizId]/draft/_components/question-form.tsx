@@ -5,27 +5,12 @@ import { Loader2, Pencil, PlusCircle, Route } from 'lucide-react';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
-import { Quiz, Option } from '@prisma/client';
+import { Quiz, Question, Option } from '@prisma/client';
 import { cn } from '@/lib/utils';
 import { QuestionsList } from './questions-list';
 
-// Cant use Question Format from prisma
-interface Question {
-  id: string;
-  question: string;
-  imageUrl: string | null;
-  answer: string;
-  questionType: string;
-  explanation: string;
-  options: Option[]; // Tambahkan properti options dengan tipe Option[]
-  quizId: string;
-  position: number;
-  createdAt: Date;
-  updateAt: Date;
-}
-
 interface QuestionFormProps {
-  initialData: Quiz & { questions: Question[] };
+  initialData: Quiz & { questions: (Question & { options: Option[] })[] };
   quizId: string;
 }
 
