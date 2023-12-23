@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { db } from '@/lib/db';
 import { auth } from '@clerk/nextjs';
-import { Quiz, Option } from '@prisma/client';
+import { Quiz, Option, Question } from '@prisma/client';
 import axios from 'axios';
 import { ArrowRightToLine } from 'lucide-react';
 import { NextResponse } from 'next/server';
@@ -21,22 +21,10 @@ const {
   UnderlineType,
 } = docx;
 
-interface Question {
-  id: string;
-  question: string;
-  questionType: string;
-  options: Option[];
-  imageUrl: string | null;
-  answer: string;
-  isPublished: boolean;
-  explanation: string;
-  quizId: string;
-  position: number;
-  createdAt: Date;
-  updateAt: Date;
-}
 export class DocumentCreator {
-  create(initialData: Quiz & { questions: Question[] }) {
+  create(
+    initialData: Quiz & { questions: (Question & { options: Option[] })[] }
+  ) {
     const document = new Document({
       title: initialData.title,
       description: initialData.description,
@@ -68,7 +56,7 @@ export class DocumentCreator {
           children: [
             this.createQuizTitle(initialData.title),
             ...initialData.questions.flatMap(
-              (question: Question, index: number) => {
+              (question: Question & { options: Option[] }, index: number) => {
                 const arr = [];
                 const questionNumber = index + 1;
 
