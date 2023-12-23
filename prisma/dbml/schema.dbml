@@ -133,6 +133,10 @@ Table Purchase {
   course Course [not null]
   createdAt DateTime [default: `now()`, not null]
   updateAt DateTime [not null]
+
+  indexes {
+    (userId, courseId) [unique]
+  }
 }
 
 Table StripeCustomer {
