@@ -4,11 +4,6 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 
 const ExportPage = ({ params }: { params: { quizId: string } }) => {
-  var decoder = new TextDecoder('utf-8');
-
-  function arrayBufferToString(buffer: any) {
-    return decoder.decode(new Uint8Array(buffer));
-  }
   const onClick = async () => {
     try {
       const response = await axios.post(
@@ -21,7 +16,7 @@ const ExportPage = ({ params }: { params: { quizId: string } }) => {
           },
         }
       );
-
+      1;
       const blob = new Blob([response.data], {
         type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
       });
