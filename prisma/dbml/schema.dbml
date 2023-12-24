@@ -201,8 +201,6 @@ Table LearningOutcome {
   phaseId String
   phase Phase
   element Element [not null]
-  createdAt DateTime [default: `now()`, not null]
-  updateAt DateTime [not null]
 }
 
 Table LearningObjective {
@@ -267,6 +265,7 @@ Table LearningModule {
   title String [not null]
   numOfMeeting Int
   LearningHours String
+  isPublished Boolean [not null, default: false]
   phaseId String
   phase Phase
   class Int
@@ -286,6 +285,8 @@ Table LearningModule {
   meaningfulComprehension MeaningfulComprehension [not null]
   triggerQuestion TriggerQuestion [not null]
   LearningFlow LearningFlow [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updateAt DateTime [not null]
 }
 
 Enum QuestionType {

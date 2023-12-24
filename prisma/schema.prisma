@@ -268,8 +268,6 @@ model LearningOutcome {
   phaseId String?
   phase  Phase? @relation(fields: [phaseId], references: [id])
   element Element[]
-  createdAt DateTime @default(now())
-  updateAt  DateTime @updatedAt
 
   @@index([phaseId])
 }
@@ -364,6 +362,7 @@ model LearningModule {
   title String @db.Text
   numOfMeeting Int?
   LearningHours String?
+  isPublished Boolean @default(false)
   
   phaseId String?
   phase Phase? @relation(fields: [phaseId], references: [id])
@@ -385,5 +384,7 @@ model LearningModule {
   meaningfulComprehension MeaningfulComprehension[]
   triggerQuestion TriggerQuestion[]
   LearningFlow LearningFlow[]
+  createdAt DateTime @default(now())
+  updateAt  DateTime @updatedAt
   @@index([phaseId])
 }
