@@ -72,6 +72,7 @@ export const Metadata = ({ initialData }: MetadataProps) => {
               </span>
             </div>
           </div>
+
           {/* Bagian 2 */}
           <div className="absolute top-0 right-0 flex items-start gap-x-3 mt-2 mr-2">
             <div>
@@ -86,12 +87,13 @@ export const Metadata = ({ initialData }: MetadataProps) => {
                       Buat Soal
                     </DropdownMenuItem>
                   </Link>
-                  <Link href={`/teacher/quiz/${initialData.id}/export`}>
+
+                  {/* <Link href={`/teacher/quiz/${initialData.id}/export`}>
                     <DropdownMenuItem>
                       <ArrowRightToLine className="h-5 w-5 mr-2" />
                       Ekspor Kuis
                     </DropdownMenuItem>
-                  </Link>
+                  </Link> */}
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
