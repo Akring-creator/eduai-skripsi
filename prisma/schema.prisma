@@ -152,6 +152,9 @@ model Quiz {
   categoryId String?
   category   Category? @relation(fields: [categoryId], references: [id])
 
+  learningActivitiesId String?
+  learningActivities  LearningActivities?  @relation(fields: [learningActivitiesId], references: [id])
+
   questions   Question[]
   attachments QuizAttachment[]
 
@@ -201,27 +204,30 @@ model StripeCustomer {
 
 // Part schema for Modul Ajar
 
-enum studentTarget {
-  general
-  disability
-  highAchiever
+model studentTarget {
+
+id String @id @default(uuid())
+target String @db.Text
+
+learningModules LearningModule[]
+}
+model learningModa {
+
+id String @id @default(uuid())
+moda String @db.Text
+
+learningModules LearningModule[]
 }
 
-enum learningModel {
-  offlineDistanceClass
-  onlineDistanceClass
-  inClass
-  blended
-}
+model PancasilaStudentsProfile {
 
-enum PancasilaStudentsProfile {
-  independent
-  faithful
-  diversity
-  cooperative
-  creative
-  criticalThinker
+id String @id @default(uuid())
+name String @db.Text
 
+learningModuleId String
+learningModule LearningModule @relation(fields: [learningModuleId], references: [id])
+
+@@index([learningModuleId])
 }
 
 model Subject {
@@ -249,6 +255,7 @@ model Phase{
   name String @db.Text
   minClass Int
   maxClass Int
+  educationLevels String?
 
   learningOutcome LearningOutcome[]
   learningModule LearningModule[]
@@ -267,17 +274,116 @@ model LearningOutcome {
   @@index([phaseId])
 }
 
+model LearningObjective {
+  id String @id @default(uuid())
+  content String @db.Text
+  learningModuleId String
+  learningModule LearningModule @relation(fields: [learningModuleId], references: [id], onDelete: Cascade)
+
+  @@index([learningModuleId])
+
+}
+
+model MeaningfulComprehension{
+  id String @id @default(uuid())
+  content String @db.Text
+  learningModuleId String
+  learningModule LearningModule @relation(fields: [learningModuleId], references: [id], onDelete: Cascade)
+
+  @@index([learningModuleId])
+
+}
+
+model LearningObjectiveFlows {
+  id String @id @default(uuid())
+  content String @db.Text
+  Position Int
+
+  learningModuleId String
+  learningModule LearningModule @relation(fields: [learningModuleId], references: [id], onDelete: Cascade)
+
+  @@index([learningModuleId])
+
+}
+model TriggerQuestion {
+  id String @id @default(uuid())
+  content String @db.Text
+  position Int
+
+  learningModuleId String
+  learningModule LearningModule @relation(fields: [learningModuleId], references: [id], onDelete: Cascade)
+
+  @@index([learningModuleId])
+
+}
+model LearningFlow{
+  id String @id @default(uuid())
+  meeting Int
+  learningActivitesId String
+  learningActivities LearningActivities[]
+
+
+  learningModuleId String
+  learningModule LearningModule @relation(fields: [learningModuleId], references: [id], onDelete: Cascade)
+
+  @@index([learningModuleId])
+
+}
+
+model LearningActivities{
+  id String @id @default(uuid())
+  learningPhaseId String
+  learningPhase LearningPhase[]
+
+  quiz Quiz[]
+  learningFlowId String
+  learningFlow LearningFlow @relation(fields: [learningFlowId], references: [id], onDelete: Cascade)
+
+  @@index([learningFlowId])
+
+
+}
+
+model LearningPhase{
+  id String @id @default(uuid())
+  content String @db.Text
+  position Int
+
+  learningActivitiesId String
+  learningActivities LearningActivities @relation(fields: [learningActivitiesId], references: [id], onDelete: Cascade)
+
+  @@index([learningActivitiesId])
+
+  
+
+}
+
 model LearningModule {
   id String @id @default(uuid())
+  userId String
   title String @db.Text
-  phaseId String
-  phase Phase @relation(fields: [phaseId], references: [id])
-  class Int
-  subjectId String
-  subject Subject @relation(fields: [subjectId], references: [id])
+  numOfMeeting Int?
+  LearningHours String?
+  
+  phaseId String?
+  phase Phase? @relation(fields: [phaseId], references: [id])
+  class Int?
+  subjectId String?
+  subject Subject? @relation(fields: [subjectId], references: [id])
+  modaId String?
+  moda learningModa? @relation(fields: [modaId], references: [id])
+  model String? @db.Text
+  studentTargetId String?
+  studentTarget studentTarget? @relation(fields: [studentTargetId], references: [id])
 
-
-  @@unique([phaseId, subjectId])
+  tripleP PancasilaStudentsProfile[]
+  initialMaterial String? @db.MediumText
+  teacherReflection String? @db.Text
+  learningGoals LearningObjective[]
+  learningObjectiveFlows LearningObjectiveFlows[]
+  method String? @db.Text
+  meaningfulComprehension MeaningfulComprehension[]
+  triggerQuestion TriggerQuestion[]
+  LearningFlow LearningFlow[]
   @@index([phaseId])
-  @@index([subjectId])
 }
