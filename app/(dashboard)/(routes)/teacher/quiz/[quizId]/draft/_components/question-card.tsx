@@ -1,63 +1,111 @@
 import axios from 'axios';
 import TextareaAutosize from 'react-textarea-autosize';
 import { ChevronDown, ChevronUp, Pencil } from 'lucide-react';
-import { Option } from '@prisma/client';
-import { ElementRef, useRef, useState } from 'react';
+import { Option, Question } from '@prisma/client';
+import { ElementRef, useEffect, useRef, useState } from 'react';
 import OptionForm from './question-options';
 import { cn } from '@/lib/utils';
 import { Textarea } from '@/components/ui/textarea';
 import { ShortAnswer } from './short-answer';
 import { db } from '@/lib/db';
 
-interface Question {
-  id: string;
-  question: string;
-  imageUrl: string | null;
-  answer: string;
-  questionType: string;
-  explanation: string;
-  options: Option[];
-  quizId: string;
-  position: number;
-  createdAt: Date;
-  updateAt: Date;
-}
 interface QuestionCardProps {
-  initialData: Question;
+  initialData: Question & { options: Option[] };
   quizId: string;
   qType: string;
 }
 
 const QuestionCard = ({ initialData, quizId, qType }: QuestionCardProps) => {
-  const questionId = initialData.id;
+  // Menginisialisasi State
+  const [options, setOptions] = useState(initialData.options);
+  const correctAnswer = options.find((option) => option.isKeyAnswer === true);
+  const [keyAnswerId, setKeyAnswerId] = useState(correctAnswer?.id);
+  const [showAllQuestionSection, setShowAllQuestionSection] = useState(false);
+  const [deletedOption, setDeletedOption] = useState<string[]>([]);
   const [editing, setIsEditing] = useState({
     question: false,
     explanation: false,
   });
-  const [showAllQuestionSection, setShowAllQuestionSection] = useState(false);
-
-  const inputQuestionRef = useRef<ElementRef<'textarea'>>(null);
-  const inputExplanationRef = useRef<ElementRef<'textarea'>>(null);
   const [value, setValue] = useState({
     question: initialData.question,
     explanation: initialData.explanation,
   });
 
-  const correctAnswer = initialData.options.find(
-    (option) => option.isKeyAnswer === true
-  );
-  const [keyAnswerId, setKeyAnswerId] = useState(correctAnswer?.id);
+  // Menggunakan UseRef untuk Pertanyaan dan Jawaban
+  const inputQuestionRef = useRef<ElementRef<'textarea'>>(null);
+  const inputExplanationRef = useRef<ElementRef<'textarea'>>(null);
 
-  const onKeyAnswerUpdate = (value: string) => {
+  // Mengubah nilai key Answer pada state options
+  const onKeyUpdate = (value: string) => {
+    const updatedOptions = options.map((option) => {
+      if (option.id === value) {
+        return {
+          ...option,
+          isKeyAnswer: true,
+        };
+      }
+      return {
+        ...option,
+        isKeyAnswer: false,
+      };
+    });
+
+    setOptions(updatedOptions);
     setKeyAnswerId(value);
   };
+
+  // mengubah nilai option pada state options
+  const onOptionChange = (id: string, value: string) => {
+    const updatedOptions = options.map((option) => {
+      if (option.id === id) {
+        return {
+          ...option,
+          option: value,
+        };
+      }
+      return {
+        ...option,
+      };
+    });
+
+    setOptions(updatedOptions);
+  };
+
+  // Mengupload Nilai Option ke Database jika div sudah tidak lagi menjadi fokus
+  const uploadOption = async () => {
+    try {
+      for (const option of options) {
+        console.log('ini deleted' + deletedOption);
+        console.log(option.id);
+        if (!deletedOption.includes(option.id)) {
+          await axios.patch(
+            `/api/quiz/${quizId}/questions/${initialData.id}/option/${option.id}`,
+            option
+          );
+        }
+      }
+    } catch (error) {
+      console.error('Error uploading options:', error);
+    }
+  };
+
+  const onDelete = async (id: string) => {
+    setDeletedOption((prevId) => [...prevId, id]);
+    const newOptions = options.filter((option) => option.id !== id);
+    setOptions(newOptions);
+    console.log(newOptions);
+    await axios.delete(
+      `/api/quiz/${quizId}/questions/${initialData.id}/option/${id}`
+    );
+  };
+
   const enableQuestionInput = async () => {
     setIsEditing({
       ...editing,
       question: true,
     });
     const response = await axios.get(
-      `/api/quiz/${quizId}/questions/${questionId}`
+      `/api/quiz/${quizId}/questions/${initialData.id}`
     );
 
     setTimeout(() => {
@@ -74,7 +122,7 @@ const QuestionCard = ({ initialData, quizId, qType }: QuestionCardProps) => {
       explanation: true,
     });
     const response = await axios.get(
-      `/api/quiz/${quizId}/questions/${questionId}`
+      `/api/quiz/${quizId}/questions/${initialData.id}`
     );
 
     setTimeout(() => {
@@ -90,12 +138,9 @@ const QuestionCard = ({ initialData, quizId, qType }: QuestionCardProps) => {
       ...editing,
       question: false,
     });
-    const update = await axios.patch(
-      `/api/quiz/${quizId}/questions/${questionId}`,
-      {
-        question: value.question,
-      }
-    );
+    await axios.patch(`/api/quiz/${quizId}/questions/${initialData.id}`, {
+      question: value.question,
+    });
   };
 
   const disableExplanationInput = async () => {
@@ -103,12 +148,9 @@ const QuestionCard = ({ initialData, quizId, qType }: QuestionCardProps) => {
       ...editing,
       explanation: false,
     });
-    const update = await axios.patch(
-      `/api/quiz/${quizId}/questions/${questionId}`,
-      {
-        explanation: value.explanation,
-      }
-    );
+    await axios.patch(`/api/quiz/${quizId}/questions/${initialData.id}`, {
+      explanation: value.explanation,
+    });
   };
   const toggleShowAllQuestionSection = () => {
     setShowAllQuestionSection(!showAllQuestionSection);
@@ -119,8 +161,6 @@ const QuestionCard = ({ initialData, quizId, qType }: QuestionCardProps) => {
       ...value,
       question: newQuestion,
     });
-    // const update = await axios.patch(`/api/question/${initialData.id}`, { question: newquestion })
-    // Hasil console.log(value)
   };
 
   const onExplanationInput = async (newExplanation: string) => {
@@ -169,14 +209,16 @@ const QuestionCard = ({ initialData, quizId, qType }: QuestionCardProps) => {
         }`}
       >
         {qType === 'multipleChoice' ? (
-          <div>
-            {initialData.options.map((option, index) => (
+          <div tabIndex={1} onBlur={uploadOption}>
+            {options.map((option, index) => (
               <div key={index}>
                 <OptionForm
+                  onDelete={(id) => onDelete(id)}
                   keyAnswerId={keyAnswerId!}
-                  optionId={option.id}
-                  onKeyUpdate={(value) => onKeyAnswerUpdate(value)}
-                  questionId={questionId}
+                  option={option}
+                  onKeyUpdate={(value) => onKeyUpdate(value)}
+                  onOptionChange={(id, value) => onOptionChange(id, value)}
+                  questionId={initialData.id}
                   quizId={quizId}
                 />
               </div>
@@ -186,7 +228,7 @@ const QuestionCard = ({ initialData, quizId, qType }: QuestionCardProps) => {
           <div>
             <ShortAnswer
               optionId={keyAnswerId!}
-              questionId={questionId}
+              questionId={initialData.id}
               quizId={quizId}
             />
           </div>
@@ -219,8 +261,6 @@ const QuestionCard = ({ initialData, quizId, qType }: QuestionCardProps) => {
           </div>
         </div>
       </div>
-      {/* )} */}
-      {/* Bagian 2 */}
     </div>
   );
 };

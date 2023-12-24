@@ -42,6 +42,46 @@ export async function GET(
   }
 }
 
+export async function DELETE(
+  req: Request,
+  {
+    params,
+  }: { params: { quizId: string; questionId: string; optionId: string } }
+) {
+  try {
+    //Memastikan bahwa pengguna sudah login dan mengambil data JSON
+    const { userId } = auth();
+
+    if (!userId) {
+      return new NextResponse('Unauthorized', { status: 401 });
+    }
+
+    // Memastikan bahwa pengguna merupakan pemilik Quiz
+    const quizOwner = await db.quiz.findUnique({
+      where: {
+        id: params.quizId,
+        userId,
+      },
+    });
+
+    if (!quizOwner) {
+      return new NextResponse('Unauthorized', { status: 401 });
+    }
+
+    const option = await db.option.delete({
+      where: {
+        id: params.optionId,
+        questionId: params.questionId,
+      },
+    });
+
+    return NextResponse.json(option);
+  } catch (error) {
+    console.log('[OPTION]', error);
+    return new NextResponse('Internal Error', { status: 500 });
+  }
+}
+
 export async function PATCH(
   req: Request,
   {
