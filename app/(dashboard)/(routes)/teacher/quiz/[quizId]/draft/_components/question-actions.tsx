@@ -115,10 +115,10 @@ const QuestionAction = ({
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuItem>
+            {/* <DropdownMenuItem>
               <ListPlus className="h-3 w-3 mr-2" />
               <p className="text-xs">Tambah Option</p>
-            </DropdownMenuItem>
+            </DropdownMenuItem> */}
             <DropdownMenuSub>
               <DropdownMenuSubTrigger>
                 <ArrowUpDown className="h-3 w-3 mr-2" />

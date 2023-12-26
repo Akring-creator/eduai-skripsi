@@ -206,8 +206,6 @@ const QuestionCard = ({ initialData, quizId, qType }: QuestionCardProps) => {
           </div>
         </div>
       </div>
-      {/* )} */}
-      {/* Bagian 2 */}
     </div>
   );
 };
