@@ -90,13 +90,14 @@ const QuestionCard = ({ initialData, quizId, qType }: QuestionCardProps) => {
   };
 
   const onDelete = async (id: string) => {
-    setDeletedOption((prevId) => [...prevId, id]);
-    const newOptions = options.filter((option) => option.id !== id);
-    setOptions(newOptions);
-    console.log(newOptions);
-    await axios.delete(
-      `/api/quiz/${quizId}/questions/${initialData.id}/option/${id}`
-    );
+    console.log(id);
+    // setDeletedOption((prevId) => [...prevId, id]);
+    // const newOptions = options.filter((option) => option.id !== id);
+    // setOptions(newOptions);
+    // console.log(newOptions);
+    // await axios.delete(
+    //   `/api/quiz/${quizId}/questions/${initialData.id}/option/${id}`
+    // );
   };
 
   const enableQuestionInput = async () => {
