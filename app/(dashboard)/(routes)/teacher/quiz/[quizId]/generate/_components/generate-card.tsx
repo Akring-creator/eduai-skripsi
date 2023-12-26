@@ -100,11 +100,36 @@ export const QuizCard = ({ quizId }: QuizCardProps) => {
                   name="materi"
                   render={({ field }) => (
                     <FormItem>
+                      <FormLabel>Materi Soal</FormLabel>
+                      <FormDescription>
+                        Bisa berisi nama atau deskripsi tentang materi yang
+                        ingin kamu gunakan dalam pembuatan soal.
+                      </FormDescription>
                       <FormControl>
                         <Textarea
-                          rows={30}
+                          rows={20}
                           disabled={isSubmitting}
-                          placeholder="Masukkan materi yang ingin dibuat soalnya ... "
+                          placeholder="Nama atau Deskripsi tentang materi"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="guidance"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Petunjuk Pembuatan Soal</FormLabel>
+                      <FormDescription>
+                        Soal seperti apa yang mau kamu buat?
+                      </FormDescription>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Cth: Semua soal harus berupa hitungan."
+                          disabled={isSubmitting}
                           {...field}
                         />
                       </FormControl>
@@ -158,26 +183,7 @@ export const QuizCard = ({ quizId }: QuizCardProps) => {
                     </FormItem>
                   )}
                 />
-                <FormField
-                  control={form.control}
-                  name="guidance"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Petunjuk Pembuatan Soal</FormLabel>
-                      <FormDescription>
-                        Soal seperti apa yang mau kamu buat?
-                      </FormDescription>
-                      <FormControl>
-                        <Textarea
-                          placeholder="Cth: Semua soal harus berupa hitungan."
-                          disabled={isSubmitting}
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+
                 <div className="flex items-center gap-x-2">
                   <Button type="submit" disabled={!isValid || isSubmitting}>
                     Buat Soal
