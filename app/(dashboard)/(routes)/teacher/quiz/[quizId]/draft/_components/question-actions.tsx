@@ -126,7 +126,7 @@ const QuestionAction = ({
               </DropdownMenuSubTrigger>
               <DropdownMenuSubContent>
                 <DropdownMenuLabel className="text-xs">
-                  Bentuk Standar
+                  Bentuk Dasar
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator></DropdownMenuSeparator>
                 <DropdownMenuRadioGroup
