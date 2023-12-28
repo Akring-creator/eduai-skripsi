@@ -19,27 +19,38 @@ import { Pencil, Route } from 'lucide-react';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
+import { cn } from '@/lib/utils';
+import { LearningModule } from '@prisma/client';
+import { Combobox } from '@/components/ui/combobox';
 
 interface TitleFormProps {
-  initialData: {
-    title: string;
-  };
+  initialData: LearningModule;
   learningModuleId: string;
+  phaseOptions: { label: string; value: string }[];
 }
 
 const formSchema = z.object({
-  title: z.string().min(1, {
-    message: 'Wajib diisi',
-  }),
+  title: z.string().min(1),
+  writer: z.string().min(1),
+  learningYear: z.string().min(1),
+  institute: z.string().min(1),
+  phaseId: z.string().min(1),
 });
 
 export const TitleForm = ({
   initialData,
   learningModuleId,
+  phaseOptions,
 }: TitleFormProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: initialData,
+    defaultValues: {
+      title: initialData.title,
+      writer: initialData?.writer || '',
+      learningYear: initialData?.learningYear || '',
+      institute: initialData?.institute || '',
+      phaseId: initialData?.phaseId || '',
+    },
   });
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
@@ -62,11 +73,14 @@ export const TitleForm = ({
     }
     console.log(values);
   };
+  const selectedPhaseOption = phaseOptions.find(
+    (option) => option.value === initialData.phaseId
+  );
 
   return (
     <div className="mt-6 border bg-slate-100 rounded-md p-4">
       <div className="font-medium flex items-center justify-between">
-        Judul Kursus
+        Judul Modul Ajar
         <Button onClick={toggleEdit} variant="ghost">
           {isEditing ? (
             <>Cancel</>
@@ -78,7 +92,57 @@ export const TitleForm = ({
           )}
         </Button>
       </div>
-      {!isEditing && <p className="text-sm mt-2">{initialData.title}</p>}
+      {!isEditing && (
+        <div>
+          <p className="text-sm mt-2">
+            <span className="font-bold inline-block w-[100px]">Judul</span>
+            :&nbsp;
+            {initialData.title}
+          </p>
+          <p
+            className={cn(
+              'text-sm mt-2',
+              !initialData.writer && 'text-slate-500 italic'
+            )}
+          >
+            <span className="font-bold inline-block w-[100px]">Penulis</span>
+            :&nbsp;
+            {initialData.writer || 'Penulis'}
+          </p>
+          <p
+            className={cn(
+              'text-sm mt-2',
+              !initialData.institute && 'text-slate-500 italic'
+            )}
+          >
+            <span className="font-bold inline-block w-[100px]">Institusi</span>
+            :&nbsp;
+            {initialData.institute || 'Institusi'}
+          </p>
+          <p
+            className={cn(
+              'text-sm mt-2',
+              !initialData.learningYear && 'text-slate-500 italic'
+            )}
+          >
+            <span className="font-bold inline-block w-[100px]">
+              Tahun Ajaran
+            </span>
+            :&nbsp;
+            {initialData.learningYear || 'Tahun Ajaran'}
+          </p>
+          <p
+            className={cn(
+              'text-sm mt-2',
+              !initialData.phaseId && 'text-slate-500 italic'
+            )}
+          >
+            <span className="font-bold inline-block w-[100px]">Fase</span>
+            :&nbsp;
+            {selectedPhaseOption?.label || 'Fase masih kosong'}
+          </p>
+        </div>
+      )}
       {isEditing && (
         <Form {...form}>
           <form
@@ -90,20 +154,94 @@ export const TitleForm = ({
               name="title"
               render={({ field }) => (
                 <FormItem>
+                  <FormLabel>Judul Modul Ajar: </FormLabel>
                   <FormControl>
                     <Input
                       disabled={isSubmitting}
-                      placeholder="cth: Ulangan Harian Kalkulus"
+                      placeholder="cth: Modul Ajar Geografi Kelas XII"
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Apa yang ingin kamu ajarkan?
-                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="writer"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Penulis: </FormLabel>
+                  <FormControl>
+                    <Input
+                      disabled={isSubmitting}
+                      placeholder="cth: Adrian, S.Pd"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="institute"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Institusi: </FormLabel>
+                  <FormControl>
+                    <Input
+                      disabled={isSubmitting}
+                      placeholder="cth: SMA Negeri 10 Samarinda"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="learningYear"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Tahun Ajaran: </FormLabel>
+                  <FormControl>
+                    <Input
+                      disabled={isSubmitting}
+                      placeholder="cth: 2023/2024"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-8 mt-8"
+              >
+                <FormField
+                  control={form.control}
+                  name="phaseId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Fase: </FormLabel>
+                      <FormControl>
+                        <Combobox
+                          placeholder="Pilih fase ..."
+                          emptymsg="Tidak ditemukan fase"
+                          options={[...phaseOptions]}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </form>
+            </Form>
             <div className="flex items-center gap-x-2">
               <Button type="submit" disabled={!isValid || isSubmitting}>
                 Simpan

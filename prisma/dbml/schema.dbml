@@ -271,6 +271,7 @@ Table LearningModule {
   isPublished Boolean [not null, default: false]
   phaseId String
   phase Phase
+  educationLevel String
   class Int
   subjectId String
   subject Subject

@@ -153,23 +153,7 @@ const LearningModuleIdPage = async ({
             <TitleForm
               initialData={learningModule}
               learningModuleId={learningModule.id}
-            />
-            <WriterForm
-              initialData={learningModule}
-              learningModuleId={learningModule.id}
-            />
-            <InstituteForm
-              initialData={learningModule}
-              learningModuleId={learningModule.id}
-            />
-            <LearningYearForm
-              initialData={learningModule}
-              learningModuleId={learningModule.id}
-            />
-            <PhaseForm
-              initialData={learningModule}
-              learningModuleId={learningModule.id}
-              options={phases.map((phase) => ({
+              phaseOptions={phases.map((phase) => ({
                 label: phase.name,
                 value: phase.id,
               }))}

@@ -162,6 +162,7 @@ model Quiz {
   updateAt  DateTime @updatedAt
 
   @@index([categoryId])
+  @@index([learningActivitiesId])
   @@fulltext([title])
 }
 
@@ -381,6 +382,9 @@ model LearningModule {
   phaseId String?
   phase Phase? @relation(fields: [phaseId], references: [id])
 
+  // Tingkat Pendidikan
+  educationLevel String?
+
   // Kelas
   class Int?
 
@@ -436,4 +440,7 @@ model LearningModule {
   createdAt DateTime @default(now())
   updateAt  DateTime @updatedAt
   @@index([phaseId])
+  @@index([studentTargetId])
+  @@index([modaId])
+  @@index([subjectId])
 }
