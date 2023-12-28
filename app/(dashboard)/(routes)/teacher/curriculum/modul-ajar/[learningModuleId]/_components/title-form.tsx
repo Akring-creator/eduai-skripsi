@@ -15,35 +15,31 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Pencil, PlusCircle, Route } from 'lucide-react';
+import { Pencil, Route } from 'lucide-react';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
-import { Course } from '@prisma/client';
-import { Textarea } from '@/components/ui/textarea';
-import { cn } from '@/lib/utils';
-import { Combobox } from '@/components/ui/combobox';
 
-interface CategoryFormProps {
-  initialData: Course;
-  courseId: string;
-  options: { label: string; value: string }[];
+interface TitleFormProps {
+  initialData: {
+    title: string;
+  };
+  learningModuleId: string;
 }
 
 const formSchema = z.object({
-  categoryId: z.string().min(1),
+  title: z.string().min(1, {
+    message: 'Wajib diisi',
+  }),
 });
 
-export const CategoryForm = ({
+export const TitleForm = ({
   initialData,
-  courseId,
-  options,
-}: CategoryFormProps) => {
+  learningModuleId,
+}: TitleFormProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      categoryId: initialData?.categoryId || '',
-    },
+    defaultValues: initialData,
   });
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
@@ -54,43 +50,35 @@ export const CategoryForm = ({
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const update = await axios.patch(`/api/courses/${courseId}`, values);
-      toast.success('Berhasil mengubah deskripsi');
+      const update = await axios.patch(
+        `/api/curriculum/modul-ajar/${learningModuleId}`,
+        values
+      );
+      toast.success('Judul berhasil diubah');
       toggleEdit();
       router.refresh();
     } catch {
-      toast.error('Ada Masalah');
+      toast.error('Tedapat Kendala');
     }
     console.log(values);
   };
-  const selectedOption = options.find(
-    (option) => option.value === initialData.categoryId
-  );
 
   return (
     <div className="mt-6 border bg-slate-100 rounded-md p-4">
       <div className="font-medium flex items-center justify-between">
-        Kategori Kursus
+        Judul Kursus
         <Button onClick={toggleEdit} variant="ghost">
-          {isEditing && <>Cancel</>}
-          {!isEditing && (
+          {isEditing ? (
+            <>Cancel</>
+          ) : (
             <>
               <Pencil className="h-4 w-4 mr-2" />
-              Ganti Kategori
+              Edit Judul
             </>
           )}
         </Button>
       </div>
-      {!isEditing && (
-        <p
-          className={cn(
-            'text-sm mt-2',
-            !initialData.categoryId && 'text-slate-500 italic'
-          )}
-        >
-          {selectedOption?.label || 'Kategori Tidak Tersedia'}
-        </p>
-      )}
+      {!isEditing && <p className="text-sm mt-2">{initialData.title}</p>}
       {isEditing && (
         <Form {...form}>
           <form
@@ -99,19 +87,18 @@ export const CategoryForm = ({
           >
             <FormField
               control={form.control}
-              name="categoryId"
+              name="title"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Combobox
-                      placeholder="Pilih kategori ..."
-                      emptymsg="Tidak ditemukan kategori."
-                      options={[...options]}
+                    <Input
+                      disabled={isSubmitting}
+                      placeholder="cth: Ulangan Harian Kalkulus"
                       {...field}
                     />
                   </FormControl>
                   <FormDescription>
-                    Ceritakan lebih lanjut tentang kursusmu
+                    Apa yang ingin kamu ajarkan?
                   </FormDescription>
                   <FormMessage />
                 </FormItem>

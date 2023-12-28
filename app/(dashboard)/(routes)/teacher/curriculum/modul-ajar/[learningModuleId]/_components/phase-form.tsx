@@ -19,30 +19,30 @@ import { Pencil, PlusCircle, Route } from 'lucide-react';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
-import { Course } from '@prisma/client';
+import { Course, LearningModule } from '@prisma/client';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
 import { Combobox } from '@/components/ui/combobox';
 
-interface CategoryFormProps {
-  initialData: Course;
-  courseId: string;
+interface PhaseFormProps {
+  initialData: LearningModule;
+  learningModuleId: string;
   options: { label: string; value: string }[];
 }
 
 const formSchema = z.object({
-  categoryId: z.string().min(1),
+  phaseId: z.string().min(1),
 });
 
-export const CategoryForm = ({
+export const PhaseForm = ({
   initialData,
-  courseId,
+  learningModuleId,
   options,
-}: CategoryFormProps) => {
+}: PhaseFormProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      categoryId: initialData?.categoryId || '',
+      phaseId: initialData?.phaseId || '',
     },
   });
   const router = useRouter();
@@ -54,29 +54,32 @@ export const CategoryForm = ({
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const update = await axios.patch(`/api/courses/${courseId}`, values);
-      toast.success('Berhasil mengubah deskripsi');
+      const update = await axios.patch(
+        `/api/curriculum/modul-ajar/${learningModuleId}`,
+        values
+      );
+      toast.success('Fase diubah');
       toggleEdit();
       router.refresh();
     } catch {
-      toast.error('Ada Masalah');
+      toast.error('Terdapat Kendala');
     }
     console.log(values);
   };
   const selectedOption = options.find(
-    (option) => option.value === initialData.categoryId
+    (option) => option.value === initialData.phaseId
   );
 
   return (
     <div className="mt-6 border bg-slate-100 rounded-md p-4">
       <div className="font-medium flex items-center justify-between">
-        Kategori Kursus
+        Fase Modul Ajar
         <Button onClick={toggleEdit} variant="ghost">
           {isEditing && <>Cancel</>}
           {!isEditing && (
             <>
               <Pencil className="h-4 w-4 mr-2" />
-              Ganti Kategori
+              Ganti Fase
             </>
           )}
         </Button>
@@ -85,10 +88,10 @@ export const CategoryForm = ({
         <p
           className={cn(
             'text-sm mt-2',
-            !initialData.categoryId && 'text-slate-500 italic'
+            !initialData.phaseId && 'text-slate-500 italic'
           )}
         >
-          {selectedOption?.label || 'Kategori Tidak Tersedia'}
+          {selectedOption?.label || 'Fase masih kosong'}
         </p>
       )}
       {isEditing && (
@@ -99,20 +102,17 @@ export const CategoryForm = ({
           >
             <FormField
               control={form.control}
-              name="categoryId"
+              name="phaseId"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
                     <Combobox
-                      placeholder="Pilih kategori ..."
-                      emptymsg="Tidak ditemukan kategori."
+                      placeholder="Pilih fase ..."
+                      emptymsg="Tidak ditemukan fase"
                       options={[...options]}
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Ceritakan lebih lanjut tentang kursusmu
-                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}

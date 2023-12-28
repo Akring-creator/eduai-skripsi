@@ -22,27 +22,26 @@ import { useRouter } from 'next/navigation';
 import { Course } from '@prisma/client';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
-import { Combobox } from '@/components/ui/combobox';
 
-interface CategoryFormProps {
+interface DescriptionFormProps {
   initialData: Course;
-  courseId: string;
-  options: { label: string; value: string }[];
+  learningModuleId: string;
 }
 
 const formSchema = z.object({
-  categoryId: z.string().min(1),
+  description: z.string().min(1, {
+    message: 'Description is Required',
+  }),
 });
 
-export const CategoryForm = ({
+export const DescriptionForm = ({
   initialData,
-  courseId,
-  options,
-}: CategoryFormProps) => {
+  learningModuleId,
+}: DescriptionFormProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      categoryId: initialData?.categoryId || '',
+      description: initialData?.description || '',
     },
   });
   const router = useRouter();
@@ -54,7 +53,10 @@ export const CategoryForm = ({
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const update = await axios.patch(`/api/courses/${courseId}`, values);
+      const update = await axios.patch(
+        `/api/courses/${learningModuleId}`,
+        values
+      );
       toast.success('Berhasil mengubah deskripsi');
       toggleEdit();
       router.refresh();
@@ -63,20 +65,17 @@ export const CategoryForm = ({
     }
     console.log(values);
   };
-  const selectedOption = options.find(
-    (option) => option.value === initialData.categoryId
-  );
 
   return (
     <div className="mt-6 border bg-slate-100 rounded-md p-4">
       <div className="font-medium flex items-center justify-between">
-        Kategori Kursus
+        Deskripsi Kursus
         <Button onClick={toggleEdit} variant="ghost">
           {isEditing && <>Cancel</>}
           {!isEditing && (
             <>
               <Pencil className="h-4 w-4 mr-2" />
-              Ganti Kategori
+              Ganti Deskripsi
             </>
           )}
         </Button>
@@ -85,10 +84,10 @@ export const CategoryForm = ({
         <p
           className={cn(
             'text-sm mt-2',
-            !initialData.categoryId && 'text-slate-500 italic'
+            !initialData.description && 'text-slate-500 italic'
           )}
         >
-          {selectedOption?.label || 'Kategori Tidak Tersedia'}
+          {initialData.description || 'Tidak ada deskripsi'}
         </p>
       )}
       {isEditing && (
@@ -99,14 +98,13 @@ export const CategoryForm = ({
           >
             <FormField
               control={form.control}
-              name="categoryId"
+              name="description"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Combobox
-                      placeholder="Pilih kategori ..."
-                      emptymsg="Tidak ditemukan kategori."
-                      options={[...options]}
+                    <Textarea
+                      disabled={isSubmitting}
+                      placeholder="Kursus ini tentang ...."
                       {...field}
                     />
                   </FormControl>

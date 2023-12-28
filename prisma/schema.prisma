@@ -314,6 +314,7 @@ model TriggerQuestion {
   @@index([learningModuleId])
 
 }
+// Aktifitas Pembelajaran per Pertemuan
 model LearningFlow{
   id String @id @default(uuid())
   meeting Int
@@ -328,6 +329,7 @@ model LearningFlow{
 
 }
 
+// Aktifitas Pembelajaran: Pendahuluan, Inti, Akhir
 model LearningActivities{
   id String @id @default(uuid())
   learningPhaseId String
@@ -342,6 +344,7 @@ model LearningActivities{
 
 }
 
+// Isi dari Aktifitas Pembelajaran
 model LearningPhase{
   id String @id @default(uuid())
   content String @db.Text
@@ -359,31 +362,77 @@ model LearningPhase{
 model LearningModule {
   id String @id @default(uuid())
   userId String
+  // Nama Penulis
+  writer String?
+  // Instansi Penulis
+  institute String?
+  // Tahun Pembelajaran
+  learningYear String?
+  // Judul Modul Ajar
   title String @db.Text
+  // Jumlah Pertemuan
   numOfMeeting Int?
-  LearningHours String?
+  // Jumlah jam pembelajaran dalam satuan menit
+  learningHours Int?
+  // Apakah Publish atau tidak
   isPublished Boolean @default(false)
   
+  // Fase: A-F
   phaseId String?
   phase Phase? @relation(fields: [phaseId], references: [id])
+
+  // Kelas
   class Int?
+
+  // Mata Pelajaran
   subjectId String?
   subject Subject? @relation(fields: [subjectId], references: [id])
+
+  // Moda Pembelajaran: Online, Offline, Blended, Online-Independent
   modaId String?
   moda learningModa? @relation(fields: [modaId], references: [id])
+
+  // Model Pembelajaran: Diskusi, Project Based, dkk
   model String? @db.Text
+
+  // Target Peserta Didik: Regular, Ambis, Tertinggal
   studentTargetId String?
   studentTarget studentTarget? @relation(fields: [studentTargetId], references: [id])
 
+  // Profil Pelajar Pancasila
   tripleP PancasilaStudentsProfile[]
-  initialMaterial String? @db.MediumText
+
+  // Materi Standar
+  material String? @db.Text
+
+  // Materi Kustom
+  customMaterial String? @db.MediumText
+
+  // Refleksi Pendidik
   teacherReflection String? @db.Text
-  learningGoals LearningObjective[]
+
+  // Sarana dan Prasarana
+  facilities String? @db.Text
+
+  // Tujuan Pembelajaran
+  learningObjective LearningObjective[]
+
+  // Alur Tujuan Pembelajaran
   learningObjectiveFlows LearningObjectiveFlows[]
+
+  // Metode Pembelajaran
   method String? @db.Text
+
+  // Pemahaman Bermakna
   meaningfulComprehension MeaningfulComprehension[]
+
+  // Pertanyaan Pemantik
   triggerQuestion TriggerQuestion[]
-  LearningFlow LearningFlow[]
+
+  // Kegiatan Pembelajaran
+  learningFlow LearningFlow[]
+
+  // Metadata pembuatan
   createdAt DateTime @default(now())
   updateAt  DateTime @updatedAt
   @@index([phaseId])

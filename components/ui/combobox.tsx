@@ -22,9 +22,17 @@ interface ComboboxProps {
   options: { label: string; value: string }[];
   value?: string;
   onChange: (value: string) => void;
+  placeholder: string;
+  emptymsg: string;
 }
 
-export const Combobox = ({ options, value, onChange }: ComboboxProps) => {
+export const Combobox = ({
+  options,
+  value,
+  onChange,
+  placeholder,
+  emptymsg,
+}: ComboboxProps) => {
   const [open, setOpen] = React.useState(false);
 
   return (
@@ -34,7 +42,8 @@ export const Combobox = ({ options, value, onChange }: ComboboxProps) => {
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-full justify-between">
+          className="w-full justify-between"
+        >
           {value
             ? options.find((option) => option.value === value)?.label
             : 'Select option...'}
@@ -43,8 +52,8 @@ export const Combobox = ({ options, value, onChange }: ComboboxProps) => {
       </PopoverTrigger>
       <PopoverContent className="w-full p-0">
         <Command>
-          <CommandInput placeholder="Search option.." />
-          <CommandEmpty>No option found.</CommandEmpty>
+          <CommandInput placeholder={placeholder} />
+          <CommandEmpty>{emptymsg}</CommandEmpty>
           <CommandGroup>
             {options.map((option) => (
               <CommandItem
@@ -52,7 +61,8 @@ export const Combobox = ({ options, value, onChange }: ComboboxProps) => {
                 onSelect={() => {
                   onChange(option.value === value ? '' : option.value);
                   setOpen(false);
-                }}>
+                }}
+              >
                 <Check
                   className={cn(
                     'mr-2 h-4 w-4',

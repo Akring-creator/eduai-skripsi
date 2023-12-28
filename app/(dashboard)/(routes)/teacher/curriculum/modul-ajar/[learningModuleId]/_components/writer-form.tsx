@@ -15,35 +15,31 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Pencil, PlusCircle, Route } from 'lucide-react';
+import { Pencil, Route } from 'lucide-react';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
-import { Course } from '@prisma/client';
-import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
-import { Combobox } from '@/components/ui/combobox';
+import { LearningModule } from '@prisma/client';
 
-interface CategoryFormProps {
-  initialData: Course;
-  courseId: string;
-  options: { label: string; value: string }[];
+interface WriterFormProps {
+  initialData: LearningModule;
+  learningModuleId: string;
 }
 
 const formSchema = z.object({
-  categoryId: z.string().min(1),
+  writer: z.string().min(1, {
+    message: 'Wajib diisi',
+  }),
 });
 
-export const CategoryForm = ({
+export const WriterForm = ({
   initialData,
-  courseId,
-  options,
-}: CategoryFormProps) => {
+  learningModuleId,
+}: WriterFormProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      categoryId: initialData?.categoryId || '',
-    },
+    defaultValues: { writer: initialData?.writer || '' },
   });
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
@@ -54,29 +50,30 @@ export const CategoryForm = ({
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const update = await axios.patch(`/api/courses/${courseId}`, values);
-      toast.success('Berhasil mengubah deskripsi');
+      const update = await axios.patch(
+        `/api/curriculum/modul-ajar/${learningModuleId}`,
+        values
+      );
+      toast.success('Nama Penulis diubah');
       toggleEdit();
       router.refresh();
     } catch {
-      toast.error('Ada Masalah');
+      toast.error('Tedapat Kendala');
     }
     console.log(values);
   };
-  const selectedOption = options.find(
-    (option) => option.value === initialData.categoryId
-  );
 
   return (
     <div className="mt-6 border bg-slate-100 rounded-md p-4">
       <div className="font-medium flex items-center justify-between">
-        Kategori Kursus
+        Penulis
         <Button onClick={toggleEdit} variant="ghost">
-          {isEditing && <>Cancel</>}
-          {!isEditing && (
+          {isEditing ? (
+            <>Batal</>
+          ) : (
             <>
               <Pencil className="h-4 w-4 mr-2" />
-              Ganti Kategori
+              Edit Penulis
             </>
           )}
         </Button>
@@ -85,10 +82,10 @@ export const CategoryForm = ({
         <p
           className={cn(
             'text-sm mt-2',
-            !initialData.categoryId && 'text-slate-500 italic'
+            !initialData.writer && 'text-slate-500 italic'
           )}
         >
-          {selectedOption?.label || 'Kategori Tidak Tersedia'}
+          {initialData.writer || 'Nama Penulis Kosong'}
         </p>
       )}
       {isEditing && (
@@ -99,20 +96,16 @@ export const CategoryForm = ({
           >
             <FormField
               control={form.control}
-              name="categoryId"
+              name="writer"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Combobox
-                      placeholder="Pilih kategori ..."
-                      emptymsg="Tidak ditemukan kategori."
-                      options={[...options]}
+                    <Input
+                      disabled={isSubmitting}
+                      placeholder="cth: Adrian, S.Pd"
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Ceritakan lebih lanjut tentang kursusmu
-                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}

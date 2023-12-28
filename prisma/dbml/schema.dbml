@@ -262,9 +262,12 @@ Table LearningPhase {
 Table LearningModule {
   id String [pk]
   userId String [not null]
+  writer String
+  institute String
+  learningYear String
   title String [not null]
   numOfMeeting Int
-  LearningHours String
+  learningHours Int
   isPublished Boolean [not null, default: false]
   phaseId String
   phase Phase
@@ -277,14 +280,16 @@ Table LearningModule {
   studentTargetId String
   studentTarget studentTarget
   tripleP PancasilaStudentsProfile [not null]
-  initialMaterial String
+  material String
+  customMaterial String
   teacherReflection String
-  learningGoals LearningObjective [not null]
+  facilities String
+  learningObjective LearningObjective [not null]
   learningObjectiveFlows LearningObjectiveFlows [not null]
   method String
   meaningfulComprehension MeaningfulComprehension [not null]
   triggerQuestion TriggerQuestion [not null]
-  LearningFlow LearningFlow [not null]
+  learningFlow LearningFlow [not null]
   createdAt DateTime [default: `now()`, not null]
   updateAt DateTime [not null]
 }

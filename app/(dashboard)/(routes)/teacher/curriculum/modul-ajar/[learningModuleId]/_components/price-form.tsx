@@ -22,27 +22,22 @@ import { useRouter } from 'next/navigation';
 import { Course } from '@prisma/client';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
-import { Combobox } from '@/components/ui/combobox';
+import { formatPrice } from '@/lib/format';
 
-interface CategoryFormProps {
+interface PriceFormProps {
   initialData: Course;
   courseId: string;
-  options: { label: string; value: string }[];
 }
 
 const formSchema = z.object({
-  categoryId: z.string().min(1),
+  price: z.coerce.number(),
 });
 
-export const CategoryForm = ({
-  initialData,
-  courseId,
-  options,
-}: CategoryFormProps) => {
+export const PriceForm = ({ initialData, courseId }: PriceFormProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      categoryId: initialData?.categoryId || '',
+      price: initialData?.price || undefined,
     },
   });
   const router = useRouter();
@@ -55,7 +50,7 @@ export const CategoryForm = ({
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       const update = await axios.patch(`/api/courses/${courseId}`, values);
-      toast.success('Berhasil mengubah deskripsi');
+      toast.success('Berhasil Mengubah Harga');
       toggleEdit();
       router.refresh();
     } catch {
@@ -63,20 +58,17 @@ export const CategoryForm = ({
     }
     console.log(values);
   };
-  const selectedOption = options.find(
-    (option) => option.value === initialData.categoryId
-  );
 
   return (
     <div className="mt-6 border bg-slate-100 rounded-md p-4">
       <div className="font-medium flex items-center justify-between">
-        Kategori Kursus
+        Harga Kursus
         <Button onClick={toggleEdit} variant="ghost">
           {isEditing && <>Cancel</>}
           {!isEditing && (
             <>
               <Pencil className="h-4 w-4 mr-2" />
-              Ganti Kategori
+              Atur Harga
             </>
           )}
         </Button>
@@ -85,34 +77,30 @@ export const CategoryForm = ({
         <p
           className={cn(
             'text-sm mt-2',
-            !initialData.categoryId && 'text-slate-500 italic'
-          )}
-        >
-          {selectedOption?.label || 'Kategori Tidak Tersedia'}
+            !initialData.price && 'text-slate-500 italic'
+          )}>
+          {initialData.price ? formatPrice(initialData.price) : 'No price'}
         </p>
       )}
       {isEditing && (
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-8 mt-8"
-          >
+            className="space-y-8 mt-8">
             <FormField
               control={form.control}
-              name="categoryId"
+              name="price"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Combobox
-                      placeholder="Pilih kategori ..."
-                      emptymsg="Tidak ditemukan kategori."
-                      options={[...options]}
+                    <Input
+                      type="number"
+                      step="0.01"
+                      disabled={isSubmitting}
+                      placeholder="Tentukan Harga untuk Kursusmu"
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Ceritakan lebih lanjut tentang kursusmu
-                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}

@@ -15,35 +15,31 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Pencil, PlusCircle, Route } from 'lucide-react';
+import { Pencil, Route } from 'lucide-react';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
-import { Course } from '@prisma/client';
-import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
-import { Combobox } from '@/components/ui/combobox';
+import { LearningModule } from '@prisma/client';
 
-interface CategoryFormProps {
-  initialData: Course;
-  courseId: string;
-  options: { label: string; value: string }[];
+interface LearningYearProps {
+  initialData: LearningModule;
+  learningModuleId: string;
 }
 
 const formSchema = z.object({
-  categoryId: z.string().min(1),
+  learningYear: z.string().min(1, {
+    message: 'Wajib diisi',
+  }),
 });
 
-export const CategoryForm = ({
+export const LearningYearForm = ({
   initialData,
-  courseId,
-  options,
-}: CategoryFormProps) => {
+  learningModuleId,
+}: LearningYearProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      categoryId: initialData?.categoryId || '',
-    },
+    defaultValues: { learningYear: initialData?.learningYear || '' },
   });
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
@@ -54,29 +50,30 @@ export const CategoryForm = ({
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const update = await axios.patch(`/api/courses/${courseId}`, values);
-      toast.success('Berhasil mengubah deskripsi');
+      const update = await axios.patch(
+        `/api/curriculum/modul-ajar/${learningModuleId}`,
+        values
+      );
+      toast.success('Tahun Ajaran Diubah');
       toggleEdit();
       router.refresh();
     } catch {
-      toast.error('Ada Masalah');
+      toast.error('Tedapat Kendala');
     }
     console.log(values);
   };
-  const selectedOption = options.find(
-    (option) => option.value === initialData.categoryId
-  );
 
   return (
     <div className="mt-6 border bg-slate-100 rounded-md p-4">
       <div className="font-medium flex items-center justify-between">
-        Kategori Kursus
+        Tahun Ajaran
         <Button onClick={toggleEdit} variant="ghost">
-          {isEditing && <>Cancel</>}
-          {!isEditing && (
+          {isEditing ? (
+            <>Batal</>
+          ) : (
             <>
               <Pencil className="h-4 w-4 mr-2" />
-              Ganti Kategori
+              Edit Tahun Ajaran
             </>
           )}
         </Button>
@@ -85,10 +82,10 @@ export const CategoryForm = ({
         <p
           className={cn(
             'text-sm mt-2',
-            !initialData.categoryId && 'text-slate-500 italic'
+            !initialData.learningYear && 'text-slate-500 italic'
           )}
         >
-          {selectedOption?.label || 'Kategori Tidak Tersedia'}
+          {initialData.learningYear || 'Nama Penulis Kosong'}
         </p>
       )}
       {isEditing && (
@@ -99,20 +96,16 @@ export const CategoryForm = ({
           >
             <FormField
               control={form.control}
-              name="categoryId"
+              name="learningYear"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Combobox
-                      placeholder="Pilih kategori ..."
-                      emptymsg="Tidak ditemukan kategori."
-                      options={[...options]}
+                    <Input
+                      disabled={isSubmitting}
+                      placeholder="cth: 2023/2024"
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Ceritakan lebih lanjut tentang kursusmu
-                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
