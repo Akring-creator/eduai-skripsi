@@ -231,7 +231,7 @@ export const TitleForm = ({
                       <FormControl>
                         <Combobox
                           placeholder="Pilih fase ..."
-                          emptymsg="Tidak ditemukan fase"
+                          emptymsg="Fase tidak ditemukan"
                           options={[...phaseOptions]}
                           {...field}
                         />
