@@ -96,6 +96,11 @@ const LearningModuleIdPage = async ({
       target: 'asc',
     },
   });
+  const educationLevel = await db.educationLevel.findMany({
+    orderBy: {
+      position: 'asc',
+    },
+  });
 
   if (!learningModule) {
     return redirect('/');
@@ -108,6 +113,7 @@ const LearningModuleIdPage = async ({
     learningModule.learningYear,
     learningModule.numOfMeeting,
     learningModule.learningHours,
+    learningModule.educationLevelId,
     learningModule.phaseId,
     learningModule.class,
     learningModule.subjectId,
@@ -156,6 +162,10 @@ const LearningModuleIdPage = async ({
               phaseOptions={phases.map((phase) => ({
                 label: phase.name,
                 value: phase.id,
+              }))}
+              educationLevelOptions={educationLevel.map((level) => ({
+                label: level.name,
+                value: level.id,
               }))}
             />
           </div>

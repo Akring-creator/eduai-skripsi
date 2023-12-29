@@ -4,31 +4,51 @@ const database = new PrismaClient();
 
 async function main() {
   try {
-    await database.element.createMany({
+    await database.educationLevel.createMany({
       data: [
+        { name: 'Sekolah Dasar', alias: 'SD', position: 1, groupLevel: 1 },
+        { name: 'Madrasah Ibtidayah', alias: 'MI', position: 2, groupLevel: 1 },
         {
-          name: 'Keterampilan Proses',
-          expectedOutcome:
-            'Pada akhir fase, peserta didik terampil dalam membaca dan menuliskan tentang Konsep Dasar Ilmu Geografi, Peta, Penelitian Geografi dan Fenomena Geosfer. Peserta didik mampu menyampaikan, mengomunikasikan ide antar mereka, dan mampu bekerja secara kelompok atau pun mandiri dengan alat bantu hasil produk sendiri berupa peta atau alat pembelajaran lainnya.',
-          learningOutcomeId: '96dd2e1e-ab1a-4394-b31f-4169b7c1b46e',
+          name: 'Sekolah Dasar Luar Biasa',
+          alias: 'SDLB',
+          position: 3,
+          groupLevel: 1,
         },
         {
-          name: 'Pemahaman Konsep',
-          expectedOutcome:
-            'Pada akhir fase, peserta didik mampu mengidentifikasi, memahami, berpikir kritis, dan menganalisa secara keruangan tentang Konsep Dasar Ilmu Geografi, Peta, Penelitian Geografi dan Lingkungan Geosfer, memaparkan ide, dan memublikasikannya di kelas atau pun media lain.',
-          learningOutcomeId: '96dd2e1e-ab1a-4394-b31f-4169b7c1b46e',
+          name: 'Sekolah Menengah Pertama',
+          alias: 'SMP',
+          position: 4,
+          groupLevel: 2,
         },
         {
-          name: 'Keterampilan Proses',
-          expectedOutcome:
-            'Pada akhir fase, peserta didik terampil dalam membaca dan menuliskan tentang Posisi Strategis, Pola Keanekaragaman Hayati Indonesia dan Dunia, Kebencanaan dan Lingkungan Hidup, Kewilayahan dan Pembangunan, serta Kerja sama antar Wilayah. Peserta didik mampu menyampaikan mengomunikasikan ide antar mereka, dan mampu bekerja secara kelompok atau pun mandiri dengan alat bantu hasil produk sendiri berupa peta atau alat pembelajaran.',
-          learningOutcomeId: '92e426aa-9a1a-4a79-9ae8-3dcf737d0cfd',
+          name: 'Madrasah Tsanawiyah',
+          alias: 'MTs',
+          position: 5,
+          groupLevel: 2,
         },
         {
-          name: 'Pemahaman Konsep',
-          expectedOutcome:
-            'Pada akhir fase, peserta didik mampu mengidentifikasi, memahami, mengolah dan menganalisis, serta mengevaluasi secara keruangan tentang Posisi Strategis, Pola Keanekaragaman Hayati Indonesia dan Dunia, Kebencanaan dan Lingkungan Hidup, Kewilayahan dan Pembangunan, serta Kerja sama antar Wilayah, memaparkan ide, dan memublikasikannya.',
-          learningOutcomeId: '92e426aa-9a1a-4a79-9ae8-3dcf737d0cfd',
+          name: 'Sekolah Menengah Pertama Luar Biasa',
+          alias: 'SMPLB',
+          position: 6,
+          groupLevel: 2,
+        },
+        {
+          name: 'Sekolah Menengah Atas',
+          alias: 'SMA',
+          position: 7,
+          groupLevel: 3,
+        },
+        {
+          name: 'Madrasah Aliyah',
+          alias: 'MA',
+          position: 8,
+          groupLevel: 3,
+        },
+        {
+          name: 'Sekolah Menengah Atas Luar Biasa',
+          alias: 'SMALB',
+          position: 9,
+          groupLevel: 3,
         },
       ],
     });

@@ -27,6 +27,7 @@ interface TitleFormProps {
   initialData: LearningModule;
   learningModuleId: string;
   phaseOptions: { label: string; value: string }[];
+  educationLevelOptions: { label: string; value: string }[];
 }
 
 const formSchema = z.object({
@@ -35,12 +36,14 @@ const formSchema = z.object({
   learningYear: z.string().min(1),
   institute: z.string().min(1),
   phaseId: z.string().min(1),
+  educationLevelId: z.string().min(1),
 });
 
 export const TitleForm = ({
   initialData,
   learningModuleId,
   phaseOptions,
+  educationLevelOptions,
 }: TitleFormProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -50,6 +53,7 @@ export const TitleForm = ({
       learningYear: initialData?.learningYear || '',
       institute: initialData?.institute || '',
       phaseId: initialData?.phaseId || '',
+      educationLevelId: initialData?.phaseId || '',
     },
   });
   const router = useRouter();
@@ -76,18 +80,21 @@ export const TitleForm = ({
   const selectedPhaseOption = phaseOptions.find(
     (option) => option.value === initialData.phaseId
   );
+  const selectedEducationLevelOption = educationLevelOptions.find(
+    (option) => option.value === initialData.educationLevelId
+  );
 
   return (
     <div className="mt-6 border bg-slate-100 rounded-md p-4">
       <div className="font-medium flex items-center justify-between">
-        Judul Modul Ajar
+        Identitas
         <Button onClick={toggleEdit} variant="ghost">
           {isEditing ? (
             <>Cancel</>
           ) : (
             <>
               <Pencil className="h-4 w-4 mr-2" />
-              Edit Judul
+              Edit Identitas
             </>
           )}
         </Button>
@@ -95,7 +102,7 @@ export const TitleForm = ({
       {!isEditing && (
         <div>
           <p className="text-sm mt-2">
-            <span className="font-bold inline-block w-[100px]">Judul</span>
+            <span className="font-bold inline-block w-[150px]">Judul</span>
             :&nbsp;
             {initialData.title}
           </p>
@@ -105,7 +112,7 @@ export const TitleForm = ({
               !initialData.writer && 'text-slate-500 italic'
             )}
           >
-            <span className="font-bold inline-block w-[100px]">Penulis</span>
+            <span className="font-bold inline-block w-[150px]">Penulis</span>
             :&nbsp;
             {initialData.writer || 'Penulis'}
           </p>
@@ -115,7 +122,7 @@ export const TitleForm = ({
               !initialData.institute && 'text-slate-500 italic'
             )}
           >
-            <span className="font-bold inline-block w-[100px]">Institusi</span>
+            <span className="font-bold inline-block w-[150px]">Institusi</span>
             :&nbsp;
             {initialData.institute || 'Institusi'}
           </p>
@@ -125,7 +132,7 @@ export const TitleForm = ({
               !initialData.learningYear && 'text-slate-500 italic'
             )}
           >
-            <span className="font-bold inline-block w-[100px]">
+            <span className="font-bold inline-block w-[150px]">
               Tahun Ajaran
             </span>
             :&nbsp;
@@ -137,9 +144,21 @@ export const TitleForm = ({
               !initialData.phaseId && 'text-slate-500 italic'
             )}
           >
-            <span className="font-bold inline-block w-[100px]">Fase</span>
+            <span className="font-bold inline-block w-[150px]">Fase</span>
             :&nbsp;
-            {selectedPhaseOption?.label || 'Fase masih kosong'}
+            {selectedPhaseOption?.label || 'Fase'}
+          </p>
+          <p
+            className={cn(
+              'text-sm mt-2',
+              !initialData.phaseId && 'text-slate-500 italic'
+            )}
+          >
+            <span className="font-bold inline-block w-[150px]">
+              Tingkat Pendidikan
+            </span>
+            :&nbsp;
+            {selectedEducationLevelOption?.label || 'Tingkat Pendidikan'}
           </p>
         </div>
       )}
@@ -233,6 +252,24 @@ export const TitleForm = ({
                           placeholder="Pilih fase ..."
                           emptymsg="Fase tidak ditemukan"
                           options={[...phaseOptions]}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="educationLevelId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Tingkat Pendidikan: </FormLabel>
+                      <FormControl>
+                        <Combobox
+                          placeholder="Pilih tingkat pendidikan ..."
+                          emptymsg="Tingkat pendidikan tidak ditemukan"
+                          options={[...educationLevelOptions]}
                           {...field}
                         />
                       </FormControl>

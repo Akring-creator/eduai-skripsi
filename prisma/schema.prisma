@@ -256,10 +256,10 @@ model Phase{
   name String @db.Text
   minClass Int
   maxClass Int
-  educationLevels String?
 
   learningOutcome LearningOutcome[]
   learningModule LearningModule[]
+
 }
 
 model LearningOutcome {
@@ -356,8 +356,16 @@ model LearningPhase{
 
   @@index([learningActivitiesId])
 
-  
+}
 
+model EducationLevel {
+  id String @id @default(uuid())
+  name String @db.Text
+  alias String
+  position Int
+  groupLevel Int
+
+  learningModule LearningModule[]
 }
 
 model LearningModule {
@@ -383,7 +391,8 @@ model LearningModule {
   phase Phase? @relation(fields: [phaseId], references: [id])
 
   // Tingkat Pendidikan
-  educationLevel String?
+  educationLevelId String?
+  educationLevel EducationLevel? @relation(fields: [educationLevelId], references: [id])
 
   // Kelas
   class Int?
@@ -443,4 +452,5 @@ model LearningModule {
   @@index([studentTargetId])
   @@index([modaId])
   @@index([subjectId])
+  @@index([educationLevelId])
 }
