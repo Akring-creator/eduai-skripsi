@@ -318,8 +318,9 @@ model TriggerQuestion {
 // Aktifitas Pembelajaran per Pertemuan
 model LearningFlow{
   id String @id @default(uuid())
-  meeting Int
-  learningActivitesId String
+  title String
+  position Int
+  meeting Int?
   learningActivities LearningActivities[]
 
 

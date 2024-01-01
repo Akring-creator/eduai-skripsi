@@ -23,11 +23,12 @@ import { cn } from '@/lib/utils';
 import { LearningModule } from '@prisma/client';
 import { Combobox } from '@/components/ui/combobox';
 
-interface TitleFormProps {
+interface ModuleIdentityFormProps {
   initialData: LearningModule;
   learningModuleId: string;
   phaseOptions: { label: string; value: string }[];
   educationLevelOptions: { label: string; value: string }[];
+  subjectOptions: { label: string; value: string }[];
 }
 
 const formSchema = z.object({
@@ -37,14 +38,17 @@ const formSchema = z.object({
   institute: z.string().min(1),
   phaseId: z.string().min(1),
   educationLevelId: z.string().min(1),
+  subjectId: z.string().min(1),
+  class: z.coerce.number(),
 });
 
-export const TitleForm = ({
+export const ModuleIdentityForm = ({
   initialData,
   learningModuleId,
   phaseOptions,
   educationLevelOptions,
-}: TitleFormProps) => {
+  subjectOptions,
+}: ModuleIdentityFormProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -53,7 +57,9 @@ export const TitleForm = ({
       learningYear: initialData?.learningYear || '',
       institute: initialData?.institute || '',
       phaseId: initialData?.phaseId || '',
-      educationLevelId: initialData?.phaseId || '',
+      educationLevelId: initialData?.educationLevelId || '',
+      subjectId: initialData?.subjectId || '',
+      class: initialData?.class || 0,
     },
   });
   const router = useRouter();
@@ -69,7 +75,7 @@ export const TitleForm = ({
         `/api/curriculum/modul-ajar/${learningModuleId}`,
         values
       );
-      toast.success('Judul berhasil diubah');
+      toast.success('Mengubah Identitas');
       toggleEdit();
       router.refresh();
     } catch {
@@ -82,6 +88,9 @@ export const TitleForm = ({
   );
   const selectedEducationLevelOption = educationLevelOptions.find(
     (option) => option.value === initialData.educationLevelId
+  );
+  const subjectOption = subjectOptions.find(
+    (option) => option.value === initialData.subjectId
   );
 
   return (
@@ -114,7 +123,7 @@ export const TitleForm = ({
           >
             <span className="font-bold inline-block w-[150px]">Penulis</span>
             :&nbsp;
-            {initialData.writer || 'Penulis'}
+            {initialData.writer || ''}
           </p>
           <p
             className={cn(
@@ -124,7 +133,7 @@ export const TitleForm = ({
           >
             <span className="font-bold inline-block w-[150px]">Institusi</span>
             :&nbsp;
-            {initialData.institute || 'Institusi'}
+            {initialData.institute || ''}
           </p>
           <p
             className={cn(
@@ -136,7 +145,7 @@ export const TitleForm = ({
               Tahun Ajaran
             </span>
             :&nbsp;
-            {initialData.learningYear || 'Tahun Ajaran'}
+            {initialData.learningYear || ''}
           </p>
           <p
             className={cn(
@@ -146,7 +155,7 @@ export const TitleForm = ({
           >
             <span className="font-bold inline-block w-[150px]">Fase</span>
             :&nbsp;
-            {selectedPhaseOption?.label || 'Fase'}
+            {selectedPhaseOption?.label || ''}
           </p>
           <p
             className={cn(
@@ -158,7 +167,29 @@ export const TitleForm = ({
               Tingkat Pendidikan
             </span>
             :&nbsp;
-            {selectedEducationLevelOption?.label || 'Tingkat Pendidikan'}
+            {selectedEducationLevelOption?.label || ''}
+          </p>
+          <p
+            className={cn(
+              'text-sm mt-2',
+              !initialData.class && 'text-slate-500 italic'
+            )}
+          >
+            <span className="font-bold inline-block w-[150px]">Kelas</span>
+            :&nbsp;
+            {initialData.class || ''}
+          </p>
+          <p
+            className={cn(
+              'text-sm mt-2',
+              !initialData.subjectId && 'text-slate-500 italic'
+            )}
+          >
+            <span className="font-bold inline-block w-[150px]">
+              Mata Pelajaran
+            </span>
+            :&nbsp;
+            {subjectOption?.label || ''}
           </p>
         </div>
       )}
@@ -270,6 +301,43 @@ export const TitleForm = ({
                           placeholder="Pilih tingkat pendidikan ..."
                           emptymsg="Tingkat pendidikan tidak ditemukan"
                           options={[...educationLevelOptions]}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="class"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Kelas</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          step="1"
+                          placeholder="Kelas"
+                          disabled={isSubmitting}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="subjectId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Mata Pelajaran: </FormLabel>
+                      <FormControl>
+                        <Combobox
+                          placeholder="Pilih mata pelajaran"
+                          emptymsg="Mata pelajaran tidak ditemukan"
+                          options={[...subjectOptions]}
                           {...field}
                         />
                       </FormControl>

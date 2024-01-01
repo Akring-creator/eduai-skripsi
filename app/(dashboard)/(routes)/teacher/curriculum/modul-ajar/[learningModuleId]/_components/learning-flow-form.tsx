@@ -19,14 +19,14 @@ import { Loader2, Pencil, PlusCircle, Route } from 'lucide-react';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
-import { Chapter, Course } from '@prisma/client';
+import { LearningFlow, LearningModule } from '@prisma/client';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
-import ChapterList from './chapter-list';
+import LearningFlowList from './learning-flow-list';
 
-interface ChapterFormProps {
-  initialData: Course & { chapters: Chapter[] };
-  courseId: string;
+interface LearningFlowProps {
+  initialData: LearningModule & { learningFlow: LearningFlow[] };
+  learningModuleId: string;
 }
 
 const formSchema = z.object({
@@ -35,7 +35,10 @@ const formSchema = z.object({
   }),
 });
 
-export const ChapterForm = ({ initialData, courseId }: ChapterFormProps) => {
+export const LearningFlowForm = ({
+  initialData,
+  learningModuleId,
+}: LearningFlowProps) => {
   const [isCreating, setIsCreating] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
@@ -53,23 +56,26 @@ export const ChapterForm = ({ initialData, courseId }: ChapterFormProps) => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       const update = await axios.post(
-        `/api/courses/${courseId}/chapters`,
+        `/api/curriculum/modul-ajar/${learningModuleId}/learning-flows`,
         values
       );
-      toast.success('Berhasil membuat chapter');
+      toast.success('Kegiatan Pembelajaran Dibuat');
       toggleCreating();
       router.refresh();
     } catch {
-      toast.error('Terdapat Masalah');
+      toast.error('Terdapat Kendala');
     }
   };
   const onReorder = async (updateData: { id: string; position: number }[]) => {
     try {
       setIsUpdating(true);
-      await axios.put(`/api/courses/${courseId}/chapters/reorder`, {
-        list: updateData,
-      });
-      toast.success('Chapter diurutkan ulang');
+      await axios.put(
+        `/api/curriculum/modul-ajar/${learningModuleId}/learning-flows/reorder`,
+        {
+          list: updateData,
+        }
+      );
+      toast.success('Kegiatan Pembelejaran Diubah');
     } catch {
       toast.error('Terdapat Kendala');
     } finally {
@@ -78,7 +84,9 @@ export const ChapterForm = ({ initialData, courseId }: ChapterFormProps) => {
   };
 
   const onEdit = (id: string) => {
-    router.push(`/teacher/courses/${courseId}/chapters/${id}`);
+    router.push(
+      `/teacher/curriculum/modul-ajar/${learningModuleId}/chapters/${id}`
+    );
   };
 
   return (
@@ -89,13 +97,13 @@ export const ChapterForm = ({ initialData, courseId }: ChapterFormProps) => {
         </div>
       )}
       <div className="font-medium flex items-center justify-between">
-        Chapter Kursus
+        Kegiatan Pembelajaran
         <Button onClick={toggleCreating} variant="ghost">
           {isCreating && <>Cancel</>}
           {!isCreating && (
             <>
               <PlusCircle className="h-4 w-4 mr-2" />
-              Tambah Chapter
+              Tambah Kegiatan
             </>
           )}
         </Button>
@@ -104,7 +112,8 @@ export const ChapterForm = ({ initialData, courseId }: ChapterFormProps) => {
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-8 mt-8">
+            className="space-y-8 mt-8"
+          >
             <FormField
               control={form.control}
               name="title"
@@ -113,19 +122,16 @@ export const ChapterForm = ({ initialData, courseId }: ChapterFormProps) => {
                   <FormControl>
                     <Input
                       disabled={isSubmitting}
-                      placeholder="cth: Pengenalan Kursus"
+                      placeholder="cth: Pertemuan 1: Pengenalan Kalkulus"
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Ceritakan lebih lanjut tentang kursusmu
-                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
             <Button type="submit" disabled={!isValid || isSubmitting}>
-              Create
+              Buat
             </Button>
           </form>
         </Form>
@@ -134,19 +140,21 @@ export const ChapterForm = ({ initialData, courseId }: ChapterFormProps) => {
         <div
           className={cn(
             'text-sm mt-2',
-            !initialData.chapters.length && 'text-slate-500 italic'
-          )}>
-          {!initialData.chapters.length && 'No Chapters'}
-          <ChapterList
+            !initialData.learningFlow.length && 'text-slate-500 italic'
+          )}
+        >
+          {!initialData.learningFlow.length &&
+            'Tidak terdapat Kegiatan Pembelajaran'}
+          <LearningFlowList
             onEdit={onEdit}
             onReorder={onReorder}
-            items={initialData.chapters || []}
+            items={initialData.learningFlow || []}
           />
         </div>
       )}
       {!isCreating && (
         <p className="text-xs text-muted-foreground mt-4">
-          Drag and drop to reorder chapters
+          Seret dan lepas untuk mengurutkan kegiatan pembelajaran
         </p>
       )}
     </div>

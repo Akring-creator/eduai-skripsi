@@ -1,26 +1,16 @@
 import { IconBadge } from '@/components/icon-badge';
 import { db } from '@/lib/db';
 import { auth } from '@clerk/nextjs';
-import {
-  CircleDollarSign,
-  LayoutDashboard,
-  ListChecks,
-  File,
-  AlignLeft,
-} from 'lucide-react';
+import { AlignLeft, Blocks, Workflow } from 'lucide-react';
 import { redirect } from 'next/navigation';
-import { TitleForm } from './_components/title-form';
-import { DescriptionForm } from './_components/description-form';
-import { ImageForm } from './_components/image-form';
-import { PriceForm } from './_components/price-form';
+import { ModuleIdentityForm } from './_components/module-identity-form';
 
-import { ChapterForm } from './_components/chapter-form';
 import { Banner } from '@/components/banners';
 import { Actions } from './_components/actions';
-import { WriterForm } from './_components/writer-form';
-import { PhaseForm } from './_components/phase-form';
-import { InstituteForm } from './_components/institute-form';
-import { LearningYearForm } from './_components/learning-year-form';
+
+import { LearningVariableForm } from './_components/learning-variable-form';
+import LearningFlowList from './_components/learning-flow-list';
+import { LearningFlowForm } from './_components/learning-flow-form';
 
 const LearningModuleIdPage = async ({
   params,
@@ -151,12 +141,12 @@ const LearningModuleIdPage = async ({
           />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-16">
-          <div>
+          <div className="space-y-6">
             <div className="flex items-center gap-x-2">
               <IconBadge icon={AlignLeft} size="md" />
               <h2 className="text-xl font-medium">Identitas Modul Ajar</h2>
             </div>
-            <TitleForm
+            <ModuleIdentityForm
               initialData={learningModule}
               learningModuleId={learningModule.id}
               phaseOptions={phases.map((phase) => ({
@@ -167,25 +157,27 @@ const LearningModuleIdPage = async ({
                 label: level.name,
                 value: level.id,
               }))}
+              subjectOptions={subject.map((subject) => ({
+                label: subject.name,
+                value: subject.id,
+              }))}
             />
+            <div className="flex items-center gap-x-2">
+              <IconBadge icon={Blocks} size="md" />
+              <h2 className="text-xl font-medium">Kustomisasi Pembelajaran</h2>
+            </div>
+            <LearningVariableForm />
           </div>
 
           <div className="space-y-6">
-            <div>
-              <div className="flex items-center gap-x-2">
-                <IconBadge icon={ListChecks} />
-                <h2 className="text-xl">Chapter Kursus</h2>
-              </div>
+            <div className="flex items-center gap-x-2">
+              <IconBadge icon={Workflow} size="md" />
+              <h2 className="text-xl font-medium">Kegiatan Pembelajaran</h2>
             </div>
-            <div>
-              <div className="flex items-center gap-x-2">
-                <IconBadge icon={CircleDollarSign} />
-                <h2 className="text-xl">Harga Kursus</h2>
-              </div>
-            </div>
-            <div>
-              <div className="flex items-center gap-x-2"></div>
-            </div>
+            <LearningFlowForm
+              initialData={learningModule}
+              learningModuleId={learningModule.id}
+            />
           </div>
         </div>
       </div>

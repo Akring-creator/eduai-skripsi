@@ -7,6 +7,7 @@ import {
   List,
   FormInput,
   Workflow,
+  LibraryBig,
 } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 
@@ -37,7 +38,7 @@ const teacherRoutes = [
     href: '/teacher/quiz',
   },
   {
-    icon: Workflow,
+    icon: LibraryBig,
     label: 'Kurikulum',
     href: '/teacher/curriculum',
   },

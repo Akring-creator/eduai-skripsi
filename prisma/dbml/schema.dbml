@@ -234,8 +234,9 @@ Table TriggerQuestion {
 
 Table LearningFlow {
   id String [pk]
-  meeting Int [not null]
-  learningActivitesId String [not null]
+  title String [not null]
+  position Int [not null]
+  meeting Int
   learningActivities LearningActivities [not null]
   learningModuleId String [not null]
   learningModule LearningModule [not null]
