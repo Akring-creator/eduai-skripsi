@@ -8,9 +8,9 @@ import { ModuleIdentityForm } from './_components/module-identity-form';
 import { Banner } from '@/components/banners';
 import { Actions } from './_components/actions';
 
-import { LearningVariableForm } from './_components/learning-variable-form';
 import LearningFlowList from './_components/learning-flow-list';
 import { LearningFlowForm } from './_components/learning-flow-form';
+import { ModuleVariableForm } from './_components/module-variable-form';
 
 const LearningModuleIdPage = async ({
   params,
@@ -166,7 +166,14 @@ const LearningModuleIdPage = async ({
               <IconBadge icon={Blocks} size="md" />
               <h2 className="text-xl font-medium">Kustomisasi Pembelajaran</h2>
             </div>
-            <LearningVariableForm />
+            <ModuleVariableForm
+              initialData={learningModule}
+              learningModuleId={learningModule.id}
+              modaOptions={moda.map((moda) => ({
+                label: moda.moda,
+                value: moda.id,
+              }))}
+            />
           </div>
 
           <div className="space-y-6">
