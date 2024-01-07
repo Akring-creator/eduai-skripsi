@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
-import { cn } from '@/lib/utils';
+import { cn, timeAgo } from '@/lib/utils';
 import { formatPrice } from '@/lib/format';
 export const columns: ColumnDef<LearningModule>[] = [
   {
@@ -30,6 +30,29 @@ export const columns: ColumnDef<LearningModule>[] = [
         </Button>
       );
     },
+    cell: ({ row }) => (
+      <div className="capitalize font-medium">{row.getValue('title')}</div>
+    ),
+  },
+  {
+    accessorKey: 'updateAt',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+        >
+          Terakhir Diubah
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const date: Date = row.getValue('updateAt');
+      const dateString = timeAgo(date);
+
+      return <div>&nbsp;{dateString}</div>;
+    },
   },
   {
     accessorKey: 'isPublished',
@@ -39,7 +62,7 @@ export const columns: ColumnDef<LearningModule>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
-          Published
+          Publik
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
@@ -54,6 +77,7 @@ export const columns: ColumnDef<LearningModule>[] = [
       );
     },
   },
+
   {
     id: 'actions',
     cell: ({ row }) => {

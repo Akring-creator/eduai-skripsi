@@ -27,13 +27,13 @@ export async function POST(
 
     const lastFlow = await db.learningFlow.findFirst({
       where: {
-        id: params.learningModuleId,
+        learningModuleId: params.learningModuleId,
       },
       orderBy: {
         position: 'desc',
       },
     });
-
+    console.log(lastFlow);
     const newPosition = lastFlow ? lastFlow.position + 1 : 1;
 
     const learningFlow = await db.learningFlow.create({
