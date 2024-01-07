@@ -4,8 +4,12 @@ const database = new PrismaClient();
 
 async function main() {
   try {
-    await database.learningModa.createMany({
-      data: [{ moda: 'Luring' }, { moda: 'Daring' }, { moda: 'Hybrid' }],
+    await database.studentTarget.createMany({
+      data: [
+        { target: 'Regular' },
+        { target: 'High Achiever' },
+        { target: 'Lack Behind' },
+      ],
     });
 
     console.log('Success');

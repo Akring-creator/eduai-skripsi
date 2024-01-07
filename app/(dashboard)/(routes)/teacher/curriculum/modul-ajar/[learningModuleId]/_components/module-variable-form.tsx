@@ -27,6 +27,7 @@ interface ModuleVariableFormProps {
   initialData: LearningModule;
   learningModuleId: string;
   modaOptions: { label: string; value: string }[];
+  studentOptions: { label: string; value: string }[];
 }
 
 const formSchema = z.object({
@@ -43,6 +44,7 @@ export const ModuleVariableForm = ({
   initialData,
   learningModuleId,
   modaOptions,
+  studentOptions,
 }: ModuleVariableFormProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -80,6 +82,9 @@ export const ModuleVariableForm = ({
   const modaOption = modaOptions.find(
     (option) => option.value === initialData.modaId
   );
+  const studentOption = studentOptions.find(
+    (option) => option.value === initialData.studentTargetId
+  );
 
   return (
     <div className="mt-6 border bg-slate-100 rounded-md p-4">
@@ -98,10 +103,53 @@ export const ModuleVariableForm = ({
       </div>
       {!isEditing && (
         <div>
-          <p className="text-sm mt-2">
-            <span className="font-bold inline-block w-[150px]">Model</span>
+          <p
+            className={cn(
+              'text-sm mt-2',
+              !initialData.material && 'text-slate-500 italic'
+            )}
+          >
+            <span className="font-bold inline-block w-[150px]">Materi</span>
             :&nbsp;
-            {initialData.model}
+            {initialData.material || ''}
+          </p>
+
+          <p
+            className={cn(
+              'text-sm mt-2',
+              !initialData.model && 'text-slate-500 italic'
+            )}
+          >
+            <span className="font-bold inline-block w-[150px]">
+              Model Pembelajaran
+            </span>
+            :&nbsp;
+            {initialData.model || ''}
+          </p>
+
+          <p
+            className={cn(
+              'text-sm mt-2',
+              !initialData.method && 'text-slate-500 italic'
+            )}
+          >
+            <span className="font-bold inline-block w-[150px]">
+              Metode Pembelajaran
+            </span>
+            :&nbsp;
+            {initialData.method || ''}
+          </p>
+          <p
+            className={cn(
+              'text-sm mt-2',
+              (!initialData.numOfMeeting || !initialData.learningHours) &&
+                'text-slate-500 italic'
+            )}
+          >
+            <span className="font-bold inline-block w-[150px]">Pertemuan</span>
+            :&nbsp;
+            {initialData.numOfMeeting || ''} x {initialData.learningHours || ''}{' '}
+            Menit
           </p>
 
           <p
@@ -110,11 +158,21 @@ export const ModuleVariableForm = ({
               !initialData.subjectId && 'text-slate-500 italic'
             )}
           >
-            <span className="font-bold inline-block w-[150px]">
-              Mata Pelajaran
-            </span>
+            <span className="font-bold inline-block w-[150px]">Moda</span>
             :&nbsp;
             {modaOption?.label || ''}
+          </p>
+          <p
+            className={cn(
+              'text-sm mt-2',
+              !initialData.studentTargetId && 'text-slate-500 italic'
+            )}
+          >
+            <span className="font-bold inline-block w-[150px]">
+              Target Peserta didik
+            </span>
+            :&nbsp;
+            {studentOption?.label || ''}
           </p>
         </div>
       )}
@@ -129,11 +187,83 @@ export const ModuleVariableForm = ({
               name="model"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Judul Modul Ajar: </FormLabel>
+                  <FormLabel>Model Pembelajaran: </FormLabel>
                   <FormControl>
                     <Input
                       disabled={isSubmitting}
                       placeholder="cth: Pembelajaran Berbasis Project"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="method"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Metode Pembelajaran: </FormLabel>
+                  <FormControl>
+                    <Input
+                      disabled={isSubmitting}
+                      placeholder="cth: Pembelajaran Berbasis Project"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="material"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Material: </FormLabel>
+                  <FormControl>
+                    <Input
+                      disabled={isSubmitting}
+                      placeholder="cth: Perkalian Silang"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="numOfMeeting"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Jumlah Pertemuan</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      step="1"
+                      placeholder="Jumlah Pertemuan"
+                      disabled={isSubmitting}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="learningHours"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Waktu Pembelajaran</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      step="5"
+                      placeholder="Waktu Pembelajaran"
+                      disabled={isSubmitting}
                       {...field}
                     />
                   </FormControl>
@@ -157,6 +287,24 @@ export const ModuleVariableForm = ({
                           placeholder="Pilih moda ..."
                           emptymsg="Moda tidak ditemukan"
                           options={[...modaOptions]}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="studentTargetId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Target Peserta Didik: </FormLabel>
+                      <FormControl>
+                        <Combobox
+                          placeholder="Pilih target siswa ..."
+                          emptymsg="Target siswa tidak ditemukan"
+                          options={[...studentOptions]}
                           {...field}
                         />
                       </FormControl>

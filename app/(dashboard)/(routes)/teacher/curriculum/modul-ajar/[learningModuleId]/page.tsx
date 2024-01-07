@@ -173,6 +173,10 @@ const LearningModuleIdPage = async ({
                 label: moda.moda,
                 value: moda.id,
               }))}
+              studentOptions={studentTarget.map((target) => ({
+                label: target.target,
+                value: target.id,
+              }))}
             />
           </div>
 
