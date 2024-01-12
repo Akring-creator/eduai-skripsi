@@ -1,41 +1,53 @@
 'use client';
-import { Button } from '@/components/ui/button';
-import { Quiz, Option, Question } from '@prisma/client';
-import {
-  PlusIcon,
-  HardDriveUpload,
-  MoreHorizontal,
-  PenSquare,
-  Pencil,
-  Settings,
-  Plus,
-  ArrowRightToLine,
-} from 'lucide-react';
+import { z } from 'zod';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { Option, Question, Quiz } from '@prisma/client';
+import {
+  Badge,
+  BadgeCheckIcon,
+  Bot,
+  GripVertical,
+  Pencil,
+  Settings,
+  Trash,
+} from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogPortal,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 
-import { useRouter } from 'next/navigation';
-import { auth } from '@clerk/nextjs';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { useState } from 'react';
-
-// Cant use Question Format from prisma
+import { cn } from '@/lib/utils';
+import axios from 'axios';
+import toast from 'react-hot-toast';
+import { BasicQuestionManualForm } from '@/components/questions/manual/basic';
 
 interface MetadataProps {
   initialData: Quiz & { questions: (Question & { options: Option[] })[] };
 }
 
 export const Metadata = ({ initialData }: MetadataProps) => {
-  const router = useRouter();
-  const onClickSettings = () => {
-    router.push(`/teacher/quiz/${initialData.id}/settings`);
-  };
   return (
     <>
       <div className="relative">
@@ -76,32 +88,61 @@ export const Metadata = ({ initialData }: MetadataProps) => {
           {/* Bagian 2 */}
           <div className="absolute top-0 right-0 flex items-start gap-x-3 mt-2 mr-2">
             <div>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Plus className="h-5 w-5 p-0 hover:cursor-pointer" />
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <Link href={`/teacher/quiz/${initialData.id}/generate`}>
+              <Dialog>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <GripVertical className="h-5 w-5 p-0 hover:cursor-pointer" />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuSub>
+                      <DropdownMenuSubTrigger>
+                        Tambah Soal
+                      </DropdownMenuSubTrigger>
+                      <DropdownMenuSubContent>
+                        <DialogTrigger>
+                          <DropdownMenuItem>
+                            <Pencil className="h-5 w-5 mr-2" />
+                            Manual
+                          </DropdownMenuItem>
+                        </DialogTrigger>
+
+                        <Link href={`/teacher/quiz/${initialData.id}/generate`}>
+                          <DropdownMenuItem>
+                            <Bot className="h-5 w-5 mr-2" />
+                            Dengan AI
+                          </DropdownMenuItem>
+                        </Link>
+                      </DropdownMenuSubContent>
+                    </DropdownMenuSub>
+                    <DropdownMenuSeparator></DropdownMenuSeparator>
                     <DropdownMenuItem>
-                      <Pencil className="h-5 w-5 mr-2" />
-                      Buat Soal
+                      <Link href={`/teacher/quiz/${initialData.id}/settings`}>
+                        <DropdownMenuItem>
+                          <Settings className="h-5 w-5 mr-2" />
+                          Pengaturan
+                        </DropdownMenuItem>
+                      </Link>
                     </DropdownMenuItem>
-                  </Link>
-                  {/* <Link href={`/teacher/quiz/${initialData.id}/export`}>
+
+                    {/* <Link href={`/teacher/quiz/${initialData.id}/export`}>
                     <DropdownMenuItem>
                       <ArrowRightToLine className="h-5 w-5 mr-2" />
                       Ekspor Kuis
                     </DropdownMenuItem>
                   </Link> */}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                <DialogPortal>
+                  <DialogContent className="max-w-3xl">
+                    <DialogHeader>
+                      <DialogTitle>Tambah Soal Manual</DialogTitle>
+                    </DialogHeader>
 
-            <Settings
-              name="settings"
-              className=" w-5 h-5 hover:opacity-75 cursor-pointer "
-              onClick={onClickSettings}
-            />
+                    <BasicQuestionManualForm quizId={initialData.id} />
+                  </DialogContent>
+                </DialogPortal>
+              </Dialog>
+            </div>
           </div>
         </div>
       </div>

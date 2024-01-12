@@ -32,8 +32,7 @@ export const POST = async (
       numberOfQuestions,
       numberOfOptions,
       materi,
-      guidance,
-      params.quizId
+      guidance
     );
 
     return NextResponse.json(questions);

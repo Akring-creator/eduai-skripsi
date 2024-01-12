@@ -8,8 +8,7 @@ export const basicType = async (
   numOfQuestion: number,
   numOfOption: number,
   material: string,
-  guidance: string,
-  quizId: string
+  guidance: string
 ) => {
   const inputMaterial = material.replace(/"/g, '\\"');
   const system_prompt =
@@ -47,7 +46,6 @@ export const basicType = async (
             options, // Menggunakan string JSON yang sudah dibuat sebelumnya
             answer,
             explanation,
-            quizId: quizId,
           };
 
           result.push(questionFormat);

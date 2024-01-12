@@ -66,7 +66,7 @@ export const QuizCard = ({ quizId }: QuizCardProps) => {
           `/api/quiz/${quizId}/questions/multiple-choice`,
           questions.data
         );
-        toast.success('Soal berhasil dibuat');
+        toast.success('Soal ditambahkan');
         router.push(`/teacher/quiz/${quizId}/draft`);
         router.refresh();
       }
