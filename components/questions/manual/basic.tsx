@@ -71,45 +71,49 @@ export const BasicQuestionManualForm = ({
   };
 
   const inputValidation = () => {
-    let valid = false;
-    let answer = '';
-    if (options.length === 1) {
-      answer = options[0];
+    if (options.length > 1 && keyAnswerIndex === -1) {
+      toast.error('Pilih kunci jawaban');
+      return false;
     } else {
-      answer = options[keyAnswerIndex];
+      let answer = '';
+      if (options.length === 1) {
+        answer = options[0];
+      } else {
+        answer = options[keyAnswerIndex];
+      }
+      const data = {
+        question: question,
+        explanation: explanation,
+        answer: answer,
+        options: options,
+      };
+      return data;
     }
-    const data = {
-      question: question,
-      explanation: explanation,
-      answer: answer,
-      options: options,
-    };
-
-    return data;
   };
   const addQuestion = async () => {
     const data = inputValidation();
+    if (data !== false) {
+      try {
+        const completeData = [questionSchema.parse(data)];
+        setIsUploading(true);
+        await axios.post(
+          `/api/quiz/${quizId}/questions/multiple-choice`,
+          completeData
+        );
+        toast.success('Soal ditambahkan');
+        //Set everything to default
+        setExplanation('');
+        setQuestion('');
+        setOptions(Array.from({ length: 3 }, () => ''));
+        setNumofoptions(3);
+        setKeyAnswerIndex(-1);
 
-    try {
-      const completeData = [questionSchema.parse(data)];
-      setIsUploading(true);
-      await axios.post(
-        `/api/quiz/${quizId}/questions/multiple-choice`,
-        completeData
-      );
-      toast.success('Soal ditambahkan');
-      //Set everything to default
-      setExplanation('');
-      setQuestion('');
-      setOptions(Array.from({ length: 3 }, () => ''));
-      setNumofoptions(3);
-      setKeyAnswerIndex(-1);
-
-      router.refresh();
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsUploading(false);
+        router.refresh();
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsUploading(false);
+      }
     }
   };
   return (
@@ -146,7 +150,7 @@ export const BasicQuestionManualForm = ({
           )}
         </div>
       ))}
-      <Button variant="ghost" onClick={addOption}>
+      <Button variant="outline" onClick={addOption}>
         Tambah Pilihan Jawaban
       </Button>
       <Label>Penjelasan</Label>
