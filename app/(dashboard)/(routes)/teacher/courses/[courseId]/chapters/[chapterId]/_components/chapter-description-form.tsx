@@ -93,7 +93,7 @@ export const ChapterDescriptionForm = ({
         >
           {!initialData.description && 'Tidak ada deskripsi'}
           {initialData.description && (
-            <Preview value={initialData.description} />
+            <Preview value={initialData.description} oneline={false} />
           )}
         </div>
       )}

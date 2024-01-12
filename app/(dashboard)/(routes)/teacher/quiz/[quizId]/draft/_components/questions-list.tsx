@@ -17,27 +17,12 @@ import {
 } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
-import { Option } from '@prisma/client';
-import QuestionCard from './question-card';
-import QuestionAction from './question-actions';
+import { Option, Question } from '@prisma/client';
 
-// ...
-
-interface Question {
-  id: string;
-  question: string;
-  imageUrl: string | null;
-  answer: string;
-  explanation: string;
-  options: Option[]; // Tambahkan properti options dengan tipe Option[]
-  quizId: string;
-  position: number;
-  createdAt: Date;
-  updateAt: Date;
-}
+import { QuestionBody } from './question-body';
 
 interface QuestionsListProps {
-  items: Question[];
+  items: (Question & { options: Option[] })[];
   onReorder: (updateData: { id: string; position: number }[]) => void;
   onEdit: (id: string) => void;
   quizId: string;
@@ -112,19 +97,11 @@ export const QuestionsList = ({
                       >
                         <Grip className="h-5 w-5" />
                       </div>
-                      <div className="space-y-2 p-4 w-full">
-                        <div className="font-medium flex items-center justify-between">
-                          <div className="flex gap-x-2">
-                            Pertanyaan {index + 1}
-                          </div>
-
-                          <QuestionAction
-                            quizId={quizId}
-                            questionId={question.id}
-                          />
-                        </div>
-                        <QuestionCard initialData={question} quizId={quizId} />
-                      </div>
+                      <QuestionBody
+                        index={index}
+                        initialData={question}
+                        quizId={quizId}
+                      />
                     </div>
                   </div>
                 )}
