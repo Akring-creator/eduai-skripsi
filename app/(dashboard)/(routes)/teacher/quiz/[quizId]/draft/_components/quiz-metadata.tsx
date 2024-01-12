@@ -41,91 +41,13 @@ import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { BasicQuestionManualForm } from '@/components/questions/manual/basic';
 
 interface MetadataProps {
   initialData: Quiz & { questions: (Question & { options: Option[] })[] };
 }
-const questionSchema = z.object({
-  question: z.string().min(10).max(10000),
-  explanation: z.string().min(50),
-  answer: z.string().min(10),
-  options: z.array(z.string()),
-  isPublihed: z.boolean().default(true),
-});
 
 export const Metadata = ({ initialData }: MetadataProps) => {
-  const [numOfOptions, setNumofoptions] = useState(3);
-  const [options, setOptions] = useState(Array.from({ length: 3 }, () => ''));
-  const [keyAnswerIndex, setKeyAnswerIndex] = useState(-1);
-  const [question, setQuestion] = useState('');
-  const [explanation, setExplanation] = useState('');
-  const [isUploading, setIsUploading] = useState(false);
-
-  const router = useRouter();
-
-  const addOption = () => {
-    setNumofoptions(numOfOptions + 1);
-    setOptions([...options, '']);
-  };
-  const optionUpdateHandler = (index: number, event: any) => {
-    const newOptions = [...options];
-    newOptions[index] = event.target.value;
-    setOptions(newOptions);
-  };
-  const updateQuestionHandler = (event: any) => {
-    const newQuestion = event.target.value;
-    setQuestion(newQuestion);
-  };
-  const updateExplanationHandler = (event: any) => {
-    const newExplanation = event.target.value;
-    setExplanation(newExplanation);
-  };
-  const optionDeleteHandler = (index: number) => {
-    if (numOfOptions > 1) {
-      const newOptions = [...options];
-      newOptions.splice(index, 1);
-      setOptions(newOptions);
-      setNumofoptions(numOfOptions - 1);
-      if (keyAnswerIndex === index) {
-        setKeyAnswerIndex(-1);
-      }
-    }
-  };
-
-  const keyAnswerIndexHandler = (index: number) => {
-    setKeyAnswerIndex(index === keyAnswerIndex ? -1 : index);
-  };
-
-  const addQuestion = async () => {
-    const data = {
-      question: question,
-      explanation: explanation,
-      answer: 'Apakah ini jawaban yang benar',
-      options: ['Apakah ini jawaban yang benar', 'B', 'C'],
-    };
-
-    try {
-      console.log(data);
-      const parseData = questionSchema.parse(data);
-      const completeData = [];
-      completeData.push(parseData);
-      console.log(completeData);
-      setIsUploading(true);
-      await axios.post(
-        `/api/quiz/${initialData.id}/questions/multiple-choice`,
-        completeData
-      );
-      console.log;
-      toast.success('Soal ditambahkan');
-      router.push(`/teacher/quiz/${initialData.id}/draft`);
-      router.refresh();
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsUploading(false);
-    }
-  };
-
   return (
     <>
       <div className="relative">
@@ -215,64 +137,8 @@ export const Metadata = ({ initialData }: MetadataProps) => {
                     <DialogHeader>
                       <DialogTitle>Tambah Soal Manual</DialogTitle>
                     </DialogHeader>
-                    <Label>Pertanyaan:</Label>
-                    <Textarea
-                      value={question}
-                      onChange={(e) => updateQuestionHandler(e)}
-                    />
-                    <Label>Pilihan Jawaban</Label>
-                    {[...Array(numOfOptions)].map((_, index) => (
-                      <div
-                        key={index}
-                        className="flex items-center justify-between space-x-2"
-                      >
-                        <Input
-                          value={options[index]}
-                          onChange={(e) => optionUpdateHandler(index, e)}
-                        />
 
-                        {numOfOptions > 1 && (
-                          <div className="flex items-center space-x-2">
-                            <div
-                              className={cn(
-                                'ml-2 h-6 w-6 text-slate-500 hover:cursor-pointer',
-                                index === keyAnswerIndex && 'text-sky-700'
-                              )}
-                              onClick={() => keyAnswerIndexHandler(index)}
-                            >
-                              {index === keyAnswerIndex ? (
-                                <BadgeCheckIcon />
-                              ) : (
-                                <Badge />
-                              )}
-                            </div>
-                            <Trash
-                              className="h-5 w-5 text-red-500 hover:cursor-pointer hover:opacity-70"
-                              onClick={() => optionDeleteHandler(index)}
-                            />
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                    <Button variant="ghost" onClick={addOption}>
-                      Tambah Pilihan Jawaban
-                    </Button>
-                    <Label>Penjelasan</Label>
-                    <Textarea
-                      value={explanation}
-                      onChange={(e) => updateExplanationHandler(e)}
-                      placeholder="Jelaskan penjabaran dari jawaban yang benar minimal 50 karakter"
-                    />
-
-                    <DialogFooter>
-                      <Button
-                        onClick={addQuestion}
-                        type="submit"
-                        disabled={isUploading}
-                      >
-                        Tambah Soal
-                      </Button>
-                    </DialogFooter>
+                    <BasicQuestionManualForm quizId={initialData.id} />
                   </DialogContent>
                 </DialogPortal>
               </Dialog>
