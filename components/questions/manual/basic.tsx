@@ -34,6 +34,7 @@ export const BasicQuestionManualForm = ({
   const [question, setQuestion] = useState('');
   const [explanation, setExplanation] = useState('');
   const [isUploading, setIsUploading] = useState(false);
+  const [expCharCount, setExpCharCount] = useState(0);
 
   const router = useRouter();
 
@@ -53,6 +54,7 @@ export const BasicQuestionManualForm = ({
   const updateExplanationHandler = (event: any) => {
     const newExplanation = event.target.value;
     setExplanation(newExplanation);
+    setExpCharCount(newExplanation.length);
   };
   const optionDeleteHandler = (index: number) => {
     if (numOfOptions > 1) {
@@ -73,6 +75,9 @@ export const BasicQuestionManualForm = ({
   const inputValidation = () => {
     if (options.length > 1 && keyAnswerIndex === -1) {
       toast.error('Pilih kunci jawaban');
+      return false;
+    } else if (expCharCount < 50) {
+      toast.error('Penjelasan kurang rinci');
       return false;
     } else {
       let answer = '';
@@ -107,6 +112,7 @@ export const BasicQuestionManualForm = ({
         setOptions(Array.from({ length: 3 }, () => ''));
         setNumofoptions(3);
         setKeyAnswerIndex(-1);
+        setExpCharCount(0);
 
         router.refresh();
       } catch (error) {
@@ -153,7 +159,17 @@ export const BasicQuestionManualForm = ({
       <Button variant="outline" onClick={addOption}>
         Tambah Pilihan Jawaban
       </Button>
-      <Label>Penjelasan</Label>
+      <Label>Pembahasan mengenai Jawaban</Label>
+      <p className="italic text-sm">
+        Karakter:{' '}
+        <span
+          className={cn(
+            expCharCount < 50 ? 'text-red-500' : 'text-emerald-500'
+          )}
+        >
+          {expCharCount}
+        </span>
+      </p>
       <Textarea
         value={explanation}
         onChange={(e) => updateExplanationHandler(e)}

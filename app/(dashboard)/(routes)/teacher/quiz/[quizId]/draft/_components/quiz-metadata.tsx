@@ -1,5 +1,12 @@
 'use client';
-import { z } from 'zod';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogPortal,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,43 +18,25 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Option, Question, Quiz } from '@prisma/client';
-import {
-  Badge,
-  BadgeCheckIcon,
-  Bot,
-  GripVertical,
-  Pencil,
-  Settings,
-  Trash,
-} from 'lucide-react';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogPortal,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
+import { Bot, GripVertical, Pencil, Settings, Sheet } from 'lucide-react';
 
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { useState } from 'react';
-import { cn } from '@/lib/utils';
-import axios from 'axios';
-import toast from 'react-hot-toast';
 import { BasicQuestionManualForm } from '@/components/questions/manual/basic';
+import Link from 'next/link';
+import { useState } from 'react';
 
 interface MetadataProps {
   initialData: Quiz & { questions: (Question & { options: Option[] })[] };
 }
 
 export const Metadata = ({ initialData }: MetadataProps) => {
+  const [isManualDialogOpen, setManualDialogOpen] = useState(false);
+  const [isImportDialogOpen, setImportDialogOpen] = useState(false);
+
+  const openManualDialog = () => setManualDialogOpen(true);
+  const closeManualDialog = () => setManualDialogOpen(false);
+
+  const openImportDialog = () => setImportDialogOpen(true);
+  const closeImportDialog = () => setImportDialogOpen(false);
   return (
     <>
       <div className="relative">
@@ -99,7 +88,7 @@ export const Metadata = ({ initialData }: MetadataProps) => {
                         Tambah Soal
                       </DropdownMenuSubTrigger>
                       <DropdownMenuSubContent>
-                        <DialogTrigger>
+                        <DialogTrigger onClick={openManualDialog}>
                           <DropdownMenuItem>
                             <Pencil className="h-5 w-5 mr-2" />
                             Manual
@@ -112,6 +101,12 @@ export const Metadata = ({ initialData }: MetadataProps) => {
                             Dengan AI
                           </DropdownMenuItem>
                         </Link>
+                        <DialogTrigger onClick={openImportDialog}>
+                          <DropdownMenuItem>
+                            <Sheet className="h-5 w-5 mr-2" />
+                            Import
+                          </DropdownMenuItem>
+                        </DialogTrigger>
                       </DropdownMenuSubContent>
                     </DropdownMenuSub>
                     <DropdownMenuSeparator></DropdownMenuSeparator>
@@ -135,7 +130,7 @@ export const Metadata = ({ initialData }: MetadataProps) => {
                 <DialogPortal>
                   <DialogContent className="max-w-3xl">
                     <DialogHeader>
-                      <DialogTitle>Tambah Soal Manual</DialogTitle>
+                      <DialogTitle>Tambah Soal</DialogTitle>
                     </DialogHeader>
 
                     <BasicQuestionManualForm quizId={initialData.id} />
