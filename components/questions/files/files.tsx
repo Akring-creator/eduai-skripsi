@@ -13,12 +13,16 @@ import {
 import Image from 'next/image';
 import { useState, ChangeEvent, useEffect } from 'react';
 import * as XLSX from 'xlsx';
+import toast from 'react-hot-toast';
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
 
 interface UploadExcelProps {
   quizId: string;
 }
 
 export const UploadExcel = ({ quizId }: UploadExcelProps) => {
+  const router = useRouter();
   const validityMesages = [
     'Mengecek kesesuaian Kolom',
     'Mengecek kelengkapan soal nomor',
@@ -29,13 +33,20 @@ export const UploadExcel = ({ quizId }: UploadExcelProps) => {
   const [errorMsg, setErrorMsg] = useState<any[]>([]);
   const [valMsg, setValMsg] = useState('');
   const [isValid, setIsValid] = useState(false);
-  useEffect(() => {}, [valMsg]);
+  const [isUploading, setIsUploading] = useState(false);
+  useEffect(() => {
+    if (isValid) {
+      setIsUploading(true);
+      uploadToDatabase();
+      setIsValid(false);
+      setIsUploading(false);
+    }
+  }, [isValid]);
 
   const handleFileUpload = (e: ChangeEvent<HTMLInputElement>) => {
     setCheckValidity(true);
     setIsValidating(false);
     setErrorMsg([]);
-    setIsValid(false);
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
@@ -85,7 +96,6 @@ export const UploadExcel = ({ quizId }: UploadExcelProps) => {
 
   const checkQuestionComponent = () => {
     const troubledQuestionIndex: number[] = [];
-    const totalQuestion = excelData.length;
 
     excelData.forEach((data, index) => {
       setValMsg(validityMesages[1] + ` ${index + 1}`);
@@ -148,22 +158,58 @@ export const UploadExcel = ({ quizId }: UploadExcelProps) => {
         }
       }
     });
+    if (troubledQuestionIndex.length === 0) {
+      console.log('Kesini Ngk');
+      setIsValid(true);
+      console.log(isValid);
+    }
   };
 
-  const checkValidtyHandler = () => {
+  const uploadToDatabase = async () => {
+    const quiz: any = [];
+    excelData.forEach((data) => {
+      const stringifyData = {
+        answer: data.answer.toString(),
+        explanation: data.explanation.toString(),
+        options: data.options.toString().split(';'),
+        question: data.question.toString(),
+      };
+      quiz.push(stringifyData);
+    });
+    try {
+      await axios.post(`/api/quiz/${quizId}/questions/multiple-choice`, quiz);
+      toast.success('Soal ditambahkan');
+      router.refresh();
+    } catch (error) {
+      toast.error('Terdapat kendala');
+    }
+  };
+
+  const onUploadHandler = () => {
     setCheckValidity(false);
     setIsValidating(true);
 
-    const valid = checkColumnValidty(Object.keys(excelData[0]));
+    const validColumn = checkColumnValidty(Object.keys(excelData[0]));
 
-    if (valid) {
+    if (validColumn) {
       checkQuestionComponent();
     }
+    console.log(isValid);
     setIsValidating(false);
   };
+  const totalQuestion = excelData.length;
 
   return (
     <div className="overflow-auto h-[500px] max-h-screen p-4">
+      <div className="flex justify-center">
+        <Image
+          src={'/import-excel.gif'}
+          height={400}
+          width={400}
+          alt="Import Excel GIF"
+        />
+      </div>
+
       <div>
         <p>Siapkan file excelmu, gunakan format seperti berikut:</p>
       </div>
@@ -193,20 +239,26 @@ export const UploadExcel = ({ quizId }: UploadExcelProps) => {
         </p>
       )}
       <div hidden={!checkValidty} className="text-right">
-        <Button onClick={checkValidtyHandler}>Cek Kesesuaian</Button>
+        <Button onClick={onUploadHandler}>Import Soal</Button>
       </div>
       <div hidden={!isValidating} className="text-center mb-2">
         <ClipLoader color="bg-sky-700" />
         <p>{valMsg}</p>
       </div>
+
       {errorMsg.length > 0 && (
-        <div className="bg-slate-200 p-4">
-          {errorMsg.map((content, index) => (
-            <p key={index} className="text-red-500 text-m flex">
-              <span className="font-bold mr-4">{content.index}</span>:&nbsp;
-              {content.msg}
-            </p>
-          ))}
+        <div className="mt-4">
+          <p className="text-lg font-bold text-red-700">
+            Ups, soalmu belum bisa diupload!
+          </p>
+          <div className="bg-gray-200 p-4 rounded shadow-md">
+            {errorMsg.map((content, index) => (
+              <p key={index} className="text-red-500">
+                <span className="font-bold text-sm">{content.index}</span>:{' '}
+                {content.msg}
+              </p>
+            ))}
+          </div>
         </div>
       )}
     </div>
