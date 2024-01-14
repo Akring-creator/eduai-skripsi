@@ -16,6 +16,7 @@ import * as XLSX from 'xlsx';
 import toast from 'react-hot-toast';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import { Loader2 } from 'lucide-react';
 
 interface UploadExcelProps {
   quizId: string;
@@ -36,10 +37,8 @@ export const UploadExcel = ({ quizId }: UploadExcelProps) => {
   const [isUploading, setIsUploading] = useState(false);
   useEffect(() => {
     if (isValid) {
-      setIsUploading(true);
       uploadToDatabase();
       setIsValid(false);
-      setIsUploading(false);
     }
   }, [isValid]);
 
@@ -177,11 +176,14 @@ export const UploadExcel = ({ quizId }: UploadExcelProps) => {
       quiz.push(stringifyData);
     });
     try {
+      setIsUploading(true);
       await axios.post(`/api/quiz/${quizId}/questions/multiple-choice`, quiz);
       toast.success('Soal ditambahkan');
       router.refresh();
     } catch (error) {
       toast.error('Terdapat kendala');
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -194,7 +196,6 @@ export const UploadExcel = ({ quizId }: UploadExcelProps) => {
     if (validColumn) {
       checkQuestionComponent();
     }
-    console.log(isValid);
     setIsValidating(false);
   };
   const totalQuestion = excelData.length;
@@ -209,58 +210,67 @@ export const UploadExcel = ({ quizId }: UploadExcelProps) => {
           alt="Import Excel GIF"
         />
       </div>
-
       <div>
         <p>Siapkan file excelmu, gunakan format seperti berikut:</p>
       </div>
-      <Input type="file" accept=".xlsx, .xls" onChange={handleFileUpload} />
-      {excelData.length > 0 ? (
-        <Table>
-          <TableHeader>
-            <TableRow>
-              {Object.keys(excelData[0]).map((key) => (
-                <TableHead key={key}>{key}</TableHead>
-              ))}
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {excelData.slice(0, 3).map((row, rowIndex) => (
-              <TableRow key={rowIndex}>
-                {Object.values(row).map((value: any, colIndex) => (
-                  <TableCell key={colIndex}>{value}</TableCell>
-                ))}
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      ) : (
-        <p className="italic text-sm text-slate-500 mx-auto my-2">
-          Tidak ada data
-        </p>
-      )}
-      <div hidden={!checkValidty} className="text-right">
-        <Button onClick={onUploadHandler}>Import Soal</Button>
-      </div>
-      <div hidden={!isValidating} className="text-center mb-2">
-        <ClipLoader color="bg-sky-700" />
-        <p>{valMsg}</p>
-      </div>
 
-      {errorMsg.length > 0 && (
-        <div className="mt-4">
-          <p className="text-lg font-bold text-red-700">
-            Ups, soalmu belum bisa diupload!
-          </p>
-          <div className="bg-gray-200 p-4 rounded shadow-md">
-            {errorMsg.map((content, index) => (
-              <p key={index} className="text-red-500">
-                <span className="font-bold text-sm">{content.index}</span>:{' '}
-                {content.msg}
-              </p>
-            ))}
+      <div className="relative">
+        {isUploading && (
+          <div className="absolute h-full w-full top-0 right-0 bg-slate-500/20 rouded-m flex items-center justify-center">
+            <Loader2 className="animate-spin h-10 w-10 text-sky-700" />
           </div>
+        )}
+        <div>
+          <Input type="file" accept=".xlsx, .xls" onChange={handleFileUpload} />
+          {excelData.length > 0 ? (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  {Object.keys(excelData[0]).map((key) => (
+                    <TableHead key={key}>{key}</TableHead>
+                  ))}
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {excelData.slice(0, 3).map((row, rowIndex) => (
+                  <TableRow key={rowIndex}>
+                    {Object.values(row).map((value: any, colIndex) => (
+                      <TableCell key={colIndex}>{value}</TableCell>
+                    ))}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          ) : (
+            <p className="italic text-sm text-slate-500 mx-auto my-2">
+              Tidak ada data
+            </p>
+          )}
+          <div hidden={!checkValidty} className="text-right">
+            <Button onClick={onUploadHandler}>Import Soal</Button>
+          </div>
+          <div hidden={!isValidating} className="text-center mb-2">
+            <ClipLoader color="bg-sky-700" />
+            <p>{valMsg}</p>
+          </div>
+
+          {errorMsg.length > 0 && (
+            <div className="mt-4">
+              <p className="text-lg font-bold text-red-700">
+                Ups, soalmu belum bisa diupload!
+              </p>
+              <div className="bg-gray-200 p-4 rounded shadow-md">
+                {errorMsg.map((content, index) => (
+                  <p key={index} className="text-red-500">
+                    <span className="font-bold text-sm">{content.index}</span>:{' '}
+                    {content.msg}
+                  </p>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 };
