@@ -23,20 +23,13 @@ import { Bot, GripVertical, Pencil, Settings, Sheet } from 'lucide-react';
 import { BasicQuestionManualForm } from '@/components/questions/manual/basic';
 import Link from 'next/link';
 import { useState } from 'react';
+import { UploadExcel } from '@/components/questions/files/files';
 
 interface MetadataProps {
   initialData: Quiz & { questions: (Question & { options: Option[] })[] };
 }
 
 export const Metadata = ({ initialData }: MetadataProps) => {
-  const [isManualDialogOpen, setManualDialogOpen] = useState(false);
-  const [isImportDialogOpen, setImportDialogOpen] = useState(false);
-
-  const openManualDialog = () => setManualDialogOpen(true);
-  const closeManualDialog = () => setManualDialogOpen(false);
-
-  const openImportDialog = () => setImportDialogOpen(true);
-  const closeImportDialog = () => setImportDialogOpen(false);
   return (
     <>
       <div className="relative">
@@ -88,7 +81,7 @@ export const Metadata = ({ initialData }: MetadataProps) => {
                         Tambah Soal
                       </DropdownMenuSubTrigger>
                       <DropdownMenuSubContent>
-                        <DialogTrigger onClick={openManualDialog}>
+                        <DialogTrigger>
                           <DropdownMenuItem>
                             <Pencil className="h-5 w-5 mr-2" />
                             Manual
@@ -101,7 +94,7 @@ export const Metadata = ({ initialData }: MetadataProps) => {
                             Dengan AI
                           </DropdownMenuItem>
                         </Link>
-                        <DialogTrigger onClick={openImportDialog}>
+                        <DialogTrigger>
                           <DropdownMenuItem>
                             <Sheet className="h-5 w-5 mr-2" />
                             Import
@@ -128,12 +121,13 @@ export const Metadata = ({ initialData }: MetadataProps) => {
                   </DropdownMenuContent>
                 </DropdownMenu>
                 <DialogPortal>
-                  <DialogContent className="max-w-3xl">
+                  <DialogContent className="max-w-4xl">
                     <DialogHeader>
                       <DialogTitle>Tambah Soal</DialogTitle>
                     </DialogHeader>
 
-                    <BasicQuestionManualForm quizId={initialData.id} />
+                    {/* <BasicQuestionManualForm quizId={initialData.id} /> */}
+                    <UploadExcel quizId={initialData.id} />
                   </DialogContent>
                 </DialogPortal>
               </Dialog>
