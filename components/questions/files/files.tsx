@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import ClipLoader from 'react-spinners/ClipLoader';
 import {
   Table,
   TableBody,
@@ -9,7 +10,8 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { useState, ChangeEvent } from 'react';
+import Image from 'next/image';
+import { useState, ChangeEvent, useEffect } from 'react';
 import * as XLSX from 'xlsx';
 
 interface UploadExcelProps {
@@ -17,27 +19,23 @@ interface UploadExcelProps {
 }
 
 export const UploadExcel = ({ quizId }: UploadExcelProps) => {
-  const exampleData = [
-    {
-      question: 'Berapa hasil 1+1',
-      answer: '2',
-      options: '2;6;8',
-      explanation:
-        'hasil dari penjumlahan 1 + 1 = 2. Sama seperti 1 apel ditambah 1 apel maka menghasilkan 2 apel',
-    },
-    {
-      question: 'Jelaskan mengenai Geografi!',
-      answer: 'Geografi merupakan ilmu bumi',
-      options:
-        'Geografi merupakan ilmu bumi;Geografi merupakan ilmu manusia;Geografi merupakan ilmu tumbuhan',
-      explanation:
-        'Geografi merupakan ilmu yang mempelajari tentang bumi dan isinya',
-    },
+  const validityMesages = [
+    'Mengecek kesesuaian Kolom',
+    'Mengecek kelengkapan soal nomor',
   ];
   const [checkValidty, setCheckValidity] = useState(false);
-  const [excelData, setExcelData] = useState([]);
+  const [isValidating, setIsValidating] = useState(false);
+  const [excelData, setExcelData] = useState<any[]>([]);
+  const [errorMsg, setErrorMsg] = useState<any[]>([]);
+  const [valMsg, setValMsg] = useState('');
+  const [isValid, setIsValid] = useState(false);
+  useEffect(() => {}, [valMsg]);
 
   const handleFileUpload = (e: ChangeEvent<HTMLInputElement>) => {
+    setCheckValidity(true);
+    setIsValidating(false);
+    setErrorMsg([]);
+    setIsValid(false);
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
@@ -52,7 +50,6 @@ export const UploadExcel = ({ quizId }: UploadExcelProps) => {
 
           // Set state dengan hasil parsing
           setExcelData(parsedData);
-          console.log(excelData);
         } catch (error) {
           console.error('Error parsing Excel file:', error);
           // Tambahkan logika penanganan kesalahan di sini
@@ -61,15 +58,112 @@ export const UploadExcel = ({ quizId }: UploadExcelProps) => {
 
       reader.readAsBinaryString(file);
     }
-    setCheckValidity(!checkValidty);
+  };
+  const checkColumnValidty = (column: String[]) => {
+    setValMsg(validityMesages[0]);
+
+    const requiredColumn = ['question', 'answer', 'options', 'explanation'];
+
+    const missingColumns = requiredColumn.filter(
+      (columnName) => !column.includes(columnName)
+    );
+
+    if (missingColumns.length > 0) {
+      setErrorMsg((prev) => [
+        ...prev,
+        {
+          index: 'File',
+          msg: `Missing columns: ${missingColumns.join(', ')}`,
+        },
+      ]);
+
+      return false;
+    }
+
+    return true;
+  };
+
+  const checkQuestionComponent = () => {
+    const troubledQuestionIndex: number[] = [];
+    const totalQuestion = excelData.length;
+
+    excelData.forEach((data, index) => {
+      setValMsg(validityMesages[1] + ` ${index + 1}`);
+      try {
+        const stringifiedData = {
+          answer: data.answer.toString(),
+          explanation: data.explanation.toString(),
+          options: data.options.toString(),
+          question: data.question.toString(),
+        };
+      } catch (error) {
+        troubledQuestionIndex.push(index);
+        setErrorMsg((prev) => [
+          ...prev,
+          { index: `Soal ${index + 1}`, msg: `Soal gagal dikonversi` },
+        ]);
+      }
+
+      if (!troubledQuestionIndex.includes(index)) {
+        try {
+          const options = data.options.toString();
+          const optionsArray: string[] = options.split(';');
+        } catch (error) {
+          troubledQuestionIndex.push(index);
+          setErrorMsg((prev) => [
+            ...prev,
+            {
+              index: `Soal ${index + 1}`,
+              msg: `Pilihan jawaban gagal dikonversi`,
+            },
+          ]);
+        }
+      }
+
+      if (!troubledQuestionIndex.includes(index)) {
+        const options = data.options.toString();
+        const answer = data.answer.toString();
+        const optionsArray: string[] = options.split(';');
+        if (!optionsArray.includes(answer)) {
+          setErrorMsg((prev) => [
+            ...prev,
+            {
+              index: `Soal ${index + 1}`,
+              msg: `Jawaban tidak terdapat dalam pilihan jawaban`,
+            },
+          ]);
+        }
+      }
+
+      if (!troubledQuestionIndex.includes(index)) {
+        const explanation = data.explanation.toString();
+        if (!(explanation.length >= 50)) {
+          setErrorMsg((prev) => [
+            ...prev,
+            {
+              index: `Soal ${index + 1}`,
+              msg: `Pembahasan tidak memenuhi ketentuan panjang minimal yaitu 50 karakter`,
+            },
+          ]);
+        }
+      }
+    });
   };
 
   const checkValidtyHandler = () => {
-    setCheckValidity(!checkValidty);
+    setCheckValidity(false);
+    setIsValidating(true);
+
+    const valid = checkColumnValidty(Object.keys(excelData[0]));
+
+    if (valid) {
+      checkQuestionComponent();
+    }
+    setIsValidating(false);
   };
 
   return (
-    <div>
+    <div className="overflow-auto h-[500px] max-h-screen p-4">
       <div>
         <p>Siapkan file excelmu, gunakan format seperti berikut:</p>
       </div>
@@ -86,7 +180,7 @@ export const UploadExcel = ({ quizId }: UploadExcelProps) => {
           <TableBody>
             {excelData.slice(0, 3).map((row, rowIndex) => (
               <TableRow key={rowIndex}>
-                {Object.values(row).map((value, colIndex) => (
+                {Object.values(row).map((value: any, colIndex) => (
                   <TableCell key={colIndex}>{value}</TableCell>
                 ))}
               </TableRow>
@@ -101,6 +195,20 @@ export const UploadExcel = ({ quizId }: UploadExcelProps) => {
       <div hidden={!checkValidty} className="text-right">
         <Button onClick={checkValidtyHandler}>Cek Kesesuaian</Button>
       </div>
+      <div hidden={!isValidating} className="text-center mb-2">
+        <ClipLoader color="bg-sky-700" />
+        <p>{valMsg}</p>
+      </div>
+      {errorMsg.length > 0 && (
+        <div className="bg-slate-200 p-4">
+          {errorMsg.map((content, index) => (
+            <p key={index} className="text-red-500 text-m flex">
+              <span className="font-bold mr-4">{content.index}</span>:&nbsp;
+              {content.msg}
+            </p>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
