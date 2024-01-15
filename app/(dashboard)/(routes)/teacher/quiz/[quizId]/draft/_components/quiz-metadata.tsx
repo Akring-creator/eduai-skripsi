@@ -24,6 +24,7 @@ import { BasicQuestionManualForm } from '@/components/questions/manual/basic';
 import Link from 'next/link';
 import { useState } from 'react';
 import { UploadExcel } from '@/components/questions/files/files';
+import { BasicAutomaticForm } from '@/components/questions/automatic/basic';
 
 interface MetadataProps {
   initialData: Quiz & { questions: (Question & { options: Option[] })[] };
@@ -123,11 +124,12 @@ export const Metadata = ({ initialData }: MetadataProps) => {
                 <DialogPortal>
                   <DialogContent className="max-w-4xl">
                     <DialogHeader>
-                      <DialogTitle>Tambah Soal</DialogTitle>
+                      <p className="text-xl font-semibold">Tambah Soal</p>
                     </DialogHeader>
 
                     {/* <BasicQuestionManualForm quizId={initialData.id} /> */}
                     <UploadExcel quizId={initialData.id} />
+                    {/* <BasicAutomaticForm quizId={initialData.id} /> */}
                   </DialogContent>
                 </DialogPortal>
               </Dialog>

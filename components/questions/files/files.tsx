@@ -16,7 +16,7 @@ import * as XLSX from 'xlsx';
 import toast from 'react-hot-toast';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
-import { Loader2 } from 'lucide-react';
+import { Loader2, XCircle } from 'lucide-react';
 
 interface UploadExcelProps {
   quizId: string;
@@ -72,7 +72,12 @@ export const UploadExcel = ({ quizId }: UploadExcelProps) => {
   const checkColumnValidty = (column: String[]) => {
     setValMsg(validityMesages[0]);
 
-    const requiredColumn = ['question', 'answer', 'options', 'explanation'];
+    const requiredColumn = [
+      'pertanyaan',
+      'jawaban',
+      'pilihan_jawaban',
+      'pembahasan',
+    ];
 
     const missingColumns = requiredColumn.filter(
       (columnName) => !column.includes(columnName)
@@ -83,7 +88,7 @@ export const UploadExcel = ({ quizId }: UploadExcelProps) => {
         ...prev,
         {
           index: 'File',
-          msg: `Missing columns: ${missingColumns.join(', ')}`,
+          msg: `Kolom ini ngak ada: ${missingColumns.join(', ')}`,
         },
       ]);
 
@@ -100,10 +105,10 @@ export const UploadExcel = ({ quizId }: UploadExcelProps) => {
       setValMsg(validityMesages[1] + ` ${index + 1}`);
       try {
         const stringifiedData = {
-          answer: data.answer.toString(),
-          explanation: data.explanation.toString(),
-          options: data.options.toString(),
-          question: data.question.toString(),
+          answer: data.jawaban.toString(),
+          explanation: data.pembahasan.toString(),
+          options: data.pilihan_jawaban.toString(),
+          question: data.pertanyaan.toString(),
         };
       } catch (error) {
         troubledQuestionIndex.push(index);
@@ -115,7 +120,7 @@ export const UploadExcel = ({ quizId }: UploadExcelProps) => {
 
       if (!troubledQuestionIndex.includes(index)) {
         try {
-          const options = data.options.toString();
+          const options = data.pilihan_jawaban.toString();
           const optionsArray: string[] = options.split(';');
         } catch (error) {
           troubledQuestionIndex.push(index);
@@ -130,8 +135,8 @@ export const UploadExcel = ({ quizId }: UploadExcelProps) => {
       }
 
       if (!troubledQuestionIndex.includes(index)) {
-        const options = data.options.toString();
-        const answer = data.answer.toString();
+        const options = data.pilihan_jawaban.toString();
+        const answer = data.jawaban.toString();
         const optionsArray: string[] = options.split(';');
         if (!optionsArray.includes(answer)) {
           setErrorMsg((prev) => [
@@ -145,7 +150,7 @@ export const UploadExcel = ({ quizId }: UploadExcelProps) => {
       }
 
       if (!troubledQuestionIndex.includes(index)) {
-        const explanation = data.explanation.toString();
+        const explanation = data.pembahasan.toString();
         if (!(explanation.length >= 50)) {
           setErrorMsg((prev) => [
             ...prev,
@@ -158,9 +163,7 @@ export const UploadExcel = ({ quizId }: UploadExcelProps) => {
       }
     });
     if (troubledQuestionIndex.length === 0) {
-      console.log('Kesini Ngk');
       setIsValid(true);
-      console.log(isValid);
     }
   };
 
@@ -168,10 +171,10 @@ export const UploadExcel = ({ quizId }: UploadExcelProps) => {
     const quiz: any = [];
     excelData.forEach((data) => {
       const stringifyData = {
-        answer: data.answer.toString(),
-        explanation: data.explanation.toString(),
-        options: data.options.toString().split(';'),
-        question: data.question.toString(),
+        answer: data.jawaban.toString(),
+        explanation: data.pembahasan.toString(),
+        options: data.pilihan_jawaban.toString().split(';'),
+        question: data.pertanyaan.toString(),
       };
       quiz.push(stringifyData);
     });
@@ -256,9 +259,14 @@ export const UploadExcel = ({ quizId }: UploadExcelProps) => {
 
           {errorMsg.length > 0 && (
             <div className="mt-4">
-              <p className="text-lg font-bold text-red-700">
-                Ups, soalmu belum bisa diupload!
-              </p>
+              <div className="flex border border-gray-300 p-4 items-center space-x-4 mb-4">
+                <XCircle className="text-red-500 h-10 w-10" />
+                <p className="text-base text-gray-700">
+                  Oops, kayaknya belum bisa deh upload soalmu. Mungkin cek dulu
+                  ya masalahnya.
+                </p>
+              </div>
+
               <div className="bg-gray-200 p-4 rounded shadow-md">
                 {errorMsg.map((content, index) => (
                   <p key={index} className="text-red-500">
