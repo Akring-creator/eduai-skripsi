@@ -56,7 +56,7 @@ export const UploadExcel = ({ quizId }: UploadExcelProps) => {
       kolom: 'jawaban',
       penjelasan: ' Berisi jawaban yang benar dari soal',
       contoh:
-        'Karena daerah pesisir rentan terhadap naiknya permukaan air laut.',
+        'Karena daerah pesisir rentan terhadap naiknya permukaan air laut',
     },
     {
       kolom: 'pilihan_jawaban',
@@ -316,7 +316,13 @@ export const UploadExcel = ({ quizId }: UploadExcelProps) => {
 
                 <p className="ml-2">
                   3. Buat yang masih bingung, bisa cek contoh format excel yang
-                  bener, bisa didownload di sini
+                  bener, bisa didownload di{' '}
+                  <a
+                    href="https://utfs.io/f/35fd85cd-4cfc-41bb-8255-ef007d6d5ef9-igpp8e.xlsx"
+                    download="basic-question-template.xlsx"
+                  >
+                    <span className="text-sky-700">sini</span>
+                  </a>
                 </p>
               </div>
             </AccordionContent>

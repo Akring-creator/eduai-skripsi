@@ -140,13 +140,12 @@ export const BasicAutomaticForm = ({ quizId }: BasicAutomaticFormProps) => {
               />
             </div>
           )}
-
+          <p className="text-lg font-bold">Petunjuk Pembuatan Soal</p>
           <FormField
             control={form.control}
             name="guidance"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Petunjuk Pembuatan Soal</FormLabel>
                 <FormDescription>Mau bikin soal apa nih?</FormDescription>
                 <FormControl>
                   <Textarea
@@ -180,33 +179,35 @@ export const BasicAutomaticForm = ({ quizId }: BasicAutomaticFormProps) => {
           </div>
 
           {useExample && (
-            <FormField
-              control={form.control}
-              name="questionExample"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Contoh Soal</FormLabel>
-                  <FormDescription>
-                    kasih contoh soal yang kamu inginkan
-                  </FormDescription>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Masukkan contoh soalmu disini!"
-                      disabled={isSubmitting}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div>
+              <p className="text-lg font-bold">Contoh Soal</p>
+              <FormField
+                control={form.control}
+                name="questionExample"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormDescription>
+                      kasih contoh soal yang kamu inginkan
+                    </FormDescription>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Masukkan contoh soalmu disini!"
+                        disabled={isSubmitting}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
           )}
+          <p className="text-lg font-bold">Jumlah Pertanyaan</p>
           <FormField
             control={form.control}
             name="numberOfQuestions"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Jumlah Pertanyaan</FormLabel>
                 <FormDescription>
                   Ada berapa pertanyaan yang ingin kamu buat?
                 </FormDescription>
@@ -223,12 +224,12 @@ export const BasicAutomaticForm = ({ quizId }: BasicAutomaticFormProps) => {
               </FormItem>
             )}
           />
+          <p className="text-lg font-bold">Jumlah Pilihan Jawaban</p>
           <FormField
             control={form.control}
             name="numberOfOptions"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Jumlah Pilihan Jawaban</FormLabel>
                 <FormDescription>
                   Mau berapa pilihan jawaban setiap soalnya?
                 </FormDescription>
