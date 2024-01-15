@@ -17,17 +17,19 @@ import toast from 'react-hot-toast';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { Loader2, XCircle } from 'lucide-react';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
+import { Separator } from '@/components/ui/separator';
 
 interface UploadExcelProps {
   quizId: string;
 }
 
 export const UploadExcel = ({ quizId }: UploadExcelProps) => {
-  const router = useRouter();
-  const validityMesages = [
-    'Mengecek kesesuaian Kolom',
-    'Mengecek kelengkapan soal nomor',
-  ];
   const [checkValidty, setCheckValidity] = useState(false);
   const [isValidating, setIsValidating] = useState(false);
   const [excelData, setExcelData] = useState<any[]>([]);
@@ -35,13 +37,68 @@ export const UploadExcel = ({ quizId }: UploadExcelProps) => {
   const [valMsg, setValMsg] = useState('');
   const [isValid, setIsValid] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+
+  const router = useRouter();
+  const validityMesages = [
+    'Mengecek kesesuaian Kolom',
+    'Mengecek kelengkapan soal nomor',
+  ];
+  const columnExplanation = [
+    {
+      kolom: 'pertanyaan',
+      penjelasan:
+        ' Isinya pokok pertanyaan dari soal. Masukkan pemantik/narasi/bahan literasi kedalam bagian ini',
+      contoh:
+        'Mengapa daerah-daerah pesisir sering kali rentan terhadap bencana banjir?',
+    },
+
+    {
+      kolom: 'jawaban',
+      penjelasan: ' Berisi jawaban yang benar dari soal',
+      contoh:
+        'Karena daerah pesisir rentan terhadap naiknya permukaan air laut.',
+    },
+    {
+      kolom: 'pilihan_jawaban',
+      penjelasan:
+        ' Ini isinya pilihan-pilihan jawaban.  Untuk memisahkan antar pilihan jawaban gunakan titik koma (;). Pastiin jawaban bener ada di salah satu pilihan. Pastiin juga tanda baca dan spasinya benar. Pastiin nama kolomnya pilihan_jawaban bukan pilihan jawaban atau pilihanjawaban',
+      contoh:
+        'Karena daerah pesisir cenderung memiliki curah hujan tinggi;Karena daerah pesisir rentan terhadap naiknya permukaan air laut;Karena daerah pesisir sering mengalami kekeringan;Karena daerah pesisir memiliki jumlah penduduk yang tinggi;Semua Jawaban Benar',
+    },
+    {
+      kolom: 'pembahasan',
+      penjelasan:
+        'Penjelasan tentang jawaban yang bener. Minimal 50 karakter yaa',
+      contoh:
+        'Daerah pesisir rentan terhadap bencana banjir karena rentan terhadap naiknya permukaan air laut, yang dapat disebabkan oleh faktor seperti pasang surut, cuaca ekstrem, atau perubahan iklim yang menyebabkan bencana banjir di daerah tersebut',
+    },
+  ];
+  const exampleExcel = [
+    {
+      pertanyaan:
+        'Apa yang menjadi faktor utama dalam pembentukan garis Wallace?',
+      jawaban: 'Isolasi geografis',
+      pilihan_jawaban:
+        'Aktivitas gunung berapi;Perubahan iklim secara drastis;Pergerakan lempeng tektonik;Isolasi geografis;Semua Jawaban Benar',
+      pembahasan:
+        'Garis Wallace adalah garis pemisah yang menandai batas antara fauna Asia dan Australia. Garis ini terbentuk karena isolasi geografis, memungkinkan evolusi spesies-spesies yang berbeda di wilayah Asia dan Australia',
+    },
+    {
+      pertanyaan:
+        '8.	Di Indonesia, terdapat keragaman budaya yang mencakup berbagai suku, bahasa, dan tradisi. Salah satu contoh yang mencerminkan asimilasi budaya yang unik adalah?',
+      jawaban: 'Integrasi unsur-unsur lokal dalam seni wayang kulit.',
+      pilihan_jawaban:
+        'Penurunan penggunaan bahasa lokal di masyarakat.;Pelestarian budaya murni tanpa pengaruh luar.;Wayang kulit yang hanya mempertahankan akar cerita dari India.;Integrasi unsur-unsur lokal dalam seni wayang kulit.;Kesenian yang tidak mengalami perubahan dari generasi ke generasi.',
+      pembahasan:
+        'Integrasi unsur-unsur lokal dalam seni wayang kulit. Seni tradisional seperti wayang kulit di Indonesia tidak hanya mengadopsi cerita-cerita dari India, tetapi juga mengalami asimilasi budaya dengan memasukkan unsur-unsur lokal seperti musik, penampilan tokoh, dan cerita-cerita yang bersumber dari budaya lokal. Ini mencerminkan proses asimilasi budaya di mana unsur-unsur budaya asing dan lokal bersatu membentuk identitas budaya yang unik',
+    },
+  ];
   useEffect(() => {
     if (isValid) {
       uploadToDatabase();
       setIsValid(false);
     }
   }, [isValid]);
-
   const handleFileUpload = (e: ChangeEvent<HTMLInputElement>) => {
     setCheckValidity(true);
     setIsValidating(false);
@@ -214,7 +271,66 @@ export const UploadExcel = ({ quizId }: UploadExcelProps) => {
         />
       </div>
       <div>
-        <p>Siapkan file excelmu, gunakan format seperti berikut:</p>
+        <p className="font-semibold text-lg">Tips untuk Nge-Upload!</p>
+        <p>Sebelum nge-upload coba baca dulu beberapa hal berikut:</p>
+        <Separator className="my-2" />
+        <Accordion type="single" collapsible>
+          <AccordionItem value="item-1">
+            <AccordionTrigger>
+              Gimana sih caranya nge-upload soal yang bener?
+            </AccordionTrigger>
+            <AccordionContent>
+              <div className="space-y-2">
+                <p>Mau nge-upload soal? Pastiin dulu ya beberapa hal ini:</p>
+                <p className="ml-2">
+                  1. Pastikan format filenya
+                  <span className="font-bold"> .xlsx</span> atau
+                  <span className="font-bold"> .xls</span>.
+                </p>
+                <p className="ml-2">
+                  2. Di dalam file, harus ada 4 kolom nih:{' '}
+                  <span className="font-bold">pertanyaan</span>,{' '}
+                  <span className="font-bold">jawaban</span>,{' '}
+                  <span className="font-bold">pilihan_jawaban</span>, sama{' '}
+                  <span className="font-bold">pembahasan</span>. Penjelasan
+                  sederhana buat setiap kolom:
+                </p>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      {Object.keys(columnExplanation[0]).map((key) => (
+                        <TableHead key={key}>{key}</TableHead>
+                      ))}
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {columnExplanation.map((row, rowIndex) => (
+                      <TableRow key={rowIndex}>
+                        {Object.values(row).map((value: any, colIndex) => (
+                          <TableCell key={colIndex}>{value}</TableCell>
+                        ))}
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+
+                <p className="ml-2">
+                  3. Buat yang masih bingung, bisa cek contoh format excel yang
+                  bener, bisa didownload di sini
+                </p>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="item-2">
+            <AccordionTrigger>
+              Kok aku upload soal lama sekali?
+            </AccordionTrigger>
+            <AccordionContent>
+              Kalau jumlah soalnya banyak maka perlu waktu yang cukup lama.
+              Jangan lupa periksa koneksi internetmu ya!
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
       </div>
 
       <div className="relative">
@@ -224,7 +340,23 @@ export const UploadExcel = ({ quizId }: UploadExcelProps) => {
           </div>
         )}
         <div>
-          <Input type="file" accept=".xlsx, .xls" onChange={handleFileUpload} />
+          <label
+            className="block my-2 text-sm font-medium text-gray-700"
+            htmlFor="file_upload"
+          >
+            Upload File
+          </label>
+          <input
+            className="block w-full text-sm text-gray-500
+        file:mr-4 file:py-2 file:px-4
+        file:rounded-full file:border-0
+        file:text-sm file:font-semibold
+        file:bg-blue-50 file:text-blue-700
+        hover:file:bg-blue-100"
+            type="file"
+            accept=".xlsx, .xls"
+            onChange={handleFileUpload}
+          />
           {excelData.length > 0 ? (
             <Table>
               <TableHeader>
@@ -250,7 +382,7 @@ export const UploadExcel = ({ quizId }: UploadExcelProps) => {
             </p>
           )}
           <div hidden={!checkValidty} className="text-right">
-            <Button onClick={onUploadHandler}>Import Soal</Button>
+            <Button onClick={onUploadHandler}>Upload Soal</Button>
           </div>
           <div hidden={!isValidating} className="text-center mb-2">
             <ClipLoader color="bg-sky-700" />
