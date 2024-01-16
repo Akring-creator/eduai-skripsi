@@ -135,6 +135,10 @@ Table Purchase {
   course Course [not null]
   createdAt DateTime [default: `now()`, not null]
   updateAt DateTime [not null]
+
+  indexes {
+    (userId, courseId) [unique]
+  }
 }
 
 Table StripeCustomer {
@@ -145,32 +149,166 @@ Table StripeCustomer {
   updateAt DateTime [not null]
 }
 
+Table studentTarget {
+  id String [pk]
+  target String [not null]
+  learningModules LearningModule [not null]
+}
+
+Table learningModa {
+  id String [pk]
+  moda String [not null]
+  learningModules LearningModule [not null]
+}
+
+Table PancasilaStudentsProfile {
+  id String [pk]
+  name String [not null]
+  learningModuleId String [not null]
+  learningModule LearningModule [not null]
+}
+
+Table Subject {
+  id String [pk]
+  name String [not null]
+  learningModule LearningModule [not null]
+}
+
+Table Element {
+  id String [pk]
+  name String [not null]
+  expectedOutcome String [not null]
+  learningOutcomeId String [not null]
+  learningOutcome LearningOutcome [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updateAt DateTime [not null]
+}
+
+Table Phase {
+  id String [pk]
+  name String [not null]
+  minClass Int [not null]
+  maxClass Int [not null]
+  learningOutcome LearningOutcome [not null]
+  learningModule LearningModule [not null]
+}
+
+Table LearningOutcome {
+  id String [pk]
+  subject String [not null]
+  generalOutcome String [not null]
+  phaseId String
+  phase Phase
+  element Element [not null]
+}
+
+Table LearningObjective {
+  id String [pk]
+  content String [not null]
+  learningModuleId String [not null]
+  learningModule LearningModule [not null]
+}
+
+Table MeaningfulComprehension {
+  id String [pk]
+  content String [not null]
+  learningModuleId String [not null]
+  learningModule LearningModule [not null]
+}
+
+Table LearningObjectiveFlows {
+  id String [pk]
+  content String [not null]
+  Position Int [not null]
+  learningModuleId String [not null]
+  learningModule LearningModule [not null]
+}
+
+Table TriggerQuestion {
+  id String [pk]
+  content String [not null]
+  position Int [not null]
+  learningModuleId String [not null]
+  learningModule LearningModule [not null]
+}
+
+Table LearningFlow {
+  id String [pk]
+  title String [not null]
+  position Int [not null]
+  meeting Int
+  learningActivities LearningActivities [not null]
+  learningModuleId String [not null]
+  learningModule LearningModule [not null]
+}
+
+Table LearningActivities {
+  id String [pk]
+  learningPhaseId String [not null]
+  learningPhase LearningPhase [not null]
+  quiz Quiz [not null]
+  learningFlowId String [not null]
+  learningFlow LearningFlow [not null]
+}
+
+Table LearningPhase {
+  id String [pk]
+  content String [not null]
+  position Int [not null]
+  learningActivitiesId String [not null]
+  learningActivities LearningActivities [not null]
+}
+
+Table EducationLevel {
+  id String [pk]
+  name String [not null]
+  alias String [not null]
+  position Int [not null]
+  groupLevel Int [not null]
+  learningModule LearningModule [not null]
+}
+
+Table LearningModule {
+  id String [pk]
+  userId String [not null]
+  writer String
+  institute String
+  learningYear String
+  title String [not null]
+  numOfMeeting Int
+  learningHours Int
+  isPublished Boolean [not null, default: false]
+  phaseId String
+  phase Phase
+  educationLevelId String
+  educationLevel EducationLevel
+  class Int
+  subjectId String
+  subject Subject
+  modaId String
+  moda learningModa
+  model String
+  studentTargetId String
+  studentTarget studentTarget
+  tripleP PancasilaStudentsProfile [not null]
+  material String
+  customMaterial String
+  teacherReflection String
+  facilities String
+  learningObjective LearningObjective [not null]
+  learningObjectiveFlows LearningObjectiveFlows [not null]
+  method String
+  meaningfulComprehension MeaningfulComprehension [not null]
+  triggerQuestion TriggerQuestion [not null]
+  learningFlow LearningFlow [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updateAt DateTime [not null]
+}
+
 Enum QuestionType {
   multipleChoice
   shortAnswer
   longAnswer
-}
-
-Enum studentTarget {
-  general
-  disability
-  highAchiever
-}
-
-Enum learningModel {
-  offlineDistanceClass
-  onlineDistanceClass
-  inClass
-  blended
-}
-
-Enum PancasilaStudentsProfile {
-  independent
-  faithful
-  diversity
-  cooperative
-  creative
-  criticalThinker
 }
 
 Ref: Course.categoryId > Category.id
@@ -194,3 +332,33 @@ Ref: Quiz.learningActivitiesId > LearningActivities.id
 Ref: QuizAttachment.quizId > Quiz.id [delete: Cascade]
 
 Ref: Purchase.courseId > Course.id [delete: Cascade]
+
+Ref: PancasilaStudentsProfile.learningModuleId > LearningModule.id
+
+Ref: Element.learningOutcomeId > LearningOutcome.id [delete: Cascade]
+
+Ref: LearningOutcome.phaseId > Phase.id
+
+Ref: LearningObjective.learningModuleId > LearningModule.id [delete: Cascade]
+
+Ref: MeaningfulComprehension.learningModuleId > LearningModule.id [delete: Cascade]
+
+Ref: LearningObjectiveFlows.learningModuleId > LearningModule.id [delete: Cascade]
+
+Ref: TriggerQuestion.learningModuleId > LearningModule.id [delete: Cascade]
+
+Ref: LearningFlow.learningModuleId > LearningModule.id [delete: Cascade]
+
+Ref: LearningActivities.learningFlowId > LearningFlow.id [delete: Cascade]
+
+Ref: LearningPhase.learningActivitiesId > LearningActivities.id [delete: Cascade]
+
+Ref: LearningModule.phaseId > Phase.id
+
+Ref: LearningModule.educationLevelId > EducationLevel.id
+
+Ref: LearningModule.subjectId > Subject.id
+
+Ref: LearningModule.modaId > learningModa.id
+
+Ref: LearningModule.studentTargetId > studentTarget.id
