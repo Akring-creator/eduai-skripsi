@@ -8,6 +8,7 @@ import {
   FormInput,
   Workflow,
   LibraryBig,
+  Waypoints,
 } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 
@@ -41,6 +42,12 @@ const teacherRoutes = [
     icon: LibraryBig,
     label: 'Kurikulum',
     href: '/teacher/curriculum',
+    
+  },
+  {
+icon: Waypoints,
+    label: 'Titik Pengetahuan',
+    href: '/teacher/connections',
   },
   {
     icon: BarChart,

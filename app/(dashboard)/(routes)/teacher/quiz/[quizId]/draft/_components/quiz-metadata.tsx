@@ -1,53 +1,39 @@
 'use client';
-import { Button } from '@/components/ui/button';
-import { Quiz, Option } from '@prisma/client';
 import {
-  PlusIcon,
-  HardDriveUpload,
-  MoreHorizontal,
-  PenSquare,
-  Pencil,
-  Settings,
-  Plus,
-  ArrowRightToLine,
-} from 'lucide-react';
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogPortal,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { Option, Question, Quiz } from '@prisma/client';
+import { Bot, GripVertical, Pencil, Settings, Sheet } from 'lucide-react';
 
-import { useRouter } from 'next/navigation';
-import { auth } from '@clerk/nextjs';
+import { BasicQuestionManualForm } from '@/components/questions/manual/basic';
 import Link from 'next/link';
 import { useState } from 'react';
+import { UploadExcel } from '@/components/questions/files/files';
+import { BasicAutomaticForm } from '@/components/questions/automatic/basic';
 
-// Cant use Question Format from prisma
-
-interface Question {
-  id: string;
-  question: string;
-  questionType: string;
-  imageUrl: string | null;
-  answer: string;
-  explanation: string;
-  options: Option[]; // Tambahkan properti options dengan tipe Option[]
-  quizId: string;
-  position: number;
-  createdAt: Date;
-  updateAt: Date;
-}
 interface MetadataProps {
-  initialData: Quiz & { questions: Question[] };
+  initialData: Quiz & { questions: (Question & { options: Option[] })[] };
 }
 
 export const Metadata = ({ initialData }: MetadataProps) => {
-  const router = useRouter();
-  const onClickSettings = () => {
-    router.push(`/teacher/quiz/${initialData.id}/settings`);
+  const [selectedOption, setSelectedOption] = useState('');
+  const handleOptionClick = (option: string) => {
+    setSelectedOption(option);
   };
   return (
     <>
@@ -85,35 +71,94 @@ export const Metadata = ({ initialData }: MetadataProps) => {
               </span>
             </div>
           </div>
+
           {/* Bagian 2 */}
           <div className="absolute top-0 right-0 flex items-start gap-x-3 mt-2 mr-2">
             <div>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Plus className="h-5 w-5 p-0 hover:cursor-pointer" />
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <Link href={`/teacher/quiz/${initialData.id}/generate`}>
+              <Dialog>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <GripVertical className="h-5 w-5 p-0 hover:cursor-pointer" />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuSub>
+                      <DropdownMenuSubTrigger>
+                        Tambah Soal
+                      </DropdownMenuSubTrigger>
+                      <DropdownMenuSubContent>
+                        <DropdownMenuItem>
+                          <DialogTrigger
+                            onClick={() => handleOptionClick('manual')}
+                          >
+                            <div className="flex">
+                              <Pencil className="h-5 w-5 mr-2" />
+                              Manual
+                            </div>
+                          </DialogTrigger>
+                        </DropdownMenuItem>
+
+                        <DropdownMenuItem>
+                          <DialogTrigger
+                            onClick={() => handleOptionClick('ai')}
+                          >
+                            <div className="flex">
+                              <Bot className="h-5 w-5 mr-2" />
+                              Dengan AI
+                            </div>
+                          </DialogTrigger>
+                        </DropdownMenuItem>
+
+                        <DropdownMenuItem>
+                          <DialogTrigger
+                            onClick={() => handleOptionClick('import')}
+                          >
+                            <div className="flex">
+                              <Sheet className="h-5 w-5 mr-2" />
+                              Import
+                            </div>
+                          </DialogTrigger>
+                        </DropdownMenuItem>
+                      </DropdownMenuSubContent>
+                    </DropdownMenuSub>
+                    <DropdownMenuSeparator></DropdownMenuSeparator>
                     <DropdownMenuItem>
-                      <Pencil className="h-5 w-5 mr-2" />
-                      Buat Soal
+                      <Link href={`/teacher/quiz/${initialData.id}/settings`}>
+                        <DropdownMenuItem>
+                          <Settings className="h-5 w-5 mr-2" />
+                          Pengaturan
+                        </DropdownMenuItem>
+                      </Link>
                     </DropdownMenuItem>
-                  </Link>
-                  <Link href={`/teacher/quiz/${initialData.id}/export`}>
+
+                    {/* <Link href={`/teacher/quiz/${initialData.id}/export`}>
                     <DropdownMenuItem>
                       <ArrowRightToLine className="h-5 w-5 mr-2" />
                       Ekspor Kuis
                     </DropdownMenuItem>
-                  </Link>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
+                  </Link> */}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                <DialogPortal>
+                  <DialogContent className="max-w-4xl">
+                    <DialogHeader>
+                      <p className="text-xl font-semibold">Tambah Soal</p>
+                    </DialogHeader>
 
-            <Settings
-              name="settings"
-              className=" w-5 h-5 hover:opacity-75 cursor-pointer "
-              onClick={onClickSettings}
-            />
+                    {selectedOption === 'manual' && (
+                      <BasicQuestionManualForm quizId={initialData.id} />
+                    )}
+
+                    {selectedOption === 'ai' && (
+                      <BasicAutomaticForm quizId={initialData.id} />
+                    )}
+
+                    {selectedOption === 'import' && (
+                      <UploadExcel quizId={initialData.id} />
+                    )}
+                  </DialogContent>
+                </DialogPortal>
+              </Dialog>
+            </div>
           </div>
         </div>
       </div>

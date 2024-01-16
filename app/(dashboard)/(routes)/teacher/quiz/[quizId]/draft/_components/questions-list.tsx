@@ -17,28 +17,12 @@ import {
 } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
-import { Option } from '@prisma/client';
+import { Option, Question } from '@prisma/client';
 
 import { QuestionBody } from './question-body';
 
-// ...
-
-interface Question {
-  id: string;
-  question: string;
-  imageUrl: string | null;
-  answer: string;
-  questionType: string;
-  explanation: string;
-  options: Option[]; // Tambahkan properti options dengan tipe Option[]
-  quizId: string;
-  position: number;
-  createdAt: Date;
-  updateAt: Date;
-}
-
 interface QuestionsListProps {
-  items: Question[];
+  items: (Question & { options: Option[] })[];
   onReorder: (updateData: { id: string; position: number }[]) => void;
   onEdit: (id: string) => void;
   quizId: string;

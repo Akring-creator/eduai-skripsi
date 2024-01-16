@@ -35,6 +35,7 @@ import axios from 'axios';
 import {
   ArrowUpDown,
   BadgeCheck,
+  Bot,
   ChevronRight,
   ListMinus,
   ListPlus,
@@ -46,23 +47,22 @@ import {
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
-import { Option } from '@prisma/client';
-interface Question {
-  id: string;
-  question: string;
-  imageUrl: string | null;
-  answer: string;
-  questionType: string;
-  explanation: string;
-  options: Option[]; // Tambahkan properti options dengan tipe Option[]
-  quizId: string;
-  position: number;
-  createdAt: Date;
-  updateAt: Date;
-}
+import { Option, Question } from '@prisma/client';
+import {
+  Dialog,
+  DialogFooter,
+  DialogHeader,
+  DialogPortal,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import { DialogContent } from '@radix-ui/react-dialog';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+
 interface QuestionActionsProps {
   quizId: string;
-  initialData: Question;
+  initialData: Question & { options: Option[] };
   qType: string; // Tambahkan properti questionType
   onEdit: (value: string) => void;
   onUpdate: (value: boolean) => void;
@@ -127,10 +127,10 @@ const QuestionAction = ({
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuItem>
+            {/* <DropdownMenuItem>
               <ListPlus className="h-3 w-3 mr-2" />
               <p className="text-xs">Tambah Option</p>
-            </DropdownMenuItem>
+            </DropdownMenuItem> */}
             <DropdownMenuSub>
               <DropdownMenuSubTrigger>
                 <ArrowUpDown className="h-3 w-3 mr-2" />
@@ -138,7 +138,7 @@ const QuestionAction = ({
               </DropdownMenuSubTrigger>
               <DropdownMenuSubContent>
                 <DropdownMenuLabel className="text-xs">
-                  Bentuk Standar
+                  Bentuk Dasar
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator></DropdownMenuSeparator>
                 <DropdownMenuRadioGroup

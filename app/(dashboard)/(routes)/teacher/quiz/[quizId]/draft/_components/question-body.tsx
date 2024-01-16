@@ -1,25 +1,13 @@
 import { useEffect, useState } from 'react';
 import QuestionAction from './question-actions';
 import QuestionCard from './question-card';
-import { Option } from '@prisma/client';
+import { Option, Question } from '@prisma/client';
 import axios from 'axios';
 import { Loader2 } from 'lucide-react';
-interface Question {
-  id: string;
-  question: string;
-  imageUrl: string | null;
-  answer: string;
-  questionType: string;
-  explanation: string;
-  options: Option[]; // Tambahkan properti options dengan tipe Option[]
-  quizId: string;
-  position: number;
-  createdAt: Date;
-  updateAt: Date;
-}
+
 interface QuestionBodyProps {
   quizId: string;
-  initialData: Question;
+  initialData: Question & { options: Option[] };
   index: number;
 }
 export const QuestionBody = ({
@@ -27,7 +15,7 @@ export const QuestionBody = ({
   initialData,
   index,
 }: QuestionBodyProps) => {
-  const [qType, setQType] = useState(initialData.questionType);
+  const [qType, setQType] = useState(initialData.questionType.toString());
   const [isUpdatingQ, setIsUpdating] = useState(false);
 
   const editQuestionType = (value: string) => {

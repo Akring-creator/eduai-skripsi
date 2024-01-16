@@ -10,6 +10,7 @@ export const POST = async (
     const { userId } = auth();
     const rawData = await req.json();
 
+    console.log(rawData);
     if (!userId) {
       return new NextResponse('Unathourized', { status: 401 });
     }
@@ -44,7 +45,7 @@ export const POST = async (
           question: data.question,
           answer: data.answer,
           explanation: data.explanation,
-          quizId: data.quizId,
+          quizId: params.quizId,
           position: newPosition,
         },
       });

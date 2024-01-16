@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { auth } from '@clerk/nextjs';
-import { multipleChoice } from '@/lib/openaimc';
+import { basicType } from '@/lib/questiongenerator';
 
 export const POST = async (
   req: Request,
@@ -28,12 +28,11 @@ export const POST = async (
     const { materi, numberOfQuestions, numberOfOptions, guidance } =
       await req.json();
 
-    const questions = await multipleChoice(
+    const questions = await basicType(
       numberOfQuestions,
       numberOfOptions,
       materi,
-      guidance,
-      params.quizId
+      guidance
     );
 
     return NextResponse.json(questions);
