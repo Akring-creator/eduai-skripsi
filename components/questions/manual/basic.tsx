@@ -123,10 +123,13 @@ export const BasicQuestionManualForm = ({
     }
   };
   return (
-    <>
-      <Label>Pertanyaan:</Label>
-      <Textarea value={question} onChange={(e) => updateQuestionHandler(e)} />
-      <Label>Pilihan Jawaban</Label>
+    <div className="overflow-auto h-[500px] max-h-screen p-4">
+      <div className="my-2">
+        <p className="text-lg font-semibold">Pertanyaan</p>
+        <Textarea value={question} onChange={(e) => updateQuestionHandler(e)} />
+      </div>
+
+      <p className="text-lg font-semibold">Pilihan Jawaban</p>
       {[...Array(numOfOptions)].map((_, index) => (
         <div
           key={index}
@@ -138,7 +141,7 @@ export const BasicQuestionManualForm = ({
           />
 
           {numOfOptions > 1 && (
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 mb-2">
               <div
                 className={cn(
                   'ml-2 h-6 w-6 text-slate-500 hover:cursor-pointer',
@@ -159,28 +162,30 @@ export const BasicQuestionManualForm = ({
       <Button variant="outline" onClick={addOption}>
         Tambah Pilihan Jawaban
       </Button>
-      <Label>Pembahasan mengenai Jawaban</Label>
-      <p className="italic text-sm">
-        Karakter:{' '}
-        <span
-          className={cn(
-            expCharCount < 50 ? 'text-red-500' : 'text-emerald-500'
-          )}
-        >
-          {expCharCount}
-        </span>
-      </p>
-      <Textarea
-        value={explanation}
-        onChange={(e) => updateExplanationHandler(e)}
-        placeholder="Jelaskan penjabaran dari jawaban yang benar minimal 50 karakter"
-      />
+      <div className="my-2">
+        <p className="text-lg font-semibold">Pembahasan Jawaban</p>
+        <p className="italic text-sm">
+          Karakter:{' '}
+          <span
+            className={cn(
+              expCharCount < 50 ? 'text-red-500' : 'text-emerald-500'
+            )}
+          >
+            {expCharCount}
+          </span>
+        </p>
+        <Textarea
+          value={explanation}
+          onChange={(e) => updateExplanationHandler(e)}
+          placeholder="Jelaskan penjabaran dari jawaban yang benar minimal 50 karakter"
+        />
+      </div>
 
       <DialogFooter>
         <Button onClick={addQuestion} type="submit" disabled={isUploading}>
           Tambah Soal
         </Button>
       </DialogFooter>
-    </>
+    </div>
   );
 };

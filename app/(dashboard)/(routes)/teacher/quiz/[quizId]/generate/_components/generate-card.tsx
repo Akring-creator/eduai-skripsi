@@ -20,6 +20,7 @@ import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
+import { useState } from 'react';
 
 interface QuizCardProps {
   quizId: string;
@@ -36,9 +37,12 @@ const formSchema = z.object({
     .max(10, 'Maksimal 10 Pertanyaan'),
   numberOfOptions: z.coerce.number().min(2, 'Minimal 2').max(5, 'Maksimal 5'),
   guidance: z.string().max(200, 'Maksimal 200 Karakter'),
+  questionExample: z.string().default(''),
 });
 
 export const QuizCard = ({ quizId }: QuizCardProps) => {
+  const [useCustom, setUseCustom] = useState(false);
+  const [useExample, setUseExample] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -95,28 +99,51 @@ export const QuizCard = ({ quizId }: QuizCardProps) => {
           >
             <div className="grid grid-cols-5 gap-4">
               <div className="col-span-4">
-                <FormField
-                  control={form.control}
-                  name="materi"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Materi Soal</FormLabel>
-                      <FormDescription>
-                        Bisa berisi nama atau deskripsi tentang materi yang
-                        ingin kamu gunakan dalam pembuatan soal.
-                      </FormDescription>
-                      <FormControl>
-                        <Textarea
-                          rows={20}
-                          disabled={isSubmitting}
-                          placeholder="Nama atau Deskripsi tentang materi"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                {useCustom ? (
+                  <FormField
+                    control={form.control}
+                    name="materi"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Materi Soal</FormLabel>
+                        <FormDescription>
+                          Masukkan materimu disini
+                        </FormDescription>
+                        <FormControl>
+                          <Textarea
+                            rows={20}
+                            disabled={isSubmitting}
+                            placeholder="Cth: Atmosfer Inc merupakan sebuah perusahaan pionir di bidang energi terbarukan yang berkomitmen untuk menciptakan solusi inovatif demi memperkuat keberlanjutan lingkungan. Didirikan dengan visi memimpin perubahan menuju sumber daya energi yang berkelanjutan, perusahaan ini menggabungkan penelitian dan pengembangan terkini untuk menciptakan teknologi canggih, termasuk panel surya mutakhir, turbin angin efisien, dan sistem penyimpanan energi ramah lingkungan. Tim profesional Atmosfer Inc, yang terdiri dari insinyur, ilmuwan, dan ahli industri, bekerja bersama-sama untuk merancang solusi energi bersih yang dapat diandalkan dan efisien."
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                ) : (
+                  <FormField
+                    control={form.control}
+                    name="materi"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Materi Soal</FormLabel>
+                        <FormDescription>
+                          Materi apa yang ingin dibuat soalnya
+                        </FormDescription>
+                        <FormControl>
+                          <Input
+                            disabled={isSubmitting}
+                            placeholder="Cth: Dinamika Atmosfer kelas X"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
+
                 <FormField
                   control={form.control}
                   name="guidance"
@@ -137,6 +164,29 @@ export const QuizCard = ({ quizId }: QuizCardProps) => {
                     </FormItem>
                   )}
                 />
+
+                {useExample && (
+                  <FormField
+                    control={form.control}
+                    name="questionExample"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Contoh Soal</FormLabel>
+                        <FormDescription>
+                          Berikan contoh soal yang ingin kamu buat!
+                        </FormDescription>
+                        <FormControl>
+                          <Textarea
+                            placeholder="Masukkan contoh soalmu disini!"
+                            disabled={isSubmitting}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
               </div>
               <div className="col-span-1 space-y-8">
                 <FormField

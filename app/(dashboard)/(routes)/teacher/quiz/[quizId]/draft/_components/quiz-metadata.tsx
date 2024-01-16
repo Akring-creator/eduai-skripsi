@@ -24,12 +24,17 @@ import { BasicQuestionManualForm } from '@/components/questions/manual/basic';
 import Link from 'next/link';
 import { useState } from 'react';
 import { UploadExcel } from '@/components/questions/files/files';
+import { BasicAutomaticForm } from '@/components/questions/automatic/basic';
 
 interface MetadataProps {
   initialData: Quiz & { questions: (Question & { options: Option[] })[] };
 }
 
 export const Metadata = ({ initialData }: MetadataProps) => {
+  const [selectedOption, setSelectedOption] = useState('');
+  const handleOptionClick = (option: string) => {
+    setSelectedOption(option);
+  };
   return (
     <>
       <div className="relative">
@@ -81,25 +86,38 @@ export const Metadata = ({ initialData }: MetadataProps) => {
                         Tambah Soal
                       </DropdownMenuSubTrigger>
                       <DropdownMenuSubContent>
-                        <DialogTrigger>
-                          <DropdownMenuItem>
-                            <Pencil className="h-5 w-5 mr-2" />
-                            Manual
-                          </DropdownMenuItem>
-                        </DialogTrigger>
+                        <DropdownMenuItem>
+                          <DialogTrigger
+                            onClick={() => handleOptionClick('manual')}
+                          >
+                            <div className="flex">
+                              <Pencil className="h-5 w-5 mr-2" />
+                              Manual
+                            </div>
+                          </DialogTrigger>
+                        </DropdownMenuItem>
 
-                        <Link href={`/teacher/quiz/${initialData.id}/generate`}>
-                          <DropdownMenuItem>
-                            <Bot className="h-5 w-5 mr-2" />
-                            Dengan AI
-                          </DropdownMenuItem>
-                        </Link>
-                        <DialogTrigger>
-                          <DropdownMenuItem>
-                            <Sheet className="h-5 w-5 mr-2" />
-                            Import
-                          </DropdownMenuItem>
-                        </DialogTrigger>
+                        <DropdownMenuItem>
+                          <DialogTrigger
+                            onClick={() => handleOptionClick('ai')}
+                          >
+                            <div className="flex">
+                              <Bot className="h-5 w-5 mr-2" />
+                              Dengan AI
+                            </div>
+                          </DialogTrigger>
+                        </DropdownMenuItem>
+
+                        <DropdownMenuItem>
+                          <DialogTrigger
+                            onClick={() => handleOptionClick('import')}
+                          >
+                            <div className="flex">
+                              <Sheet className="h-5 w-5 mr-2" />
+                              Import
+                            </div>
+                          </DialogTrigger>
+                        </DropdownMenuItem>
                       </DropdownMenuSubContent>
                     </DropdownMenuSub>
                     <DropdownMenuSeparator></DropdownMenuSeparator>
@@ -123,11 +141,20 @@ export const Metadata = ({ initialData }: MetadataProps) => {
                 <DialogPortal>
                   <DialogContent className="max-w-4xl">
                     <DialogHeader>
-                      <DialogTitle>Tambah Soal</DialogTitle>
+                      <p className="text-xl font-semibold">Tambah Soal</p>
                     </DialogHeader>
 
-                    {/* <BasicQuestionManualForm quizId={initialData.id} /> */}
-                    <UploadExcel quizId={initialData.id} />
+                    {selectedOption === 'manual' && (
+                      <BasicQuestionManualForm quizId={initialData.id} />
+                    )}
+
+                    {selectedOption === 'ai' && (
+                      <BasicAutomaticForm quizId={initialData.id} />
+                    )}
+
+                    {selectedOption === 'import' && (
+                      <UploadExcel quizId={initialData.id} />
+                    )}
                   </DialogContent>
                 </DialogPortal>
               </Dialog>

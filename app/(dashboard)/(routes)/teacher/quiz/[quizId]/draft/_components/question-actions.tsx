@@ -35,6 +35,7 @@ import axios from 'axios';
 import {
   ArrowUpDown,
   BadgeCheck,
+  Bot,
   ChevronRight,
   ListMinus,
   ListPlus,
@@ -47,6 +48,17 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { Option, Question } from '@prisma/client';
+import {
+  Dialog,
+  DialogFooter,
+  DialogHeader,
+  DialogPortal,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import { DialogContent } from '@radix-ui/react-dialog';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 
 interface QuestionActionsProps {
   quizId: string;
