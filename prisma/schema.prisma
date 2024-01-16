@@ -180,7 +180,6 @@ model QuizAttachment {
   @@index([quizId])
 }
 
-
 model Purchase {
   id     String @id @default(uuid())
   userId String
@@ -202,4 +201,257 @@ model StripeCustomer {
 
   createdAt DateTime @default(now())
   updateAt  DateTime @updatedAt
+}
+
+// Part schema for Modul Ajar
+
+model studentTarget {
+
+id String @id @default(uuid())
+target String @db.Text
+
+learningModules LearningModule[]
+}
+model learningModa {
+
+id String @id @default(uuid())
+moda String @db.Text
+
+learningModules LearningModule[]
+}
+
+model PancasilaStudentsProfile {
+
+id String @id @default(uuid())
+name String @db.Text
+
+learningModuleId String
+learningModule LearningModule @relation(fields: [learningModuleId], references: [id])
+
+@@index([learningModuleId])
+}
+
+model Subject {
+  id String @id @default(uuid())
+  name String @db.Text
+
+  learningModule LearningModule[]
+
+}
+
+model Element{
+  id  String @id @default(uuid())
+  name String @db.Text
+  expectedOutcome String @db.Text
+  learningOutcomeId String
+  learningOutcome LearningOutcome  @relation(fields: [learningOutcomeId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updateAt  DateTime @updatedAt
+  @@index([learningOutcomeId])
+}
+
+model Phase{
+  id String @id @default(uuid())
+  name String @db.Text
+  minClass Int
+  maxClass Int
+
+  learningOutcome LearningOutcome[]
+  learningModule LearningModule[]
+
+}
+
+model LearningOutcome {
+  id String @id @default(uuid())
+  subject String @db.Text
+  generalOutcome String @db.Text
+  phaseId String?
+  phase  Phase? @relation(fields: [phaseId], references: [id])
+  element Element[]
+
+  @@index([phaseId])
+}
+
+model LearningObjective {
+  id String @id @default(uuid())
+  content String @db.Text
+  learningModuleId String
+  learningModule LearningModule @relation(fields: [learningModuleId], references: [id], onDelete: Cascade)
+
+  @@index([learningModuleId])
+
+}
+
+model MeaningfulComprehension{
+  id String @id @default(uuid())
+  content String @db.Text
+  learningModuleId String
+  learningModule LearningModule @relation(fields: [learningModuleId], references: [id], onDelete: Cascade)
+
+  @@index([learningModuleId])
+
+}
+
+model LearningObjectiveFlows {
+  id String @id @default(uuid())
+  content String @db.Text
+  Position Int
+
+  learningModuleId String
+  learningModule LearningModule @relation(fields: [learningModuleId], references: [id], onDelete: Cascade)
+
+  @@index([learningModuleId])
+
+}
+model TriggerQuestion {
+  id String @id @default(uuid())
+  content String @db.Text
+  position Int
+
+  learningModuleId String
+  learningModule LearningModule @relation(fields: [learningModuleId], references: [id], onDelete: Cascade)
+
+  @@index([learningModuleId])
+
+}
+// Aktifitas Pembelajaran per Pertemuan
+model LearningFlow{
+  id String @id @default(uuid())
+  title String
+  position Int
+  meeting Int?
+  learningActivities LearningActivities[]
+
+
+  learningModuleId String
+  learningModule LearningModule @relation(fields: [learningModuleId], references: [id], onDelete: Cascade)
+
+  @@index([learningModuleId])
+
+}
+
+// Aktifitas Pembelajaran: Pendahuluan, Inti, Akhir
+model LearningActivities{
+  id String @id @default(uuid())
+  learningPhaseId String
+  learningPhase LearningPhase[]
+
+  quiz Quiz[]
+  learningFlowId String
+  learningFlow LearningFlow @relation(fields: [learningFlowId], references: [id], onDelete: Cascade)
+
+  @@index([learningFlowId])
+
+
+}
+
+// Isi dari Aktifitas Pembelajaran
+model LearningPhase{
+  id String @id @default(uuid())
+  content String @db.Text
+  position Int
+
+  learningActivitiesId String
+  learningActivities LearningActivities @relation(fields: [learningActivitiesId], references: [id], onDelete: Cascade)
+
+  @@index([learningActivitiesId])
+
+}
+
+model EducationLevel {
+  id String @id @default(uuid())
+  name String @db.Text
+  alias String
+  position Int
+  groupLevel Int
+
+  learningModule LearningModule[]
+}
+
+model LearningModule {
+  id String @id @default(uuid())
+  userId String
+  // Nama Penulis
+  writer String?
+  // Instansi Penulis
+  institute String?
+  // Tahun Pembelajaran
+  learningYear String?
+  // Judul Modul Ajar
+  title String @db.Text
+  // Jumlah Pertemuan
+  numOfMeeting Int?
+  // Jumlah jam pembelajaran dalam satuan menit
+  learningHours Int?
+  // Apakah Publish atau tidak
+  isPublished Boolean @default(false)
+  
+  // Fase: A-F
+  phaseId String?
+  phase Phase? @relation(fields: [phaseId], references: [id])
+
+  // Tingkat Pendidikan
+  educationLevelId String?
+  educationLevel EducationLevel? @relation(fields: [educationLevelId], references: [id])
+
+  // Kelas
+  class Int?
+
+  // Mata Pelajaran
+  subjectId String?
+  subject Subject? @relation(fields: [subjectId], references: [id])
+
+  // Moda Pembelajaran: Online, Offline, Blended, Online-Independent
+  modaId String?
+  moda learningModa? @relation(fields: [modaId], references: [id])
+
+  // Model Pembelajaran: Diskusi, Project Based, dkk
+  model String? @db.Text
+
+  // Target Peserta Didik: Regular, Ambis, Tertinggal
+  studentTargetId String?
+  studentTarget studentTarget? @relation(fields: [studentTargetId], references: [id])
+
+  // Profil Pelajar Pancasila
+  tripleP PancasilaStudentsProfile[]
+
+  // Materi Standar
+  material String? @db.Text
+
+  // Materi Kustom
+  customMaterial String? @db.MediumText
+
+  // Refleksi Pendidik
+  teacherReflection String? @db.Text
+
+  // Sarana dan Prasarana
+  facilities String? @db.Text
+
+  // Tujuan Pembelajaran
+  learningObjective LearningObjective[]
+
+  // Alur Tujuan Pembelajaran
+  learningObjectiveFlows LearningObjectiveFlows[]
+
+  // Metode Pembelajaran
+  method String? @db.Text
+
+  // Pemahaman Bermakna
+  meaningfulComprehension MeaningfulComprehension[]
+
+  // Pertanyaan Pemantik
+  triggerQuestion TriggerQuestion[]
+
+  // Kegiatan Pembelajaran
+  learningFlow LearningFlow[]
+
+  // Metadata pembuatan
+  createdAt DateTime @default(now())
+  updateAt  DateTime @updatedAt
+  @@index([phaseId])
+  @@index([studentTargetId])
+  @@index([modaId])
+  @@index([subjectId])
+  @@index([educationLevelId])
 }
