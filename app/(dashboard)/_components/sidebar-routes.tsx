@@ -42,11 +42,10 @@ const teacherRoutes = [
     icon: LibraryBig,
     label: 'Kurikulum',
     href: '/teacher/curriculum',
-    
   },
   {
-icon: Waypoints,
-    label: 'Titik Pengetahuan',
+    icon: Waypoints,
+    label: 'Belajar Mandiri',
     href: '/teacher/connections',
   },
   {
