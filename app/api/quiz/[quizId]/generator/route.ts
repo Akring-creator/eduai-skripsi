@@ -28,11 +28,15 @@ export const POST = async (
     const { materi, numberOfQuestions, numberOfOptions, guidance } =
       await req.json();
 
+    // Fix it nanti
+    const example_question = '';
+
     const questions = await basicType(
       numberOfQuestions,
       numberOfOptions,
       materi,
-      guidance
+      guidance,
+      example_question
     );
 
     return NextResponse.json(questions);
