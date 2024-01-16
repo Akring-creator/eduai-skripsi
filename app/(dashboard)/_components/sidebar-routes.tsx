@@ -1,6 +1,13 @@
 'use client';
 
-import { BarChart, Compass, Layout, List, FormInput } from 'lucide-react';
+import {
+  BarChart,
+  Compass,
+  Layout,
+  List,
+  FormInput,
+  Waypoints,
+} from 'lucide-react';
 import { usePathname } from 'next/navigation';
 
 import { SidebarItem } from './sidebar-item';
@@ -28,6 +35,11 @@ const teacherRoutes = [
     icon: FormInput,
     label: 'Kuis',
     href: '/teacher/quiz',
+  },
+  {
+    icon: Waypoints,
+    label: 'Titik Pengetahuan',
+    href: '/teacher/connections',
   },
   {
     icon: BarChart,
