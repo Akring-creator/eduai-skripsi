@@ -23,6 +23,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { ManualForm } from './_components/manual';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -30,6 +31,7 @@ import Link from 'next/link';
 import toast from 'react-hot-toast';
 import { Label } from '@/components/ui/label';
 import { Bot, Pencil } from 'lucide-react';
+import { AutomaticForm } from './_components/automatic';
 const formSchema = z.object({
   title: z.string().min(1, {
     message: 'Title is Required',
@@ -75,106 +77,10 @@ const CreatePage = () => {
           </TabsTrigger>
         </TabsList>
         <TabsContent value="manual">
-          <Card>
-            <CardHeader>
-              <CardTitle>Nama Kursus</CardTitle>
-              <CardDescription>
-                Kasih nama kursusmu, tenang nanti bisa diganti kok.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <Form {...form}>
-                <form
-                  onSubmit={form.handleSubmit(onSubmit)}
-                  className="space-y-2 mt-2"
-                >
-                  <FormField
-                    control={form.control}
-                    name="title"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Judul Kursus</FormLabel>
-                        <FormControl>
-                          <Input
-                            disabled={isSubmitting}
-                            placeholder="cth: Geografi Manusia"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormDescription>
-                          Apa yang ingin kamu ajarkan?
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </form>
-              </Form>
-            </CardContent>
-            <CardFooter>
-              <div className="flex items-center gap-x-2">
-                <Link href="/">
-                  <Button type="button" variant="ghost">
-                    Batal
-                  </Button>
-                </Link>
-                <Button type="submit" disabled={!isValid || isSubmitting}>
-                  Lanjut
-                </Button>
-              </div>
-            </CardFooter>
-          </Card>
+          <ManualForm />
         </TabsContent>
         <TabsContent value="ai">
-          <Card>
-            <CardHeader>
-              <CardTitle>Nama Kursus</CardTitle>
-              <CardDescription>
-                Kasih nama kursusmu, tenang nanti bisa diganti kok.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <Form {...form}>
-                <form
-                  onSubmit={form.handleSubmit(onSubmit)}
-                  className="space-y-2 mt-2"
-                >
-                  <FormField
-                    control={form.control}
-                    name="title"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Judul Kursus</FormLabel>
-                        <FormControl>
-                          <Input
-                            disabled={isSubmitting}
-                            placeholder="cth: Geografi Manusia"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormDescription>
-                          Apa yang ingin kamu ajarkan?
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </form>
-              </Form>
-            </CardContent>
-            <CardFooter>
-              <div className="flex items-center gap-x-2">
-                <Link href="/">
-                  <Button type="button" variant="ghost">
-                    Batal
-                  </Button>
-                </Link>
-                <Button type="submit" disabled={!isValid || isSubmitting}>
-                  Lanjut
-                </Button>
-              </div>
-            </CardFooter>
-          </Card>
+          <AutomaticForm />
         </TabsContent>
       </Tabs>
     </div>
