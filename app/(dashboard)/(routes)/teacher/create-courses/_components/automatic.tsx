@@ -59,9 +59,9 @@ export const AutomaticForm = () => {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2 mt-2">
         <Card>
           <CardHeader>
-            <CardTitle>Nama Kursus</CardTitle>
+            <CardTitle>Identitas Kursus</CardTitle>
             <CardDescription>
-              Kasih nama kursusmu, tenang nanti bisa diganti kok.
+              Untuk pake AI, kami perlu nama dan jumlah chapter di kursusmu ya
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">
@@ -70,7 +70,7 @@ export const AutomaticForm = () => {
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Judul Kursus</FormLabel>
+                  <FormLabel>Nama Kursus</FormLabel>
                   <FormControl>
                     <Input
                       disabled={isSubmitting}
@@ -98,7 +98,6 @@ export const AutomaticForm = () => {
                       step="1"
                       min={1}
                       disabled={isSubmitting}
-                      placeholder="Banyaknya chapter"
                       {...field}
                     />
                   </FormControl>

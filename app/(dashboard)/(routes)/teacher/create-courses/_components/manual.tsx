@@ -58,7 +58,7 @@ export const ManualForm = () => {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2 mt-2">
         <Card>
           <CardHeader>
-            <CardTitle>Nama Kursus</CardTitle>
+            <CardTitle>Identitas Kursus</CardTitle>
             <CardDescription>
               Kasih nama kursusmu, tenang nanti bisa diganti kok.
             </CardDescription>
@@ -69,7 +69,6 @@ export const ManualForm = () => {
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Judul Kursus</FormLabel>
                   <FormControl>
                     <Input
                       disabled={isSubmitting}
