@@ -16,14 +16,14 @@ import { SidebarItem } from './sidebar-item';
 
 const guestRoutes = [
   {
-    icon: Layout,
-    label: 'Dashboard',
+    icon: Compass,
+    label: 'Jelajahi',
     href: '/',
   },
   {
-    icon: Compass,
-    label: 'Jelajahi',
-    href: '/search',
+    icon: Layout,
+    label: 'Dashboard',
+    href: '/dashboard',
   },
 ];
 
