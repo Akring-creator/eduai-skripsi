@@ -37,6 +37,7 @@ interface ChapterVideoFormProps {
 
 const formSchema = z.object({
   videoUrl: z.string().min(1),
+  videoType: z.string().min(1),
 });
 
 export const ChapterVideoForm = ({
@@ -50,25 +51,6 @@ export const ChapterVideoForm = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const toggleEdit = () => setIsEditing((current) => !current);
-
-  function isWordInUrl(word: string, url: string): boolean {
-    const lowerCaseWord = word.toLowerCase();
-    const lowerCaseUrl = url.toLowerCase();
-
-    // Menggunakan method includes
-    if (
-      lowerCaseUrl.includes(lowerCaseWord) ||
-      lowerCaseUrl.includes('youtu.be')
-    ) {
-      return true;
-    }
-
-    // Menggunakan method indexOf
-    return (
-      lowerCaseUrl.indexOf(lowerCaseWord) !== -1 ||
-      lowerCaseUrl.indexOf('youtu.be') !== -1
-    );
-  }
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
@@ -113,7 +95,7 @@ export const ChapterVideoForm = ({
           </div>
         ) : (
           <div className="relative aspect-video mt-2">
-            {isWordInUrl('youtube', initialData.videoUrl) ? (
+            {initialData.videoType === 'youtube' ? (
               // Render YouTube player here
               // You can use a third-party library like 'react-youtube' for this
               // Example: https://www.npmjs.com/package/react-youtube
@@ -153,7 +135,7 @@ export const ChapterVideoForm = ({
                     endpoint="chapterVideo"
                     onChange={(url) => {
                       if (url) {
-                        onSubmit({ videoUrl: url });
+                        onSubmit({ videoUrl: url, videoType: 'mux' });
                       }
                     }}
                   />
@@ -175,7 +157,9 @@ export const ChapterVideoForm = ({
                 <CardFooter>
                   <Button
                     type="submit"
-                    onClick={() => onSubmit({ videoUrl: linkYoutube })}
+                    onClick={() =>
+                      onSubmit({ videoUrl: linkYoutube, videoType: 'youtube' })
+                    }
                     disabled={isSubmitting}
                   >
                     Simpan

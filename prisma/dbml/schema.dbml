@@ -24,6 +24,7 @@ Table Chapter {
   title String [not null]
   description String
   videoUrl String
+  videoType String
   position Int [not null]
   isPublished Boolean [not null, default: false]
   isFree Boolean [not null, default: false]

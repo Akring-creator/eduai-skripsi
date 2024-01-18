@@ -64,6 +64,7 @@
     "react-loader-spinner": "^6.1.6",
     "react-player": "^2.14.1",
     "react-quill": "^2.0.0",
+    "react-resizable-panels": "^1.0.9",
     "react-spinners": "^0.13.8",
     "react-textarea-autosize": "^8.5.3",
     "react-youtube": "^10.1.0",

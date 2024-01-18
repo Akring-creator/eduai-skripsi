@@ -9,11 +9,14 @@ import { Loader2, Lock } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 import { useConfettiStore } from '@/hooks/use-confetti-store';
+import ReactPlayer from 'react-player';
 
 interface VideoPlayerProps {
   playbackId: string;
   courseId: string;
   chapterId: string;
+  videoUrl: string;
+  videoType: string;
   nextChapterId?: string;
   isLocked: boolean;
   completeOnEnd: boolean;
@@ -23,6 +26,8 @@ interface VideoPlayerProps {
 export const VideoPlayer = ({
   playbackId,
   courseId,
+  videoType,
+  videoUrl,
   chapterId,
   nextChapterId,
   isLocked,
@@ -55,7 +60,7 @@ export const VideoPlayer = ({
         }
       }
     } catch {
-      toast.error('Something went wrong');
+      toast.error('Terdapat Kendala');
     }
   };
 
@@ -72,16 +77,30 @@ export const VideoPlayer = ({
           <p className="text-sm">This chapter is locked</p>
         </div>
       )}
-      {!isLocked && (
-        <MuxPlayer
-          title={title}
-          className={cn(!isReady && 'hidden')}
-          onCanPlay={() => setIsReady(true)}
-          onEnded={onEnd}
-          autoPlay
-          playbackId={playbackId}
-        />
-      )}
+      {!isLocked &&
+        (videoType === 'mux' ? (
+          <MuxPlayer
+            title={title}
+            className={cn(!isReady && 'hidden')}
+            onCanPlay={() => setIsReady(true)}
+            onEnded={onEnd}
+            autoPlay
+            playbackId={playbackId}
+          />
+        ) : (
+          videoType === 'youtube' && (
+            <div className={cn(!isReady && 'hidden', 'h-full')}>
+              <ReactPlayer
+                url={videoUrl}
+                controls={true}
+                onEnded={onEnd}
+                onReady={() => setIsReady(true)}
+                height="100%"
+                width="100%"
+              />
+            </div>
+          )
+        ))}
     </div>
   );
 };
