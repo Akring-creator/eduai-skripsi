@@ -38,7 +38,7 @@ export const basicType = async (
         { role: 'system', content: system_prompt },
         { role: 'user', content: examplePrompt.basic.user },
         { role: 'assistant', content: examplePrompt.basic.assistant },
-        { role: 'assistant', content: user_prompt },
+        { role: 'user', content: user_prompt },
       ],
     });
     const raw = data.choices[0].message?.content;
@@ -67,4 +67,65 @@ export const basicType = async (
     console.error('Terjadi kesalahan:', error);
     return [];
   }
+};
+export const chapterGenerator = async (
+  title: string,
+  chapters: number,
+  retryCount = 10
+) => {
+  const system_prompt =
+    'seorang kursus developer yang akan membantu untuk pengembangan kursus dari materi yang ingin diajarkan. Output dihasilkan dalam bentuk JSON dengan format sebagai berikut: {title: "berisi judul dari user", chapters: "array string yang berisi judul chapter", description: "berisi deskripsi dari kursus"}';
+  const user_example_prompt =
+    'Saya ingin membuat kursus berjudul Perencanaan Wilayah Kota Kelas XII SMA yang terdiri dari 4 chapter! Kembangkan kursus tersebut untuk saya!';
+  const assistant_example_prompt =
+    '{title: "Perencanaan Wilayah Kota Kelas XII SMA", chapters: ["Pengenalan Perencanaan Wilayah Kota","Konsep Dasar Perencanaan Wilayah Kota","Tahapan Perencanaan Wilayah Kota","Isu Kontemporer dalam Perencanaan Wilayah Kota"], description: "Dengan kursus ini, diharapkan siswa dapat memahami konsep-konsep dasar perencanaan wilayah kota, mengenal tahapan-tahapan dalam perencanaan wilayah kota, dan juga memahami isu-isu kontemporer yang terkait dengan perencanaan wilayah kota. Selain itu, siswa juga akan dilatih untuk berpikir kritis, melakukan analisis, dan mengambil keputusan dalam konteks perencanaan wilayah kota."}';
+  const user_prompt = `Saya ingin membuat kursus berjudul ${title} yang terdiri dari ${chapters} chapter! Kembangkan kursus tersebut untuk saya!`;
+
+  let attempt = 1;
+
+  while (attempt <= retryCount) {
+    try {
+      const data = await openai.chat.completions.create({
+        temperature: 0.7,
+        response_format: { type: 'json_object' },
+        model: 'gpt-3.5-turbo-1106',
+        messages: [
+          { role: 'system', content: system_prompt },
+          { role: 'user', content: user_example_prompt },
+          { role: 'assistant', content: assistant_example_prompt },
+          { role: 'user', content: user_prompt },
+        ],
+      });
+
+      const raw = data.choices[0].message?.content;
+      const content = JSON.parse(raw);
+
+      console.log(JSON.stringify(content));
+
+      const mandatoryKeys = ['title', 'chapters', 'description'];
+      for (const key of mandatoryKeys) {
+        if (!(key in content)) {
+          console.error(
+            `Kunci wajib '${key}' tidak ditemukan dalam objek content.`
+          );
+          // Tunggu sebentar sebelum mencoba lagi
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+          attempt++;
+          continue;
+        }
+      }
+
+      // Kunci wajib ditemukan, keluar dari loop
+      return content;
+    } catch (error) {
+      console.error(`Terjadi kesalahan pada percobaan ke-${attempt}:`, error);
+
+      // Tunggu sebentar sebelum mencoba lagi
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      attempt++;
+    }
+  }
+
+  console.error(`Gagal mendapatkan hasil setelah ${retryCount} percobaan.`);
+  return null;
 };

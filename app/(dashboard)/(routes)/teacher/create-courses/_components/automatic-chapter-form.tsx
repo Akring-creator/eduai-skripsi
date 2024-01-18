@@ -85,7 +85,7 @@ export const AutomaticChapterForm = ({
 
   return (
     <>
-      <div className="mt-6 border bg-slate-100 rounded-md p-4">
+      <div className="mt-2 border bg-slate-100 rounded-md p-4">
         <div className="font-medium flex items-center justify-between text-sm">
           Rencana Chapter
           <Button onClick={toggleCreating} variant="ghost">
@@ -132,7 +132,7 @@ export const AutomaticChapterForm = ({
           )}
           {!isCreating && (
             <div className="text-sm mt-2 text-slate-500 italic">
-              {!chapters.length && 'T'}
+              {!chapters.length && 'Terdapat Kendala'}
               <div>
                 {chapters.map((chapter, index) => (
                   <div
