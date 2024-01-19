@@ -1,6 +1,6 @@
+import { db } from '@/lib/db';
 import { auth } from '@clerk/nextjs';
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/db';
 
 export async function POST(
   req: Request,
@@ -8,7 +8,8 @@ export async function POST(
 ) {
   try {
     const { userId } = auth();
-    const { title } = await req.json();
+    const { title, description, videoUrl, videoType, position } =
+      await req.json();
 
     if (!userId) {
       return new NextResponse('Unathourized', { status: 401 });
@@ -33,14 +34,21 @@ export async function POST(
         position: 'desc',
       },
     });
-
-    const newPosition = lastChapter ? lastChapter.position + 1 : 1;
+    let newPosition;
+    if (position === null) {
+      newPosition = lastChapter ? lastChapter.position + 1 : 1;
+    } else {
+      newPosition = position;
+    }
 
     const chapter = await db.chapter.create({
       data: {
         title: title,
         position: newPosition,
         courseId: params.courseId,
+        videoType: videoType,
+        videoUrl: videoUrl,
+        description: description,
       },
     });
 

@@ -49,7 +49,7 @@ export const ManualForm = () => {
       router.push(`/teacher/courses/${response.data.id}`);
       toast.success('Kursus berhasil dibuat');
     } catch {
-      toast.error('Something went wrong');
+      toast.error('Terdapat kendala');
     }
   };
 

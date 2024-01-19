@@ -43,6 +43,9 @@ interface Chapter {
   id: string;
   title: string;
   isFinished: boolean;
+  description: string;
+  videoUrl: string;
+  videoType: string;
 }
 
 interface Course {
@@ -57,16 +60,15 @@ const InitialState: Course = {
 };
 
 export const AutomaticForm = () => {
-  const [chapterReview, setChapterReview] = useState(false);
-  const [loadingChapterGeneration, setLoadingChapterGenerator] =
-    useState(false);
-  const [course, setCourse] = useState<Course>(InitialState);
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
 
   const { isSubmitting, isValid } = form.formState;
+  const [chapterReview, setChapterReview] = useState(false);
+  const [loadingChapterGeneration, setLoadingChapterGeneration] =
+    useState(false);
+  const [course, setCourse] = useState<Course>(InitialState);
 
   function transformData(originalData: any): Course {
     return {
@@ -76,6 +78,9 @@ export const AutomaticForm = () => {
           id: index.toString(),
           title: chapterTitle,
           isFinished: false,
+          description: '',
+          videoUrl: '',
+          videoType: '',
         })
       ),
       description: originalData.description,
@@ -84,142 +89,145 @@ export const AutomaticForm = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      setLoadingChapterGenerator(true);
-      const response = await axios.post(
-        '/api/courses/chaptergenerator',
-        values
-      );
-      if (response === null) {
+      setLoadingChapterGeneration(true);
+      const response = await axios.post('/api/courses/automatic/title', values);
+
+      // Check for errors more accurately
+      if (
+        !response.data ||
+        !response.data.chapters ||
+        response.data.chapters.length === 0
+      ) {
         throw new Error('Terdapat kendala dalam proses chapter generation');
       } else {
         const transformed = transformData(response.data);
         setCourse(transformed);
+
+        setChapterReview(true);
       }
     } catch (error) {
-      console.log('[Chapter Generation]' + error);
+      console.log('[Chapter Generation]', error);
       toast.error('Terdapat Kendala');
     } finally {
-      setLoadingChapterGenerator(false);
-      setChapterReview(true);
+      setLoadingChapterGeneration(false);
     }
   };
-  const content =
-    !chapterReview && !loadingChapterGeneration ? (
-      <div>
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-2 mt-2"
-          >
-            <Card>
-              <CardHeader>
-                <CardTitle>Identitas Kursus</CardTitle>
-                <CardDescription>
-                  Untuk pake AI, kami perlu nama dan jumlah chapter di kursusmu
-                  ya
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                <FormField
-                  control={form.control}
-                  name="title"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Nama Kursus</FormLabel>
-                      <FormControl>
-                        <Input
-                          disabled={isSubmitting}
-                          placeholder="cth: Geografi Manusia"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormDescription>
-                        Apa yang ingin kamu ajarkan?
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+  const content = (
+    <div>
+      {!chapterReview && !loadingChapterGeneration && (
+        <div>
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="space-y-2 mt-2"
+            >
+              <Card>
+                <CardHeader>
+                  <CardTitle>Identitas Kursus</CardTitle>
+                  <CardDescription>
+                    Untuk pake AI, kami perlu konten yang diinginkan dan jumlah
+                    chapter di kursusmu ya
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  <FormField
+                    control={form.control}
+                    name="title"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Rencana Konten</FormLabel>
+                        <FormControl>
+                          <Input
+                            disabled={isSubmitting}
+                            placeholder="cth: Hukum Gravitasi Kelas X"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-                <FormField
-                  control={form.control}
-                  name="numberOfChapter"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Jumlah Chapter</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          step="1"
-                          min={1}
-                          placeholder="1"
-                          disabled={isSubmitting}
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormDescription>
-                        Jumlah chapternya mau berapa ya?
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </CardContent>
-              <CardFooter>
-                <div className="flex items-center gap-x-2">
-                  <Link href="/">
-                    <Button type="button" variant="ghost">
-                      Batal
+                  <FormField
+                    control={form.control}
+                    name="numberOfChapter"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Jumlah Chapter</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            step="1"
+                            min={1}
+                            placeholder="1"
+                            disabled={isSubmitting}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </CardContent>
+                <CardFooter>
+                  <div className="flex items-center gap-x-2">
+                    <Link href="/">
+                      <Button type="button" variant="ghost">
+                        Batal
+                      </Button>
+                    </Link>
+                    <Button type="submit" disabled={!isValid || isSubmitting}>
+                      Lanjut
                     </Button>
-                  </Link>
-                  <Button type="submit" disabled={!isValid || isSubmitting}>
-                    Lanjut
-                  </Button>
-                </div>
-              </CardFooter>
-            </Card>
-          </form>
-        </Form>
-      </div>
-    ) : !chapterReview && loadingChapterGeneration ? (
-      <div>
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center">
-            <Image
-              src={'/chapter-naming-loading.gif'}
-              height={200}
-              width={200}
-              alt="Import Excel GIF"
-            />
-            <div className="flex items-center mt-2">
-              <Blocks
-                height="20"
-                width="20"
-                color="#0ea4e9"
-                ariaLabel="blocks-loading"
-                wrapperStyle={{}}
-                wrapperClass="blocks-wrapper"
-                visible={true}
-              />
-              <span className="text-base ml-2">Penamaan Chapter...</span>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    ) : (
-      <div>
-        <Card>
-          <CardHeader className="items-center text-xl font-bold">
-            {form.getValues('title')}
-          </CardHeader>
-          <CardContent>
-            <AutomaticChapterForm initialData={course.chapters} />
-          </CardContent>
-        </Card>
-      </div>
-    );
+                  </div>
+                </CardFooter>
+              </Card>
+            </form>
+          </Form>
+        </div>
+      )}
 
-  // Assuming you have a LoadingSpinner component to show loading state
+      {!chapterReview && loadingChapterGeneration && (
+        <div>
+          <Card>
+            <CardContent className="flex flex-col items-center justify-center">
+              <Image
+                src={'/chapter-naming-loading.gif'}
+                height={200}
+                width={200}
+                alt="Import Excel GIF"
+              />
+              <div className="flex items-center mt-2">
+                <Blocks
+                  height="20"
+                  width="20"
+                  color="#0ea4e9"
+                  ariaLabel="blocks-loading"
+                  wrapperStyle={{}}
+                  wrapperClass="blocks-wrapper"
+                  visible={true}
+                />
+                <span className="text-base ml-2">Penamaan Chapter...</span>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {chapterReview && !loadingChapterGeneration && (
+        <div>
+          <Card>
+            <CardHeader className="items-center text-xl font-bold">
+              {form.getValues('title')}
+            </CardHeader>
+            <CardContent>
+              <AutomaticChapterForm initialData={course} />
+            </CardContent>
+          </Card>
+        </div>
+      )}
+    </div>
+  );
 
   return content;
 };

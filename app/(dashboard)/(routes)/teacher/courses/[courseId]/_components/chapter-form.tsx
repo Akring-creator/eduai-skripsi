@@ -51,10 +51,17 @@ export const ChapterForm = ({ initialData, courseId }: ChapterFormProps) => {
   const { isSubmitting, isValid } = form.formState;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    const data = {
+      title: values.title,
+      description: null,
+      videoUrl: null,
+      videoType: null,
+      position: null,
+    };
     try {
       const update = await axios.post(
         `/api/courses/${courseId}/chapters`,
-        values
+        data
       );
       toast.success('Berhasil membuat chapter');
       toggleCreating();
@@ -104,7 +111,8 @@ export const ChapterForm = ({ initialData, courseId }: ChapterFormProps) => {
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-8 mt-8">
+            className="space-y-8 mt-8"
+          >
             <FormField
               control={form.control}
               name="title"
@@ -135,7 +143,8 @@ export const ChapterForm = ({ initialData, courseId }: ChapterFormProps) => {
           className={cn(
             'text-sm mt-2',
             !initialData.chapters.length && 'text-slate-500 italic'
-          )}>
+          )}
+        >
           {!initialData.chapters.length && 'No Chapters'}
           <ChapterList
             onEdit={onEdit}

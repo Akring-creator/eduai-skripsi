@@ -1,10 +1,7 @@
 import { auth } from '@clerk/nextjs';
 import { NextResponse } from 'next/server';
 import { chapterGenerator } from '@/lib/openai';
-export const POST = async (
-  req: Request,
-  { params }: { params: { quizId: string } }
-) => {
+export const POST = async (req: Request) => {
   try {
     const { userId } = auth();
 

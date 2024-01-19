@@ -10,21 +10,32 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
+import { getTranscript, searchYoutube } from '@/lib/youtube';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { PlusCircle, Trash } from 'lucide-react';
+import axios from 'axios';
+import { BadgeCheck, Loader2, PlusCircle, Trash } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import * as z from 'zod';
 
-interface TempChapter {
+interface Chapter {
   id: string;
   title: string;
   isFinished: boolean;
+  description: string | null;
+  videoUrl: string | null;
+  videoType: string | null;
+}
+
+interface Course {
+  title: string;
+  chapters: Chapter[];
+  description: string;
 }
 interface AutomaticChapterFormProps {
-  initialData: TempChapter[];
+  initialData: Course;
 }
 
 const formSchema = z.object({
@@ -36,7 +47,9 @@ const formSchema = z.object({
 export const AutomaticChapterForm = ({
   initialData,
 }: AutomaticChapterFormProps) => {
-  const [chapters, setChapters] = useState(initialData);
+  const router = useRouter();
+  const [chapters, setChapters] = useState<Chapter[]>(initialData.chapters);
+  const [isAdding, setIsAdding] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -45,42 +58,115 @@ export const AutomaticChapterForm = ({
     },
   });
 
-  // useEffect(() => {}, [chapters]);
+  useEffect(() => {
+    console.log(chapters);
+  }, [chapters]);
 
-  const toggleCreating = () => setIsCreating((current) => !current);
+  const toggleAdding = () => setIsAdding((current) => !current);
 
   const { isSubmitting, isValid } = form.formState;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    const position = chapters.length;
     const newValue = {
-      id: position.toString(),
+      id: chapters.length.toString(),
       title: values.title,
-      position: position,
       isFinished: false,
+      description: null,
+      videoUrl: null,
+      videoType: null,
     };
     try {
       setChapters((prev) => [...prev, newValue]);
-      toggleCreating();
+      toggleAdding();
     } catch (error) {
       console.error('Error:', error);
       toast.error('Terdapat kendala');
     }
   };
-  const onDelete = async (idToDelete: string) => {
+  const onDelete = (idToDelete: string) => {
+    const updatedChapters = chapters.filter(
+      (chapter) => chapter.id !== idToDelete
+    );
+    setChapters(updatedChapters);
+  };
+
+  const fetchVideo = async () => {
+    const updatedChapters = [];
     try {
-      // Filter array chapters untuk menyertakan semua item kecuali yang memiliki idToDelete
-      const updatedChapters = chapters.filter(
-        (chapter) => chapter.id !== idToDelete
+      const copyChapters = chapters.slice();
+
+      for (const chapter of copyChapters) {
+        const newChapter = await axios.post(
+          '/api/courses/automatic/video',
+          chapter
+        );
+
+        setChapters((prevData) =>
+          prevData.map((item) =>
+            item.id === chapter.id ? { ...item, isFinished: true } : item
+          )
+        );
+
+        updatedChapters.push(newChapter.data);
+      }
+
+      // Update state after all iterations are complete
+      setChapters(updatedChapters);
+    } catch (error) {
+      console.error('[COURSE_CREATION]', error);
+      toast.error('Terdapat Kendala saat membuat video chapter');
+    } finally {
+      return updatedChapters;
+    }
+  };
+
+  const courseGeneration = async (updatedChapters: Chapter[]) => {
+    try {
+      const course = await axios.post('/api/courses', {
+        title: initialData.title,
+      });
+      const description = await axios.patch(`/api/courses/${course.data.id}`, {
+        description: initialData.description || '',
+      });
+
+      // Upload chapters asynchronously
+      const chapterUploadPromises = updatedChapters.map(
+        async (chapter, index) => {
+          console.log(
+            'ini Link YT Chapter ' + chapter.title + ' = ' + chapter.videoUrl
+          );
+          const data = {
+            title: chapter.title,
+            description: chapter.description,
+            videoUrl: chapter.videoUrl,
+            videoType: chapter.videoType,
+            position: index,
+          };
+
+          await axios.post(`/api/courses/${course.data.id}/chapters`, data);
+        }
       );
 
-      // Setelah membuat array baru tanpa item yang dihapus, update state
-      setChapters(updatedChapters);
-    } catch {
-      toast.error('Terdapat Kendala');
-    } finally {
-      // Kode yang dijalankan setelah try atau catch selesai
+      await Promise.all(chapterUploadPromises);
+
+      toast.success('Kursus berhasil dibuat');
+      return course.data.id;
+    } catch (error) {
+      console.error('[COURSE_CREATION]', error);
+      toast.error('Terdapat Kendala saat membuat kursus');
+      return null; // Return null in case of an error
     }
+  };
+
+  const createCourse = async () => {
+    setIsCreating(true);
+    const updatedChapters = await fetchVideo();
+    const courseId = await courseGeneration(updatedChapters);
+
+    if (courseId !== null) {
+      router.push(`/teacher/courses/${courseId}`);
+    }
+    setIsCreating(false);
   };
 
   return (
@@ -88,9 +174,9 @@ export const AutomaticChapterForm = ({
       <div className="mt-2 border bg-slate-100 rounded-md p-4">
         <div className="font-medium flex items-center justify-between text-sm">
           Rencana Chapter
-          <Button onClick={toggleCreating} variant="ghost">
-            {isCreating && <>Batal</>}
-            {!isCreating && (
+          <Button onClick={toggleAdding} variant="ghost">
+            {isAdding && <>Batal</>}
+            {!isAdding && (
               <>
                 <PlusCircle className="h-4 w-4 mr-2" />
               </>
@@ -98,7 +184,7 @@ export const AutomaticChapterForm = ({
           </Button>
         </div>
         <div className="overflow-auto h-[200px] max-h-screen">
-          {isCreating && (
+          {isAdding && (
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
@@ -130,7 +216,7 @@ export const AutomaticChapterForm = ({
               </form>
             </Form>
           )}
-          {!isCreating && (
+          {!isAdding && (
             <div className="text-sm mt-2 text-slate-500 italic">
               {!chapters.length && 'Terdapat Kendala'}
               <div>
@@ -146,13 +232,20 @@ export const AutomaticChapterForm = ({
                     <div className="flex items-center justify-between w-full">
                       <p className="text-xs ml-2 p-1">{chapter.title}</p>
                       <div className="flex items-center space-x-2">
-                        {/* Jarak antara text dan icon trash dapat diatur dengan menambahkan space-x pada parent div */}
-                        {chapters.length > 1 && (
-                          <Trash
-                            className="h-3 w-3 mr-2 text-red-500 hover:cursor-pointer"
-                            onClick={() => onDelete(chapter.id)}
-                            key={chapter.id} // tambahkan kunci key jika menggunakan komponen dalam loop
-                          />
+                        {chapters.length > 1 &&
+                          !isCreating &&
+                          !chapter.isFinished && (
+                            <Trash
+                              className="h-3 w-3 mr-2 text-red-500 hover:cursor-pointer"
+                              onClick={() => onDelete(chapter.id)}
+                              key={chapter.id} // tambahkan kunci key jika menggunakan komponen dalam loop
+                            />
+                          )}
+                        {isCreating && !chapter.isFinished && (
+                          <Loader2 className="animate-spin h-3 w-3 mr-2 text-sky-500" />
+                        )}
+                        {isCreating && chapter.isFinished && (
+                          <BadgeCheck className=" h-3 w-3 mr-2 text-sky-500" />
                         )}
                       </div>
                     </div>
@@ -162,15 +255,24 @@ export const AutomaticChapterForm = ({
             </div>
           )}
         </div>
-        {!isCreating && (
+        {!isAdding && (
           <p className="text-xs text-muted-foreground mt-4">
             Powered By OpenAI
           </p>
         )}
       </div>
       <div className="flex items-center p-2">
-        <Button variant="outline" className="mx-auto">
-          Buat Kursus
+        <Button
+          variant="outline"
+          className="mx-auto"
+          disabled={isCreating}
+          onClick={createCourse}
+        >
+          <p> Buat Kursus &nbsp;</p>
+
+          {isCreating && (
+            <Loader2 className="animate-spin h-3 w-3 mr-2 text-slate-500" />
+          )}
         </Button>
       </div>
     </>
