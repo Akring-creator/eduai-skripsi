@@ -39,7 +39,7 @@ export const CourseEnrollButton = ({
       size="sm"
       className="w-full md:w-auto"
     >
-      Mulai Belajar {formatPrice(price)}
+      <p>Mulai Belajar ({formatPrice(price)})</p>
     </Button>
   );
 };

@@ -39,7 +39,6 @@ export async function PATCH(
 
     if (
       !chapter ||
-      !muxData ||
       !chapter.title ||
       !chapter.description ||
       !chapter.videoUrl
