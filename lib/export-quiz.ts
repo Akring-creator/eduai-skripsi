@@ -5,6 +5,7 @@ import { Quiz, Option } from '@prisma/client';
 import axios from 'axios';
 import { ArrowRightToLine } from 'lucide-react';
 import { NextResponse } from 'next/server';
+
 const docx = require('docx');
 const {
   AlignmentType,
@@ -20,6 +21,11 @@ const {
   TextRun,
   UnderlineType,
 } = docx;
+interface InitialData {
+  title: string;
+  description: string;
+  // Add other properties as needed
+}
 
 interface Question {
   id: string;
@@ -158,5 +164,161 @@ export class DocumentCreator {
         after: 100,
       },
     });
+  }
+}
+
+export class ExperimentDocumentCreator {
+  private initialData: InitialData;
+
+  constructor(initialData: InitialData) {
+    this.initialData = initialData;
+  }
+
+  create() {
+    const { title, description } = this.initialData;
+
+    const document = new Document({
+      sections: [
+        {
+          properties: {},
+          children: [
+            new Paragraph({
+              alignment: AlignmentType.CENTER,
+              children: [
+                new TextRun({
+                  text: title,
+                  bold: true,
+                  size: 24,
+                  font: 'Times New Roman',
+                }),
+              ],
+            }),
+            new Paragraph({
+              alignment: AlignmentType.CENTER,
+              children: [
+                new TextRun({
+                  text: title,
+                  bold: true,
+                  size: 24,
+                  font: 'Times New Roman',
+                }),
+              ],
+            }),
+            new Paragraph({
+              alignment: AlignmentType.CENTER,
+              children: [
+                new TextRun({
+                  text: title,
+                  bold: true,
+                  size: 24,
+                  font: 'Times New Roman',
+                }),
+              ],
+            }),
+            new Paragraph({
+              alignment: AlignmentType.CENTER,
+              children: [
+                new TextRun({
+                  text: title,
+                  bold: true,
+                  size: 24,
+                  font: 'Times New Roman',
+                }),
+              ],
+            }),
+            new Paragraph({
+              alignment: AlignmentType.CENTER,
+              children: [
+                new TextRun({
+                  text: title,
+                  bold: true,
+                  size: 24,
+                  font: 'Times New Roman',
+                }),
+              ],
+            }),
+            new Paragraph({
+              alignment: AlignmentType.CENTER,
+              children: [
+                new TextRun({
+                  text: title,
+                  bold: true,
+                  size: 24,
+                  font: 'Times New Roman',
+                }),
+              ],
+            }),
+            new Paragraph({
+              alignment: AlignmentType.CENTER,
+              children: [
+                new TextRun({
+                  text: title,
+                  bold: true,
+                  size: 24,
+                  font: 'Times New Roman',
+                }),
+              ],
+            }),
+            new Paragraph({
+              alignment: AlignmentType.CENTER,
+              children: [
+                new TextRun({
+                  text: title,
+                  bold: true,
+                  size: 24,
+                  font: 'Times New Roman',
+                }),
+              ],
+            }),
+            new Paragraph({
+              alignment: AlignmentType.CENTER,
+              children: [
+                new TextRun({
+                  text: title,
+                  bold: true,
+                  size: 24,
+                  font: 'Times New Roman',
+                }),
+              ],
+            }),
+            new Paragraph({
+              alignment: AlignmentType.CENTER,
+              children: [
+                new TextRun({
+                  text: title,
+                  bold: true,
+                  size: 24,
+                  font: 'Times New Roman',
+                }),
+              ],
+            }),
+            new Paragraph({
+              alignment: AlignmentType.CENTER,
+              children: [
+                new TextRun({
+                  text: title,
+                  bold: true,
+                  size: 24,
+                  font: 'Times New Roman',
+                }),
+              ],
+            }),
+            new Paragraph({
+              alignment: AlignmentType.LEFT,
+              children: [
+                new TextRun({
+                  text: description,
+                  size: 12,
+                  font: 'Arial',
+                }),
+              ],
+            }),
+            // Add more paragraphs or elements as needed
+          ],
+        },
+      ],
+    });
+
+    return document;
   }
 }
