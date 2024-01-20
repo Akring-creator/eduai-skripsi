@@ -456,3 +456,22 @@ model LearningModule {
   @@index([subjectId])
   @@index([educationLevelId])
 }
+
+enum uploadStatus {
+  PENDING
+  PROCESSING
+  FAILED
+  SUCCESS
+}
+model File {
+  id String @id @default(uuid())
+  userId String
+  name String
+
+  uploadStatus uploadStatus @default(PENDING)
+
+  url String
+  key String
+  createdAt DateTime @default(now())
+  updateAt DateTime @updatedAt
+}

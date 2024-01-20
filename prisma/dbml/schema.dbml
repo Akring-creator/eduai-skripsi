@@ -306,10 +306,28 @@ Table LearningModule {
   updateAt DateTime [not null]
 }
 
+Table File {
+  id String [pk]
+  userId String [not null]
+  name String [not null]
+  uploadStatus uploadStatus [not null, default: 'PENDING']
+  url String [not null]
+  key String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updateAt DateTime [not null]
+}
+
 Enum QuestionType {
   multipleChoice
   shortAnswer
   longAnswer
+}
+
+Enum uploadStatus {
+  PENDING
+  PROCESSING
+  FAILED
+  SUCCESS
 }
 
 Ref: Course.categoryId > Category.id

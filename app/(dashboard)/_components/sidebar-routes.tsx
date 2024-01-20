@@ -9,6 +9,7 @@ import {
   Workflow,
   LibraryBig,
   Waypoints,
+  GraduationCap,
 } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 
@@ -39,7 +40,7 @@ const teacherRoutes = [
     href: '/teacher/quiz',
   },
   {
-    icon: LibraryBig,
+    icon: GraduationCap,
     label: 'Kurikulum',
     href: '/teacher/curriculum',
   },
@@ -47,6 +48,11 @@ const teacherRoutes = [
     icon: Waypoints,
     label: 'Belajar Mandiri',
     href: '/teacher/connections',
+  },
+  {
+    icon: LibraryBig,
+    label: 'Pustaka',
+    href: '/teacher/library',
   },
   {
     icon: BarChart,
