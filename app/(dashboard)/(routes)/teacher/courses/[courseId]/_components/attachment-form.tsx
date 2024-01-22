@@ -1,26 +1,13 @@
 'use client';
-
-import * as z from 'zod';
-import axios from 'axios';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
+import { FileUpload } from '@/components/file-upload';
 import { Button } from '@/components/ui/button';
-import {
-  File,
-  ImageIcon,
-  Loader2,
-  Pencil,
-  PlusCircle,
-  Route,
-  X,
-} from 'lucide-react';
+import { Attachment, Course } from '@prisma/client';
+import axios from 'axios';
+import { File, Loader2, PlusCircle, X } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
-import { useRouter } from 'next/navigation';
-import { Attachment, Course } from '@prisma/client';
-import Image from 'next/image';
-import { FileUpload } from '@/components/file-upload';
-import { classNames } from 'uploadthing/client';
+import * as z from 'zod';
 
 interface AttachmentFormProps {
   initialData: Course & { attachments: Attachment[] };
@@ -29,14 +16,17 @@ interface AttachmentFormProps {
 
 const formSchema = z.object({
   url: z.string().min(1, {
-    message: 'Image is Required',
+    message: 'Image URL is required',
+  }),
+  name: z.string().min(1, {
+    message: 'Image Name is required',
   }),
 });
 
-export const AttachmentForm = ({
+export const AttachmentForm: React.FC<AttachmentFormProps> = ({
   initialData,
   courseId,
-}: AttachmentFormProps) => {
+}) => {
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
   const [isDeletingId, setDeletingId] = useState<string | null>(null);
@@ -49,36 +39,40 @@ export const AttachmentForm = ({
         `/api/courses/${courseId}/attachments`,
         values
       );
-      toast.success('Berhasil Menambahkan Lampiran');
+      toast.success('Attachment successfully added');
       toggleEdit();
       router.refresh();
-    } catch {
-      toast.error('Terdapat Kendala');
+    } catch (error) {
+      console.error('Error adding attachment:', error);
+      toast.error('An error occurred while adding attachment');
     }
     console.log(values);
   };
+
   const onDelete = async (id: string) => {
     try {
       setDeletingId(id);
       await axios.delete(`/api/courses/${courseId}/attachments/${id}`);
-      toast.success('Lampiran Dihapus');
+      toast.success('Attachment deleted');
       router.refresh();
-    } catch {
-      toast.error('Terdapat Kendala');
+    } catch (error) {
+      console.error('Error deleting attachment:', error);
+      toast.error('An error occurred while deleting attachment');
     } finally {
       setDeletingId(null);
     }
   };
+
   return (
     <div className="mt-6 border bg-slate-100 rounded-md p-4">
       <div className="font-medium flex items-center justify-between">
-        Lampiran
+        Attachments
         <Button onClick={toggleEdit} variant="ghost">
-          {isEditing && <>Cancel</>}
-          {!isEditing && (
+          {isEditing ? (
+            <>Cancel</>
+          ) : (
             <>
-              <PlusCircle className="h-4 mr-2" />
-              Tambah Lampiran
+              <PlusCircle className="h-4 mr-2" /> Add Attachment
             </>
           )}
         </Button>
@@ -87,7 +81,7 @@ export const AttachmentForm = ({
         <>
           {initialData.attachments.length === 0 && (
             <p className="text-sm mt-2 text-slate-500 italic">
-              Tidak ada lampiran
+              No attachments available
             </p>
           )}
           {initialData.attachments.length > 0 && (
@@ -99,12 +93,11 @@ export const AttachmentForm = ({
                 >
                   <File className="h-4 w-4 mr-2 flex-shrink-0" />
                   <p className="text-xs line-clamp-1">{attachment.name}</p>
-                  {isDeletingId === attachment.id && (
+                  {isDeletingId === attachment.id ? (
                     <div>
                       <Loader2 className="h-4 w-4 animate-spin" />
                     </div>
-                  )}
-                  {isDeletingId !== attachment.id && (
+                  ) : (
                     <button
                       onClick={() => onDelete(attachment.id)}
                       className="ml-auto hover:opacity-75 transition"
@@ -122,14 +115,14 @@ export const AttachmentForm = ({
         <div>
           <FileUpload
             endpoint="courseAttachment"
-            onChange={(url) => {
-              if (url) {
-                onSubmit({ url: url });
+            onChange={(url, name) => {
+              if (url && name) {
+                onSubmit({ url, name });
               }
             }}
           />
           <div className="text-ts text-muted-foreground mt-4">
-            Tambahkan lampiran untuk kursusmu
+            Add attachments to your course
           </div>
         </div>
       )}

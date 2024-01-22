@@ -312,7 +312,6 @@ Table File {
   name String [not null]
   uploadStatus uploadStatus [not null, default: 'PENDING']
   url String [not null]
-  key String [not null]
   createdAt DateTime [default: `now()`, not null]
   updateAt DateTime [not null]
 }

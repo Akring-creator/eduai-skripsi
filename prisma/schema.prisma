@@ -471,7 +471,6 @@ model File {
   uploadStatus uploadStatus @default(PENDING)
 
   url String
-  key String
   createdAt DateTime @default(now())
   updateAt DateTime @updatedAt
 }

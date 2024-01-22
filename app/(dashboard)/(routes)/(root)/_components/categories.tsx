@@ -1,39 +1,32 @@
 'use client';
 
-import { Category } from '@prisma/client';
 import {
-  FcAreaChart, //
-  FcBiotech, // Biologi
-  FcBarChart, // Matematika
-  FcConferenceCall, //Sosiologi
-  FcLibrary, //
-  FcMindMap, // Kimia
-  FcGlobe, // Geografi
-  FcFlashOn, // Fisika
-  FcIdea, // Seni
-  FcFaq, // Bahasa
-  FcEnteringHeavenAlive, // Agama
-  FcButtingIn, // Olahraga
-} from 'react-icons/fc';
+  BarChart,
+  Compass,
+  Shapes,
+  List,
+  FormInput,
+  Workflow,
+  LibraryBig,
+  Waypoints,
+  GraduationCap,
+  LucideIcon,
+} from 'lucide-react';
 
 import { IconType } from 'react-icons';
 import { CategoryItem } from './category-item';
+interface Category {
+  id: string;
+  name: string;
+}
 interface CategoriesProps {
   items: Category[];
 }
-const iconMap: Record<Category['name'], IconType> = {
-  Kewarganegaraan: FcLibrary,
-  Ekonomi: FcAreaChart,
-  Biologi: FcBiotech,
-  Matematika: FcBarChart,
-  Geografi: FcGlobe,
-  Fisika: FcFlashOn,
-  Bahasa: FcFaq,
-  Agama: FcEnteringHeavenAlive,
-  Olahraga: FcButtingIn,
-  Seni: FcIdea,
-  Kimia: FcMindMap,
-  Sosiologi: FcConferenceCall,
+const iconMap: Record<Category['name'], LucideIcon> = {
+  Kursus: List,
+  Kuis: FormInput,
+  Kurikulum: GraduationCap,
+  Semua: Shapes,
 };
 export const Categories = ({ items }: CategoriesProps) => {
   return (
