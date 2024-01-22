@@ -18,9 +18,6 @@ export const FileUpload = ({ onChange, endpoint }: FileUploadProps) => {
       onClientUploadComplete={(res) => {
         onChange(res?.[0]?.url, res?.[0]?.name);
       }}
-      onUploadError={(error: Error) => {
-        toast.error(`${error?.message}`);
-      }}
       content={{
         uploadIcon: () => <Cloud className="h-6 w-6" />,
         label({ ready }) {
@@ -34,10 +31,10 @@ export const FileUpload = ({ onChange, endpoint }: FileUploadProps) => {
           return 'Mempersiapkan ....';
         },
         allowedContent({ ready, uploadProgress, isUploading }) {
-          if (!ready) return 'Mengecek ...';
+          if (!ready) return 'Mempersiapkan ...';
           if (isUploading) return `Mengupload ${uploadProgress} %`;
 
-          return `atau Upload`;
+          return `atau Klik untuk Upload`;
         },
       }}
     />

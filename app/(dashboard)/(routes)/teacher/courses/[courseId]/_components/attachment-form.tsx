@@ -19,7 +19,7 @@ const formSchema = z.object({
     message: 'Image URL is required',
   }),
   name: z.string().min(1, {
-    message: 'Image Name is required',
+    message: 'Image URL is required',
   }),
 });
 
