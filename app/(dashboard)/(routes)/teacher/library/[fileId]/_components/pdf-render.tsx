@@ -11,11 +11,11 @@ import { Document, Page, pdfjs } from 'react-pdf';
 
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
-import { useToast } from './ui/use-toast';
+import toast from 'react-hot-toast';
 
 import { useResizeDetector } from 'react-resize-detector';
 import { Button } from '@/components/ui/button';
-import { Input } from '.@/components/ui/input';
+import { Input } from '@/components/ui/input';
 import { useState } from 'react';
 
 import { useForm } from 'react-hook-form';
@@ -31,17 +31,15 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 import SimpleBar from 'simplebar-react';
-import PdfFullscreen from './PdfFullscreen';
+import PDFFullScreen from './pdf-fullscreen';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
-interface PdfRendererProps {
+interface PDFRendererProps {
   url: string;
 }
 
-const PdfRenderer = ({ url }: PdfRendererProps) => {
-  const { toast } = useToast();
-
+const PDFRenderer = ({ url }: PDFRendererProps) => {
   const [numPages, setNumPages] = useState<number>();
   const [currPage, setCurrPage] = useState<number>(1);
   const [scale, setScale] = useState<number>(1);
@@ -162,7 +160,7 @@ const PdfRenderer = ({ url }: PdfRendererProps) => {
             <RotateCw className="h-4 w-4" />
           </Button>
 
-          <PdfFullscreen fileUrl={url} />
+          <PDFFullScreen fileUrl={url} />
         </div>
       </div>
 
@@ -176,11 +174,7 @@ const PdfRenderer = ({ url }: PdfRendererProps) => {
                 </div>
               }
               onLoadError={() => {
-                toast({
-                  title: 'Error loading PDF',
-                  description: 'Please try again later',
-                  variant: 'destructive',
-                });
+                toast.error('Gagal mengakses PDF. Coba lagi nanti!');
               }}
               onLoadSuccess={({ numPages }) => setNumPages(numPages)}
               file={url}
@@ -218,4 +212,4 @@ const PdfRenderer = ({ url }: PdfRendererProps) => {
   );
 };
 
-export default PdfRenderer;
+export default PDFRenderer;

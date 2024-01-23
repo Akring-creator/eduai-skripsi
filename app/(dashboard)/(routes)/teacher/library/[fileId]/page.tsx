@@ -3,6 +3,7 @@ import { db } from '@/lib/db';
 
 import { notFound, redirect } from 'next/navigation';
 import { auth } from '@clerk/nextjs';
+import PDFRenderer from './_components/pdf-render';
 
 interface PageProps {
   params: {
@@ -33,11 +34,13 @@ const Page = async ({ params }: PageProps) => {
         <div className="flex-1 xl:flex">
           <div className="px-4 py-6 sm:px-6 lg:pl-8 xl:flex-1 xl:pl-6">
             {/* Main area */}
-            <PdfRenderer url={file.url} />
+            <PDFRenderer url={file.url} />
           </div>
         </div>
 
-        <div className="shrink-0 flex-[0.75] border-t border-gray-200 lg:w-96 lg:border-l lg:border-t-0"></div>
+        <div className="shrink-0 flex-[0.75] border-t border-gray-200 lg:w-96 lg:border-l lg:border-t-0">
+          <p className="text-xl">Chatnya Nanti Disini</p>
+        </div>
       </div>
     </div>
   );

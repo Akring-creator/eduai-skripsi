@@ -30,14 +30,12 @@ const UploadButton = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const update = await axios.post(`/api/library`, values);
+      const file = await axios.post(`/api/library`, values);
       toast.success('Berhasil Menambahkan Lampiran');
-
-      router.refresh();
+      router.push(`/teacher/library/${file.data.id}`);
     } catch {
       toast.error('Terdapat Kendala');
     }
-    console.log(values);
   };
 
   return (
@@ -54,7 +52,7 @@ const UploadButton = () => {
       </DialogTrigger>
       <DialogContent>
         <FileUpload
-          endpoint="courseAttachment"
+          endpoint="pdfUploader"
           onChange={(url, name) => {
             if (url && name) {
               onSubmit({ url: url, name: name });

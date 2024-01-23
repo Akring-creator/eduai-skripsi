@@ -22,10 +22,7 @@ export async function GET(req: Request) {
     return new NextResponse('Internal Error', { status: 500 });
   }
 }
-export async function POST(
-  req: Request,
-  { params }: { params: { courseId: string } }
-) {
+export async function POST(req: Request) {
   try {
     const { userId } = auth();
     const { url, name } = await req.json();
@@ -39,6 +36,7 @@ export async function POST(
         userId: userId,
         url,
         name: name,
+        uploadStatus: 'PROCESSING',
       },
     });
 
@@ -75,6 +73,7 @@ export async function DELETE(req: Request) {
     // Lakukan penghapusan file dari database
     await db.file.delete({
       where: {
+        userId,
         id: fileId,
       },
     });

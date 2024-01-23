@@ -18,6 +18,10 @@ export const FileUpload = ({ onChange, endpoint }: FileUploadProps) => {
       onClientUploadComplete={(res) => {
         onChange(res?.[0]?.url, res?.[0]?.name);
       }}
+      onUploadError={(error: Error) => {
+        console.log(`${error?.message}`);
+        toast.error('Terdapat Kendala');
+      }}
       content={{
         uploadIcon: () => <Cloud className="h-6 w-6" />,
         label({ ready }) {

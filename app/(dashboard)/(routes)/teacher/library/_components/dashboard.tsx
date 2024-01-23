@@ -6,7 +6,7 @@ import { db } from '@/lib/db';
 import Link from 'next/link';
 import { Ghost, Loader2, MessageSquare, Plus, Trash } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import Skeleton from 'react-loading-skeleton';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { format } from 'date-fns';
 
@@ -17,8 +17,9 @@ const Dashboard = ({ files }: DashboardProps) => {
   const [currentlyDeletingFile, setCurrentlyDeletingFile] = useState<
     string | null
   >(null);
-
+  const router = useRouter();
   const onDelete = async (fileId: string) => {
+    console.log('Masuk Kesini');
     try {
       // Menampilkan loader atau memberikan feedback bahwa proses penghapusan sedang berlangsung
       setCurrentlyDeletingFile(fileId);
@@ -42,6 +43,7 @@ const Dashboard = ({ files }: DashboardProps) => {
       console.error('Error deleting file:', error);
       setCurrentlyDeletingFile(null); // Pastikan loader dihentikan dalam kasus kesalahan
     }
+    router.refresh();
   };
   return (
     <div className="p-8">
