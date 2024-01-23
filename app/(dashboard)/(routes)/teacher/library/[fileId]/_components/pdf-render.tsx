@@ -108,7 +108,7 @@ const PDFRenderer = ({ url }: PDFRendererProps) => {
             />
             <p className="text-zinc-700 text-sm space-x-1">
               <span>/</span>
-              <span>{numPages ?? 'x'}</span>
+              <span>{numPages ?? '-'}</span>
             </p>
           </div>
 

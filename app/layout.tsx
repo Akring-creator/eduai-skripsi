@@ -4,7 +4,7 @@ import { ClerkProvider } from '@clerk/nextjs';
 import { ToastProvider } from '@/components/providers/toaster-providers';
 import { Metadata } from 'next';
 import { ConfettiProvider } from '@/components/providers/confetti-provider';
-import MaintenancePage from './maintenance/page';
+import 'simplebar-react/dist/simplebar.min.css';
 
 const inter = Inter({ subsets: ['latin'] });
 
