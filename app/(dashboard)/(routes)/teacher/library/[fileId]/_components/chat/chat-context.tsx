@@ -36,7 +36,8 @@ export const ChatContextProvider = ({ fileId, children }: Props) => {
   const { mutate: sendMessage } = useMutation({
     mutationFn: async ({ message }: { message: string }) => {
       try {
-        const data = sendMSG.parse({ message });
+        const data = sendMSG.parse(message);
+        console.log('CONTEXT' + data);
         const response = await axios.post(
           `/api/library/${fileId}/message`,
           data
