@@ -1,18 +1,18 @@
-import PdfRenderer from './_components/pdf-render';
 import { db } from '@/lib/db';
 
 import { notFound, redirect } from 'next/navigation';
 import { auth } from '@clerk/nextjs';
 import PDFRenderer from './_components/pdf-render';
+import ChatWrapper from './_components/chat/chat';
 
 interface PageProps {
   params: {
-    fileid: string;
+    fileId: string;
   };
 }
 
 const Page = async ({ params }: PageProps) => {
-  const { fileid } = params;
+  const { fileId } = params;
 
   const { userId } = auth();
 
@@ -20,7 +20,7 @@ const Page = async ({ params }: PageProps) => {
 
   const file = await db.file.findFirst({
     where: {
-      id: fileid,
+      id: fileId,
       userId: userId,
     },
   });
@@ -39,7 +39,7 @@ const Page = async ({ params }: PageProps) => {
         </div>
 
         <div className="shrink-0 flex-[0.75] border-t border-gray-200 lg:w-96 lg:border-l lg:border-t-0">
-          <p className="text-xl">Chatnya Nanti Disini</p>
+          <ChatWrapper file={file} />
         </div>
       </div>
     </div>

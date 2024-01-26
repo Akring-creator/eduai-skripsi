@@ -1,16 +1,14 @@
 'use client';
 
+import { FileUpload } from '@/components/file-upload';
 import { Button } from '@/components/ui/button';
-import Dropzone from 'react-dropzone';
 import { DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { Dialog } from '@radix-ui/react-dialog';
+import axios from 'axios';
+
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { Cloud, File, Loader2 } from 'lucide-react';
-import { FileUpload } from '@/components/file-upload';
-import axios from 'axios';
 import toast from 'react-hot-toast';
-import { Progress } from '@/components/ui/progress';
 
 import * as z from 'zod';
 

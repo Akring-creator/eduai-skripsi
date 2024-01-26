@@ -310,10 +310,22 @@ Table File {
   id String [pk]
   userId String [not null]
   name String [not null]
+  messages Message [not null]
   uploadStatus uploadStatus [not null, default: 'PENDING']
   url String [not null]
   createdAt DateTime [default: `now()`, not null]
   updateAt DateTime [not null]
+}
+
+Table Message {
+  id String [pk]
+  text String [not null]
+  isUserMessage Boolean [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  userId String
+  File File
+  fileId String
 }
 
 Enum QuestionType {
@@ -380,3 +392,5 @@ Ref: LearningModule.subjectId > Subject.id
 Ref: LearningModule.modaId > learningModa.id
 
 Ref: LearningModule.studentTargetId > studentTarget.id
+
+Ref: Message.fileId > File.id

@@ -1,5 +1,6 @@
 import { auth } from '@clerk/nextjs';
 import { createUploadthing, type FileRouter } from 'uploadthing/next';
+import { db } from '@/lib/db';
 
 const f = createUploadthing();
 
@@ -9,8 +10,6 @@ const handleAuth = () => {
   return { userId };
 };
 
-// FileRouter for your app, can contain multiple FileRoutes
-// FileRouter untuk UploadThing. masukkan endpoint kesini
 export const ourFileRouter = {
   courseImage: f({
     image: {

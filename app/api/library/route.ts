@@ -1,6 +1,10 @@
 import { db } from '@/lib/db';
 import { auth } from '@clerk/nextjs';
 import { NextResponse } from 'next/server';
+import { OpenAIEmbeddings } from '@langchain/openai';
+import { PDFLoader } from 'langchain/document_loaders/fs/pdf';
+import { PineconeStore } from '@langchain/pinecone';
+import { pinecone } from '@/lib/pinecone';
 
 export async function GET(req: Request) {
   try {
@@ -39,6 +43,46 @@ export async function POST(req: Request) {
         uploadStatus: 'PROCESSING',
       },
     });
+    const response = await fetch(file.url);
+    const blob = await response.blob();
+
+    try {
+      const loader = new PDFLoader(blob);
+
+      const pageLevelDocs = await loader.load();
+
+      const pagesAmt = pageLevelDocs.length;
+
+      // vectorize and index entire document
+      const pineconeIndex = pinecone.Index('edtek');
+
+      const embeddings = new OpenAIEmbeddings({
+        openAIApiKey: process.env.OPENAI_API_KEY,
+      });
+
+      await PineconeStore.fromDocuments(pageLevelDocs, embeddings, {
+        pineconeIndex,
+        namespace: file.id,
+      });
+
+      await db.file.update({
+        data: {
+          uploadStatus: 'SUCCESS',
+        },
+        where: {
+          id: file.id,
+        },
+      });
+    } catch (err) {
+      await db.file.update({
+        data: {
+          uploadStatus: 'FAILED',
+        },
+        where: {
+          id: file.id,
+        },
+      });
+    }
 
     return NextResponse.json(file);
   } catch (error) {
