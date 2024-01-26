@@ -29,7 +29,7 @@ const UploadButton = () => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       const file = await axios.post(`/api/library`, values);
-      toast.success('Berhasil Menambahkan Lampiran');
+      toast.success('Berhasil Menambahkan File');
       router.push(`/teacher/library/${file.data.id}`);
     } catch {
       toast.error('Terdapat Kendala');

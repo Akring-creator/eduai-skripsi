@@ -39,7 +39,7 @@ export const ChatContextProvider = ({ fileId, children }: Props) => {
         const data = sendMSG.parse(message);
         console.log('CONTEXT' + data);
         const response = await axios.post(
-          `/api/library/${fileId}/message`,
+          `/api/library/${fileId}/messages`,
           data
         );
 
