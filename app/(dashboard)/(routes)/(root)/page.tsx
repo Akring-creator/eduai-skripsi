@@ -7,6 +7,8 @@ import { getCourses } from '@/actions/get-courses';
 import { CoursesList } from '@/components/courses-list';
 
 import { Categories } from './_components/categories';
+import { getQuizzes } from '@/actions/get-quizzes';
+import { QuizList } from '@/components/quiz-list';
 
 interface SearchPageProps {
   searchParams: {
@@ -22,15 +24,34 @@ const SearchPage = async ({ searchParams }: SearchPageProps) => {
     return redirect('/');
   }
 
-  const categories = await db.category.findMany({
-    orderBy: {
-      name: 'asc',
+  const categories = [
+    {
+      id: 'all',
+      name: 'Semua',
     },
-  });
+    {
+      id: 'quiz',
+      name: 'Kuis',
+    },
+    {
+      id: 'course',
+      name: 'Kursus',
+    },
+    {
+      id: 'curriculum',
+      name: 'Kurikulum',
+    },
+  ];
 
+  const dataType = searchParams.categoryId;
+
+  const quizzes = await getQuizzes({
+    userId,
+    title: searchParams.title,
+  });
   const courses = await getCourses({
     userId,
-    ...searchParams,
+    title: searchParams.title,
   });
 
   return (
@@ -40,7 +61,16 @@ const SearchPage = async ({ searchParams }: SearchPageProps) => {
       </div>
       <div className="p-6 space-y-4">
         <Categories items={categories} />
-        <CoursesList items={courses} />
+        {dataType === 'course' ? (
+          <CoursesList items={courses} />
+        ) : dataType === 'quiz' ? (
+          <QuizList items={quizzes} />
+        ) : (
+          <div className="space-y-2">
+            <CoursesList items={courses} />
+            <QuizList items={quizzes} />
+          </div>
+        )}
       </div>
     </>
   );

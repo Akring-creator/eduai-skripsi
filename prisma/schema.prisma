@@ -456,3 +456,37 @@ model LearningModule {
   @@index([subjectId])
   @@index([educationLevelId])
 }
+
+enum uploadStatus {
+  PENDING
+  PROCESSING
+  FAILED
+  SUCCESS
+}
+model File {
+  id String @id @default(uuid())
+  userId String
+  name String
+   messages Message[]
+
+  uploadStatus uploadStatus @default(PENDING)
+
+  url String
+  createdAt DateTime @default(now())
+  updateAt DateTime @updatedAt
+}
+
+model Message {
+  id   String @id @default(cuid())
+  text String @db.Text()
+
+  isUserMessage Boolean
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    String?
+  File      File?    @relation(fields: [fileId], references: [id])
+  fileId    String?
+
+  @@index([fileId])
+}

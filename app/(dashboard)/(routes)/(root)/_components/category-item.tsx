@@ -5,11 +5,12 @@ import { IconType } from 'react-icons';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import { cn } from '@/lib/utils';
+import { LucideIcon } from 'lucide-react';
 
 interface CategoryItemProps {
   label: string;
   value?: string;
-  icon?: IconType;
+  icon?: LucideIcon;
 }
 
 export const CategoryItem = ({
@@ -23,7 +24,6 @@ export const CategoryItem = ({
 
   const currentCategoryId = searchParams.get('categoryId');
   const currentTitle = searchParams.get('title');
-  const currentObject = searchParams.get('object');
 
   const isSelected = currentCategoryId === value;
 
