@@ -1,7 +1,6 @@
 import { Loader2, MessageSquare } from 'lucide-react';
 import { MAX_MESSAGES_LIMIT } from '@/config/constant';
 import Skeleton from 'react-loading-skeleton';
-import Message from './message';
 import { useContext, useEffect, useRef } from 'react';
 import { ChatContext } from './chat-context';
 import { useIntersection } from '@mantine/hooks';
@@ -86,20 +85,22 @@ const Messages = ({ fileId }: MessagesProps) => {
 
           if (i === combinedMessages.length - 1) {
             return (
-              <Message
-                ref={ref}
-                message={message}
-                isNextMessageSamePerson={isNextMessageSamePerson}
-                key={message.id}
-              />
+              <div></div>
+              // <Message
+              //   ref={ref}
+              //   message={message}
+              //   isNextMessageSamePerson={isNextMessageSamePerson}
+              //   key={message.id}
+              // />
             );
           } else
             return (
-              <Message
-                message={message}
-                isNextMessageSamePerson={isNextMessageSamePerson}
-                key={message.id}
-              />
+              <div></div>
+              // <Message
+              //   message={message}
+              //   isNextMessageSamePerson={isNextMessageSamePerson}
+              //   key={message.id}
+              // />
             );
         })
       ) : isLoading ? (
