@@ -1,9 +1,12 @@
 import { Loader2, MessageSquare } from 'lucide-react';
+import { MAX_MESSAGES_LIMIT } from '@/config/constant';
 import Skeleton from 'react-loading-skeleton';
 import Message from './message';
 import { useContext, useEffect, useRef } from 'react';
 import { ChatContext } from './chat-context';
 import { useIntersection } from '@mantine/hooks';
+import axios from 'axios';
+import { useInfiniteQuery } from '@tanstack/react-query';
 
 interface MessagesProps {
   fileId: string;
@@ -12,17 +15,35 @@ interface MessagesProps {
 const Messages = ({ fileId }: MessagesProps) => {
   const { isLoading: isAiThinking } = useContext(ChatContext);
 
-  const { data, isLoading, fetchNextPage } =
-    trpc.getFileMessages.useInfiniteQuery(
-      {
-        fileId,
-        limit: INFINITE_QUERY_LIMIT,
-      },
-      {
-        getNextPageParam: (lastPage) => lastPage?.nextCursor,
-        keepPreviousData: true,
+  const fetchData = ({ queryKey }: any) => {
+    const { limit } = queryKey;
+
+    const fetchFileMessages = async ({ pageParam = undefined }) => {
+      try {
+        const response = await axios.get(`api/library/${fileId}/messages/`, {
+          params: {
+            limit: limit,
+            cursor: pageParam,
+          },
+        });
+
+        return response.data;
+      } catch (error) {
+        throw error;
       }
-    );
+    };
+
+    return useInfiniteQuery({
+      queryKey: ['fileMessages', { limit }],
+      queryFn: fetchFileMessages,
+      getNextPageParam: (lastPage) => lastPage?.nextCursor,
+      initialPageParam: undefined,
+    });
+  };
+
+  const { data, isLoading, fetchNextPage } = fetchData({
+    queryKey: { limit: MAX_MESSAGES_LIMIT },
+  });
 
   const messages = data?.pages.flatMap((page) => page.messages);
 

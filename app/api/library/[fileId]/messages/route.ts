@@ -6,14 +6,66 @@ import { PineconeStore } from '@langchain/pinecone';
 import { NextResponse } from 'next/server';
 import { openai } from '@/lib/openai';
 import { OpenAIStream, StreamingTextResponse } from 'ai';
+import { MAX_MESSAGES_LIMIT } from '@/config/constant';
+
+export async function GET(
+  req: Request,
+  { params }: { params: { fileId: string } }
+) {
+  try {
+    const { userId } = auth();
+    const { input } = await req.json();
+    const cursor = input.cursor;
+    const limit = input.limit ?? MAX_MESSAGES_LIMIT;
+
+    if (!userId) {
+      return new NextResponse('Unauthorized', { status: 401 });
+    }
+
+    const file = await db.file.findUnique({
+      where: {
+        id: params.fileId,
+        userId,
+      },
+    });
+
+    if (!file) {
+      return new NextResponse('File not found', { status: 404 });
+    }
+    const messages = await db.message.findMany({
+      take: limit + 1,
+      where: {
+        fileId: params.fileId,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      cursor: cursor ? { id: cursor } : undefined,
+      select: {
+        id: true,
+        isUserMessage: true,
+        createdAt: true,
+        text: true,
+      },
+    });
+
+    let nextCursor: typeof cursor | undefined = undefined;
+    if (messages.length > limit) {
+      const nextItem = messages.pop();
+      nextCursor = nextItem?.id;
+    }
+
+    const data = { messages: messages, nextCursor: nextCursor };
+    return NextResponse.json(data);
+  } catch (error) {}
+}
 export async function POST(
   req: Request,
   { params }: { params: { fileId: string } }
 ) {
   try {
     const { userId } = auth();
-    const data = await req.json();
-    const msg = data.message;
+    const { msg } = await req.json();
 
     if (!userId) {
       return new NextResponse('Unauthorized', { status: 401 });
