@@ -62,8 +62,8 @@ export const PriceForm = ({ initialData, courseId }: PriceFormProps) => {
   return (
     <div className="mt-6 border bg-slate-100 rounded-md p-4">
       <div className="font-medium flex items-center justify-between">
-        Harga Kursus
-        <Button onClick={toggleEdit} variant="ghost">
+        Untuk saat ini kursus tersedia secara gratis
+        {/* <Button onClick={toggleEdit} variant="ghost">
           {isEditing && <>Cancel</>}
           {!isEditing && (
             <>
@@ -71,9 +71,9 @@ export const PriceForm = ({ initialData, courseId }: PriceFormProps) => {
               Atur Harga
             </>
           )}
-        </Button>
+        </Button> */}
       </div>
-      {!isEditing && (
+      {/* {!isEditing && (
         <p
           className={cn(
             'text-sm mt-2',
@@ -112,7 +112,7 @@ export const PriceForm = ({ initialData, courseId }: PriceFormProps) => {
             </div>
           </form>
         </Form>
-      )}
+      )} */}
     </div>
   );
 };

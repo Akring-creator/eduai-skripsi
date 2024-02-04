@@ -8,7 +8,7 @@ Table Course {
   title String [not null]
   description String
   imageUrl String
-  price Float
+  price Float [default: 0]
   isPublished Boolean [not null, default: false]
   categoryId String
   category Category

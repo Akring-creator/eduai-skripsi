@@ -31,6 +31,7 @@ const formSchema = z.object({
   title: z.string().min(1, {
     message: 'Title is Required',
   }),
+  price: z.coerce.number(),
 });
 export const ManualForm = () => {
   const router = useRouter();
@@ -38,6 +39,7 @@ export const ManualForm = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: '',
+      price: 0,
     },
   });
 
