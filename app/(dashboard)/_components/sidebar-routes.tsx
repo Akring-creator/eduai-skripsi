@@ -54,11 +54,11 @@ const teacherRoutes = [
     label: 'Pustaka',
     href: '/teacher/library',
   },
-  {
-    icon: BarChart,
-    label: 'Analisis',
-    href: '/teacher/analytics',
-  },
+  // {
+  //   icon: BarChart,
+  //   label: 'Analisis',
+  //   href: '/teacher/analytics',
+  // },
 ];
 
 export const SidebarRoutes = () => {

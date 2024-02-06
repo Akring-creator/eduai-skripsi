@@ -37,6 +37,18 @@ export const VideoPlayer = ({
   const [isReady, setIsReady] = useState(false);
   const router = useRouter();
   const confetti = useConfettiStore();
+  const [showMessage, setShowMessage] = useState(false);
+  const [seekedTime, setSeekedTime] = useState(0);
+  const [playing, setPlaying] = useState(true);
+
+  const handleSeek = (time: number) => {
+    if (time === 30 || time === 90) {
+      setSeekedTime(time);
+      setShowMessage(true);
+      setPlaying(false);
+      setTimeout(() => setShowMessage(false), 3000); // Hide message after 3 seconds
+    }
+  };
 
   const onEnd = async () => {
     try {
@@ -90,12 +102,19 @@ export const VideoPlayer = ({
         ) : (
           videoType === 'youtube' && (
             <div className={cn(!isReady && 'hidden', 'h-full')}>
+              {showMessage && (
+                <div className="text-3xl">
+                  {seekedTime === 30 ? 'Kamu di detik 30' : 'Kamu di detik 90'}
+                </div>
+              )}
               <ReactPlayer
                 url={videoUrl}
+                playing={playing}
                 controls={true}
                 onEnded={onEnd}
                 onReady={() => setIsReady(true)}
                 height="100%"
+                onSeek={(time) => handleSeek(time)}
                 width="100%"
               />
             </div>
