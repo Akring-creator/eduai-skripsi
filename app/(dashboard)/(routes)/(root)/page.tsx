@@ -23,7 +23,7 @@ const SearchPage = async ({ searchParams }: SearchPageProps) => {
   const { userId } = auth();
 
   if (!userId) {
-    return redirectToSignIn();
+    return redirect('/');
   }
 
   const categories = [
