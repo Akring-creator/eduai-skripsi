@@ -24,7 +24,7 @@ interface Props {
 }
 
 export const sendMSG = z.object({
-  message: z.string(),
+  msg: z.string(),
 });
 
 export const ChatContextProvider = ({ fileId, children }: Props) => {
@@ -36,12 +36,12 @@ export const ChatContextProvider = ({ fileId, children }: Props) => {
   const { mutate: sendMessage } = useMutation({
     mutationFn: async ({ message }: { message: string }) => {
       try {
-        const data = sendMSG.parse(message);
-        console.log('CONTEXT' + data);
-        const response = await axios.post(
-          `/api/library/${fileId}/messages`,
-          data
-        );
+        console.log('msg');
+        // const parsedMessage = sendMSG.parse({ message });
+        // console.log(parsedMessage);
+        const response = await axios.post(`/api/library/${fileId}/messages`, {
+          msg: message,
+        });
 
         return response.data;
       } catch (error) {

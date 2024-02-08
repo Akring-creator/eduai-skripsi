@@ -48,6 +48,7 @@ export async function GET(
         text: true,
       },
     });
+    console.log(messages);
 
     let nextCursor: typeof cursor | undefined = undefined;
     if (messages.length > limit) {
@@ -57,7 +58,10 @@ export async function GET(
 
     const data = { messages: messages, nextCursor: nextCursor };
     return NextResponse.json(data);
-  } catch (error) {}
+  } catch (error) {
+    console.error('[FETCH_MESSAGES]', error);
+    return new NextResponse('Internal Error', { status: 500 });
+  }
 }
 export async function POST(
   req: Request,
@@ -66,6 +70,7 @@ export async function POST(
   try {
     const { userId } = auth();
     const { msg } = await req.json();
+    console.log('msg');
 
     if (!userId) {
       return new NextResponse('Unauthorized', { status: 401 });

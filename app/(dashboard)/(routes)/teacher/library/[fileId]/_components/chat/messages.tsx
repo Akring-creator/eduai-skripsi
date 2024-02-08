@@ -19,7 +19,7 @@ const Messages = ({ fileId }: MessagesProps) => {
 
     const fetchFileMessages = async ({ pageParam = undefined }) => {
       try {
-        const response = await axios.get(`api/library/${fileId}/messages/`, {
+        const response = await axios.get(`/api/library/${fileId}/messages/`, {
           params: {
             limit: limit,
             cursor: pageParam,

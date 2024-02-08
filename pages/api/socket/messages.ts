@@ -18,12 +18,11 @@ export default async function handler(
   }
 
   try {
-    console.log('Masuk Kesini');
     const { userId } = getAuth(req);
     if (!userId) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
-    console.log('Masuk Kesini 2');
+
     const { fileId } = req.query;
     if (!fileId) {
       return res.status(400).json({ error: 'File ID missing' });
@@ -36,7 +35,7 @@ export default async function handler(
     if (!msg) {
       return res.status(400).json({ error: 'Message missing' });
     }
-    console.log('msg: ' + msg);
+
     const file = await db.file.findUnique({
       where: {
         id: fileId as string,
@@ -133,7 +132,7 @@ export default async function handler(
 
     res?.socket?.server?.io?.emit(updateKey);
 
-    return new StreamingTextResponse(stream);
+    return undefined;
   } catch (error) {
     console.log('[MESSAGE_ID]', error);
     return res.status(500).json({ error: 'Internal Error' });
