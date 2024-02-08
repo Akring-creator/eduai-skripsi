@@ -1,28 +1,25 @@
 'use client';
 
-import * as z from 'zod';
-import axios from 'axios';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
+import { Button } from '@/components/ui/button';
+import { Combobox } from '@/components/ui/combobox';
 import {
   Form,
   FormControl,
   FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Pencil, PlusCircle, Route } from 'lucide-react';
-import { useState } from 'react';
-import toast from 'react-hot-toast';
-import { useRouter } from 'next/navigation';
-import { Course } from '@prisma/client';
-import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
-import { Combobox } from '@/components/ui/combobox';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Course } from '@prisma/client';
+import axios from 'axios';
+import { Pencil } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
+import * as z from 'zod';
 
 interface CategoryFormProps {
   initialData: Course;

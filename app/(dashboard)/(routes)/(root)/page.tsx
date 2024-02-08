@@ -9,6 +9,7 @@ import { CoursesList } from '@/components/courses-list';
 import { Categories } from './_components/categories';
 import { getQuizzes } from '@/actions/get-quizzes';
 import { QuizList } from '@/components/quiz-list';
+import { initialProfile } from '@/lib/initial-profile';
 
 interface SearchPageProps {
   searchParams: {
@@ -23,7 +24,7 @@ const SearchPage = async ({ searchParams }: SearchPageProps) => {
   if (!userId) {
     return redirect('/');
   }
-
+  const profile = await initialProfile();
   const categories = [
     {
       id: 'all',

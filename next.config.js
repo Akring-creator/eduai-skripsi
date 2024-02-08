@@ -6,7 +6,7 @@ const nextConfig = {
     return config;
   },
   images: {
-    domains: ['uploadthing.com', 'utfs.io'],
+    domains: ['uploadthing.com', 'utfs.io', 'img.clerk.com'],
   },
 };
 
