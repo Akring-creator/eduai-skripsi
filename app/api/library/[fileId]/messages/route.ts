@@ -14,12 +14,15 @@ export async function GET(
 ) {
   try {
     const { userId } = auth();
-    const { input } = await req.json();
-    const cursor = input.cursor;
-    const limit = input.limit ?? MAX_MESSAGES_LIMIT;
+    const { searchParams } = new URL(req.url);
+    const cursor = searchParams.get('cursor');
+    const limit = MAX_MESSAGES_LIMIT;
 
     if (!userId) {
       return new NextResponse('Unauthorized', { status: 401 });
+    }
+    if (!cursor) {
+      return new NextResponse('Cursor is Missing', { status: 400 });
     }
 
     const file = await db.file.findUnique({

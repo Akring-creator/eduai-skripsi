@@ -5,7 +5,7 @@ import { useSocket } from '@/components/providers/socket-provider';
 interface ChatQueryProps {
   queryKey: string;
   apiUrl: string;
-  paramKey: 'channelId' | 'conversationId';
+  paramKey: 'fileId';
   paramValue: string;
 }
 
@@ -28,6 +28,7 @@ export const useChatQuery = ({
       },
       { skipNull: true }
     );
+    console.log(url);
 
     const res = await fetch(url);
     return res.json();
