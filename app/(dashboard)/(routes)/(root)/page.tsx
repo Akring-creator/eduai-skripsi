@@ -1,4 +1,4 @@
-import { auth } from '@clerk/nextjs';
+import { auth, redirectToSignIn } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
 
 import { db } from '@/lib/db';
@@ -9,7 +9,8 @@ import { CoursesList } from '@/components/courses-list';
 import { Categories } from './_components/categories';
 import { getQuizzes } from '@/actions/get-quizzes';
 import { QuizList } from '@/components/quiz-list';
-import { initialProfile } from '@/lib/initial-profile';
+
+import { currentProfile } from '@/lib/initial-profile';
 
 interface SearchPageProps {
   searchParams: {
@@ -22,9 +23,9 @@ const SearchPage = async ({ searchParams }: SearchPageProps) => {
   const { userId } = auth();
 
   if (!userId) {
-    return redirect('/');
+    return redirectToSignIn();
   }
-  const profile = await initialProfile();
+
   const categories = [
     {
       id: 'all',

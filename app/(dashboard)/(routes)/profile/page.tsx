@@ -10,7 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
-import { currentProfile } from '@/lib/current-profile';
+import { currentProfile } from '@/lib/initial-profile';
 import { redirect } from 'next/navigation';
 import { ProfileImage } from './_components/profile-image-form';
 import BasicInformation from './_components/basic-information-form';
