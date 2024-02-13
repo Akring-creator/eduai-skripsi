@@ -46,7 +46,7 @@ const teacherRoutes = [
   },
   {
     icon: Waypoints,
-    label: 'Belajar Mandiri',
+    label: 'Path',
     href: '/teacher/connections',
   },
   {

@@ -11,6 +11,7 @@ import {
   Waypoints,
   GraduationCap,
   LucideIcon,
+  Library,
 } from 'lucide-react';
 
 import { IconType } from 'react-icons';
@@ -27,6 +28,8 @@ const iconMap: Record<Category['name'], LucideIcon> = {
   Kuis: FormInput,
   Kurikulum: GraduationCap,
   Semua: Shapes,
+  Pustaka: LibraryBig,
+  Path: Waypoints,
 };
 export const Categories = ({ items }: CategoriesProps) => {
   return (

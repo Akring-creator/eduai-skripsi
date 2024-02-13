@@ -171,6 +171,7 @@ model Quiz {
 
   questions   Question[]
   attachments QuizAttachment[]
+  games Game[]
 
   createdAt DateTime @default(now())
   updateAt  DateTime @updatedAt
@@ -206,15 +207,6 @@ model Purchase {
 
   @@unique([userId, courseId])
   @@index([courseId])
-}
-
-model StripeCustomer {
-  id               String @id @default(uuid())
-  userId           String @unique
-  stripeCustomerId String @unique
-
-  createdAt DateTime @default(now())
-  updateAt  DateTime @updatedAt
 }
 
 // Part schema for Modul Ajar
@@ -502,4 +494,15 @@ model Message {
   fileId    String?
 
   @@index([fileId])
+}
+
+model Game {
+  id          String     @id @default(uuid())
+  userId      String
+  quizId String
+  quiz   Quiz   @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  timeStarted DateTime
+  timeEnded   DateTime?
+
+  @@index([quizId])
 }

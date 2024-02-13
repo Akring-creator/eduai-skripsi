@@ -54,7 +54,7 @@
     "eslint": "^8.52.0",
     "eslint-config-next": "13.4.12",
     "fs": "^0.0.1-security",
-    "langchain": "^0.1.6",
+    "langchain": "^0.1.17",
     "lucide-react": "^0.290.0",
     "next": "13.4.12",
     "officegen": "^0.6.5",

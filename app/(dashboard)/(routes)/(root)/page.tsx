@@ -43,6 +43,14 @@ const SearchPage = async ({ searchParams }: SearchPageProps) => {
       id: 'curriculum',
       name: 'Kurikulum',
     },
+    {
+      id: 'library',
+      name: 'Pustaka',
+    },
+    {
+      id: 'connections',
+      name: 'Path',
+    },
   ];
 
   const dataType = searchParams.categoryId;
