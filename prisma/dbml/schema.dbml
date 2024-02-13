@@ -127,6 +127,7 @@ Table Quiz {
   learningActivities LearningActivities
   questions Question [not null]
   attachments QuizAttachment [not null]
+  games Game [not null]
   createdAt DateTime [default: `now()`, not null]
   updateAt DateTime [not null]
 }
@@ -152,14 +153,6 @@ Table Purchase {
   indexes {
     (userId, courseId) [unique]
   }
-}
-
-Table StripeCustomer {
-  id String [pk]
-  userId String [unique, not null]
-  stripeCustomerId String [unique, not null]
-  createdAt DateTime [default: `now()`, not null]
-  updateAt DateTime [not null]
 }
 
 Table studentTarget {
@@ -340,6 +333,15 @@ Table Message {
   fileId String
 }
 
+Table Game {
+  id String [pk]
+  userId String [not null]
+  quizId String [not null]
+  quiz Quiz [not null]
+  timeStarted DateTime [not null]
+  timeEnded DateTime
+}
+
 Enum QuestionType {
   multipleChoice
   shortAnswer
@@ -406,3 +408,5 @@ Ref: LearningModule.modaId > learningModa.id
 Ref: LearningModule.studentTargetId > studentTarget.id
 
 Ref: Message.fileId > File.id
+
+Ref: Game.quizId > Quiz.id [delete: Cascade]
