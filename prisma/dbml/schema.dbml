@@ -334,7 +334,7 @@ Table Message {
 
 Table Game {
   id String [pk]
-  publicId String [not null]
+  publicId String [unique, not null]
   creatorId String [not null]
   quizId String [not null]
   quiz Quiz [not null]

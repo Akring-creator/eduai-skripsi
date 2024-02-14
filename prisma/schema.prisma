@@ -497,7 +497,7 @@ model Message {
 
 model Game {
   id          String     @id @default(uuid())
-  publicId String @default(nanoid())
+  publicId String @unique @default(nanoid())
   creatorId      String
 
   quizId String
