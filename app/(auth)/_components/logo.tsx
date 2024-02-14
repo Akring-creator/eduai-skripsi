@@ -17,7 +17,7 @@ export const Logo = () => {
       <div className={cn('flex flex-col items-center', font.className)}>
         <p className="text-xl font-semibold">EdTek</p>
         <p className="text-sm text-muted-foreground">
-          Everyone Teacher. Everyone Student
+          Learning Every Day, Growing Every Way
         </p>
       </div>
     </div>

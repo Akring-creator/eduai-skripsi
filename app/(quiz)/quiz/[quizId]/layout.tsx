@@ -2,10 +2,8 @@ import { auth } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
 
 import { db } from '@/lib/db';
-import { getProgress } from '@/actions/get-progress';
 
-import { CourseSidebar } from './_components/quiz-sidebar';
-import { CourseNavbar } from './_components/quiz-navbar';
+import { QuizNavbar } from './_components/quiz-navbar';
 
 const QuizLayout = async ({
   children,
@@ -23,7 +21,6 @@ const QuizLayout = async ({
   const quiz = await db.quiz.findUnique({
     where: {
       id: params.quizId,
-      userId: userId,
     },
     include: {
       questions: {
@@ -37,21 +34,16 @@ const QuizLayout = async ({
     },
   });
 
-  if (!course) {
+  if (!quiz) {
     return redirect('/');
   }
 
-  const progressCount = await getProgress(userId, course.id);
-
   return (
     <div className="h-full">
-      <div className="h-[80px] md:pl-80 fixed inset-y-0 w-full z-50">
-        <CourseNavbar course={course} progressCount={progressCount} />
+      <div className="h-[80px] fixed inset-x-0 top-0 w-full z-10 ">
+        <QuizNavbar initialData={quiz} />
       </div>
-      <div className="hidden md:flex h-full w-80 flex-col fixed inset-y-0 z-50">
-        <CourseSidebar course={course} progressCount={progressCount} />
-      </div>
-      <main className="md:pl-80 pt-[80px] h-full">{children}</main>
+      <main className="px-[40px] pt-[80px] ">{children}</main>
     </div>
   );
 };

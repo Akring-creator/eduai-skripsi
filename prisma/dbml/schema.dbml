@@ -2,12 +2,21 @@
 //// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 //// ------------------------------------------------------
 
+Table Nanotest {
+  id String [pk]
+  name String
+}
+
+Table CuidTest {
+  id String [pk]
+  name String
+}
+
 Table Profile {
   id String [pk]
-  userId String [unique, not null]
-  name String [not null]
+  externalUserId String [unique, not null]
+  fullname String [not null]
   imageUrl String [not null]
-  email String [not null]
   username String [unique, not null]
   bio String
   createdAt DateTime [default: `now()`, not null]

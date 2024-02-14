@@ -1,28 +1,39 @@
 import { db } from '@/lib/db';
 import { redirect } from 'next/navigation';
+import { Metadata } from './_components/quiz-metadata';
+import { QuestionForm } from './_components/question-form';
 
-const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
-  const course = await db.course.findUnique({
+const CourseIdPage = async ({ params }: { params: { quizId: string } }) => {
+  const quiz = await db.quiz.findUnique({
     where: {
-      id: params.courseId,
+      id: params.quizId,
     },
     include: {
-      chapters: {
-        where: {
-          isPublished: true,
-        },
+      questions: {
         orderBy: {
           position: 'asc',
+        },
+        include: {
+          options: true,
         },
       },
     },
   });
 
-  if (!course) {
+  if (!quiz) {
     return redirect('/');
   }
 
-  return redirect(`/courses/${course.id}/chapters/${course.chapters[0].id}`);
+  return (
+    <div className="p-6">
+      <div className="flex mt-2">
+        <div className="w-full pr-4">
+          <Metadata initialData={quiz} />
+          <QuestionForm initialData={quiz} />
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default CourseIdPage;

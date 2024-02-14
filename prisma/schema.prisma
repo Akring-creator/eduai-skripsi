@@ -12,13 +12,19 @@ generator client {
 generator dbml {
   provider = "prisma-dbml-generator"
 }
-
+model Nanotest {
+  id String @id @default(nanoid())
+  name String?
+}
+model CuidTest {
+  id String @id @default(cuid())
+  name String?
+}
 model Profile {
   id String @id @default(uuid())
-  userId String @unique
-  name String
+  externalUserId String @unique
+  fullname String @db.Text
   imageUrl String @db.Text
-  email String @db.Text
   username String @unique
   bio String? @db.Text
 
