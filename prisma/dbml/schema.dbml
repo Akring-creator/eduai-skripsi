@@ -338,8 +338,9 @@ Table Game {
   creatorId String [not null]
   quizId String [not null]
   quiz Quiz [not null]
-  timeStarted DateTime [default: `now()`, not null]
+  timeStart DateTime
   timeEnded DateTime
+  createdAt DateTime [default: `now()`, not null]
 }
 
 Enum QuestionType {
