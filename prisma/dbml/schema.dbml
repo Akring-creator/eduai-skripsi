@@ -2,16 +2,6 @@
 //// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 //// ------------------------------------------------------
 
-Table Nanotest {
-  id String [pk]
-  name String
-}
-
-Table CuidTest {
-  id String [pk]
-  name String
-}
-
 Table Profile {
   id String [pk]
   externalUserId String [unique, not null]
@@ -344,10 +334,11 @@ Table Message {
 
 Table Game {
   id String [pk]
-  userId String [not null]
+  publicId String [not null]
+  creatorId String [not null]
   quizId String [not null]
   quiz Quiz [not null]
-  timeStarted DateTime [not null]
+  timeStarted DateTime [default: `now()`, not null]
   timeEnded DateTime
 }
 

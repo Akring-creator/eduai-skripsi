@@ -1,14 +1,37 @@
 'use client';
 import { Button } from '@/components/ui/button';
 import { Option, Question, Quiz } from '@prisma/client';
+import axios from 'axios';
+import { toast } from 'sonner';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 interface MetadataProps {
   initialData: Quiz & { questions: (Question & { options: Option[] })[] };
 }
 
 export const Metadata = ({ initialData }: MetadataProps) => {
+  const [createGames, setCreateGames] = useState<boolean>(false);
+  const router = useRouter();
+  const onSubmit = async () => {
+    try {
+      setCreateGames(true);
+      const games = await axios.post('/api/games', { quizId: initialData.id });
+      const gamePublicId = games.data.publicId;
+      router.push(`/games/${gamePublicId}`);
+    } catch (error) {
+      console.error(error);
+      toast('Event has been created', {
+        description: 'Sunday, December 03, 2023 at 9:00 AM',
+        action: {
+          label: 'Undo',
+          onClick: () => console.log('Undo'),
+        },
+      });
+    }
+  };
+
   return (
     <>
       <div className="relative">
@@ -46,7 +69,9 @@ export const Metadata = ({ initialData }: MetadataProps) => {
             </div>
           </div>
 
-          <Button variant="outline">Mainkan</Button>
+          <Button onClick={onSubmit} variant="outline">
+            Mainkan
+          </Button>
 
           {/* Bagian 2 */}
         </div>

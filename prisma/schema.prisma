@@ -12,14 +12,7 @@ generator client {
 generator dbml {
   provider = "prisma-dbml-generator"
 }
-model Nanotest {
-  id String @id @default(nanoid())
-  name String?
-}
-model CuidTest {
-  id String @id @default(cuid())
-  name String?
-}
+
 model Profile {
   id String @id @default(uuid())
   externalUserId String @unique
@@ -504,11 +497,17 @@ model Message {
 
 model Game {
   id          String     @id @default(uuid())
-  userId      String
+  publicId String @default(nanoid())
+  creatorId      String
+
   quizId String
   quiz   Quiz   @relation(fields: [quizId], references: [id], onDelete: Cascade)
-  timeStarted DateTime
+
+  timeStart DateTime?
   timeEnded   DateTime?
+
+  createdAt DateTime @default(now())
+  
 
   @@index([quizId])
 }

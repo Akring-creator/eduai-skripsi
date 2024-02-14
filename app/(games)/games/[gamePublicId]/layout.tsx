@@ -9,7 +9,7 @@ const GamesLayout = async ({
   params,
 }: {
   children: React.ReactNode;
-  params: { courseId: string };
+  params: { gamePublicId: string };
 }) => {
   const { userId } = auth();
 
@@ -17,34 +17,34 @@ const GamesLayout = async ({
     return redirect('/');
   }
 
-  const course = await db.course.findUnique({
+  const game = await db.game.findFirst({
     where: {
-      id: params.courseId,
+      publicId: params.gamePublicId,
     },
     include: {
-      chapters: {
-        where: {
-          isPublished: true,
-        },
+      quiz: {
         include: {
-          userProgress: {
-            where: {
-              userId,
+          questions: {
+            orderBy: {
+              position: 'asc',
+            },
+            include: {
+              options: {
+                select: {
+                  id: true,
+                  option: true,
+                },
+              },
             },
           },
-        },
-        orderBy: {
-          position: 'asc',
         },
       },
     },
   });
 
-  if (!course) {
+  if (!game) {
     return redirect('/');
   }
-
-  const progressCount = await getProgress(userId, course.id);
 
   return (
     <div className="h-full">

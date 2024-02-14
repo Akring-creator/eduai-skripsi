@@ -2,6 +2,7 @@ import './globals.css';
 import { Poppins } from 'next/font/google';
 import { ClerkProvider } from '@clerk/nextjs';
 import { ToastProvider } from '@/components/providers/toaster-provider';
+import { Toaster } from '@/components/ui/sonner';
 import { Metadata } from 'next';
 import { ConfettiProvider } from '@/components/providers/confetti-provider';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -38,6 +39,7 @@ export default function RootLayout({
             <SocketProvider>
               <ConfettiProvider />
               <ToastProvider />
+              <Toaster />
               {children}
             </SocketProvider>
           </body>
