@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 
 import { db } from '@/lib/db';
 import { getProgress } from '@/actions/get-progress';
+import { GameNavbar } from './_components/game-navbar';
 
 const GamesLayout = async ({
   children,
@@ -48,6 +49,9 @@ const GamesLayout = async ({
 
   return (
     <div className="h-full">
+      <div className="h-[80px] fixed inset-x-0 top-0 w-full z-10 ">
+        <GameNavbar initialData={game} />
+      </div>
       <main className="md:pl-80 pt-[80px] h-full">{children}</main>
     </div>
   );

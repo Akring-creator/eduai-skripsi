@@ -2,14 +2,14 @@
 
 import { NavbarRoutes } from '@/components/navbar-routes';
 import Image from 'next/image';
-import { Question, Quiz, Option } from '@prisma/client';
+import { Question, Quiz, Option, Game } from '@prisma/client';
 import Link from 'next/link';
 
-interface QuizNavbarProps {
-  initialData: Quiz & { questions: (Question & { options: Option[] })[] };
+interface GameNavbarProps {
+  initialData: Game & { quiz: Quiz };
 }
 
-export const QuizNavbar = ({ initialData }: QuizNavbarProps) => {
+export const GameNavbar = ({ initialData }: GameNavbarProps) => {
   return (
     <div className="p-4 border-b h-full flex items-center bg-white shadow-sm">
       <Link href={'/'}>
@@ -18,7 +18,7 @@ export const QuizNavbar = ({ initialData }: QuizNavbarProps) => {
         </div>
       </Link>
 
-      <div className="flex-grow">{initialData.title}</div>
+      <div className="flex-grow">{initialData.quiz.title}</div>
       <NavbarRoutes />
     </div>
   );
