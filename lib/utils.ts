@@ -34,14 +34,14 @@ export function secondToHMS(seconds: number) {
   const minutes = Math.floor((seconds - hours * 3600) / 60);
   const secs = Math.floor(seconds - hours * 3600 - minutes * 60);
   const parts = [];
-  if (hours > 0) {
-    parts.push(`${hours}h`);
+  if (hours >= 0) {
+    parts.push(`${hours}`);
   }
-  if (minutes > 0) {
-    parts.push(`${minutes}m`);
+  if (minutes >= 0) {
+    parts.push(`${minutes}`);
   }
-  if (secs > 0) {
-    parts.push(`${secs}s`);
+  if (secs >= 0) {
+    parts.push(`${secs}`);
   }
   return parts.join(' ');
 }

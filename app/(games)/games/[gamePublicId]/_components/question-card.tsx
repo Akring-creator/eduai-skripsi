@@ -8,7 +8,10 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 interface QuestionCardProps {
-  initialData: Question & { options: Pick<Option, 'id' | 'option'>[] };
+  initialData: Pick<
+    Question,
+    'id' | 'question' | 'questionType' | 'imageUrl' | 'position'
+  > & { options: Pick<Option, 'id' | 'option'>[] };
   questionNumber: number;
 }
 

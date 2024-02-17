@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { Question, Quiz, Option, Game } from '@prisma/client';
 import Link from 'next/link';
 import { Clock, ClockIcon } from 'lucide-react';
+import Timer from './timer';
 
 interface GameNavbarProps {
   initialData: Game & { quiz: Quiz };
@@ -24,9 +25,8 @@ export const GameNavbar = ({ initialData }: GameNavbarProps) => {
           {initialData.quiz.title}
         </div>
 
-        <div className="flex mr-4 gap-x-2 items-center">
-          <Clock className="h-5 w-5" />
-          <div>90:00</div>
+        <div className="">
+          <Timer initialTime={3600} />
         </div>
       </div>
     </div>

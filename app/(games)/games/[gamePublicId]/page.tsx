@@ -16,16 +16,21 @@ const GamePublicIdPage = async ({
       quiz: {
         include: {
           questions: {
-            orderBy: {
-              position: 'asc',
-            },
-            include: {
+            select: {
+              id: true,
+              question: true,
+              questionType: true,
+              imageUrl: true,
+              position: true,
               options: {
                 select: {
                   id: true,
                   option: true,
                 },
               },
+            },
+            orderBy: {
+              position: 'asc',
             },
           },
         },
