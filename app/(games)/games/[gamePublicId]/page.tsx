@@ -1,5 +1,7 @@
 import { db } from '@/lib/db';
 import { redirect } from 'next/navigation';
+import QuestionCard from './_components/question-card';
+import GameLogic from './_components/game-logic';
 
 const GamePublicIdPage = async ({
   params,
@@ -35,7 +37,7 @@ const GamePublicIdPage = async ({
     return redirect('/');
   }
 
-  return <pre>{JSON.stringify(game, null, 2)}</pre>;
+  return <GameLogic game={game} />;
 };
 
 export default GamePublicIdPage;

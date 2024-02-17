@@ -48,11 +48,11 @@ const GamesLayout = async ({
   }
 
   return (
-    <div className="h-full">
+    <div className="h-full bg-slate-300">
       <div className="h-[80px] fixed inset-x-0 top-0 w-full z-10 ">
         <GameNavbar initialData={game} />
       </div>
-      <main className="md:pl-80 pt-[80px] h-full">{children}</main>
+      <main className="pt-[80px] h-full">{children}</main>
     </div>
   );
 };

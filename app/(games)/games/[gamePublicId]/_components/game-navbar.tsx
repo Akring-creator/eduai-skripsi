@@ -4,6 +4,7 @@ import { NavbarRoutes } from '@/components/navbar-routes';
 import Image from 'next/image';
 import { Question, Quiz, Option, Game } from '@prisma/client';
 import Link from 'next/link';
+import { Clock, ClockIcon } from 'lucide-react';
 
 interface GameNavbarProps {
   initialData: Game & { quiz: Quiz };
@@ -12,14 +13,22 @@ interface GameNavbarProps {
 export const GameNavbar = ({ initialData }: GameNavbarProps) => {
   return (
     <div className="p-4 border-b h-full flex items-center bg-white shadow-sm">
-      <Link href={'/'}>
-        <div className="bg-white rounded-full p-1 mr-4">
-          <Image src="/logo.svg" alt="Edtek" height="70" width="70" />
-        </div>
-      </Link>
+      <div className="flex items-center justify-between w-full">
+        <Link href={'/'}>
+          <div className="bg-white rounded-full p-1 mr-4">
+            <Image src="/logo.svg" alt="Edtek" height="70" width="70" />
+          </div>
+        </Link>
 
-      <div className="flex-grow">{initialData.quiz.title}</div>
-      <NavbarRoutes />
+        <div className="flex-grow text-lg font-semibold">
+          {initialData.quiz.title}
+        </div>
+
+        <div className="flex mr-4 gap-x-2 items-center">
+          <Clock className="h-5 w-5" />
+          <div>90:00</div>
+        </div>
+      </div>
     </div>
   );
 };
