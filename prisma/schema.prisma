@@ -495,16 +495,25 @@ model Message {
   @@index([fileId])
 }
 
+enum GameType {
+  SCHEDULED
+  FLASH
+}
+
 model Game {
   id          String     @id @default(uuid())
   publicId String @unique @default(nanoid())
-  creatorId      String
+  creatorId String
+  title String
+  gameType GameType
 
   quizId String
   quiz   Quiz   @relation(fields: [quizId], references: [id], onDelete: Cascade)
 
   timeStart DateTime?
   timeEnded   DateTime?
+
+  gameValidityTimeLimit DateTime?
 
   createdAt DateTime @default(now())
   

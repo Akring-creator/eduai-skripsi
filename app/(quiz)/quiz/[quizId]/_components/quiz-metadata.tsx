@@ -12,14 +12,10 @@ interface MetadataProps {
 }
 
 export const Metadata = ({ initialData }: MetadataProps) => {
-  const [createGames, setCreateGames] = useState<boolean>(false);
   const router = useRouter();
   const onSubmit = async () => {
     try {
-      setCreateGames(true);
-      const games = await axios.post('/api/games', { quizId: initialData.id });
-      const gamePublicId = games.data.publicId;
-      router.push(`/games/${gamePublicId}`);
+      router.push(`/quiz/${initialData.id}/create-games`);
     } catch (error) {
       console.error(error);
       toast('Event has been created', {

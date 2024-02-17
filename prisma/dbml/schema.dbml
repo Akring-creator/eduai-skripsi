@@ -336,10 +336,13 @@ Table Game {
   id String [pk]
   publicId String [unique, not null]
   creatorId String [not null]
+  title String [not null]
+  gameType GameType [not null]
   quizId String [not null]
   quiz Quiz [not null]
   timeStart DateTime
   timeEnded DateTime
+  gameValidityTimeLimit DateTime
   createdAt DateTime [default: `now()`, not null]
 }
 
@@ -354,6 +357,11 @@ Enum uploadStatus {
   PROCESSING
   FAILED
   SUCCESS
+}
+
+Enum GameType {
+  SCHEDULED
+  FLASH
 }
 
 Ref: Course.categoryId > Category.id

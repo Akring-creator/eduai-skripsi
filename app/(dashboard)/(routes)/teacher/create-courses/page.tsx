@@ -1,37 +1,11 @@
 'use client';
 
-import * as z from 'zod';
-import axios from 'axios';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormLabel,
-  FormMessage,
-  FormItem,
-} from '@/components/ui/form';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import { ManualForm } from './_components/manual-form';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import Link from 'next/link';
-import toast from 'react-hot-toast';
-import { Label } from '@/components/ui/label';
 import { Bot, Pencil } from 'lucide-react';
 import { AutomaticForm } from './_components/automatic-form';
+import { ManualForm } from './_components/manual-form';
 
 const CreatePage = () => {
   const router = useRouter();

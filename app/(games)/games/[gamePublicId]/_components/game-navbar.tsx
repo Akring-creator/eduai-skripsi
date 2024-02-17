@@ -12,6 +12,7 @@ interface GameNavbarProps {
 }
 
 export const GameNavbar = ({ initialData }: GameNavbarProps) => {
+  const timeInSeconds = differenceInSeconds(initialData.timeEnded!, new Date());
   return (
     <div className="p-4 border-b h-full flex items-center bg-white shadow-sm">
       <div className="flex items-center justify-between w-full">
@@ -22,11 +23,11 @@ export const GameNavbar = ({ initialData }: GameNavbarProps) => {
         </Link>
 
         <div className="flex-grow text-lg font-semibold">
-          {initialData.quiz.title}
+          {initialData.title}
         </div>
 
         <div className="">
-          <Timer initialTime={3600} />
+          <Timer initialTime={timeInSeconds} />
         </div>
       </div>
     </div>

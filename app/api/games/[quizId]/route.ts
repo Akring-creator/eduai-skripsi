@@ -1,24 +1,33 @@
-
 import { db } from '@/lib/db';
 import { auth } from '@clerk/nextjs';
 import { NextResponse } from 'next/server';
 
-export async function POST(req: Request) {
+export async function POST(
+  req: Request,
+  { params }: { params: { quizId: string } }
+) {
   try {
     const { userId } = auth();
-    const { quizId } = await req.json();
+    const values = await req.json();
 
     if (!userId) {
       return new NextResponse('Unauthorized', { status: 401 });
     }
-    if (!quizId) {
-      return new NextResponse('Missing Quiz ID', { status: 404 });
+
+    let now;
+
+    if (values.gameType === 'FLASH') {
+      now = new Date();
+      now.setMinutes(now.getMinutes() + values.time);
     }
 
     const game = await db.game.create({
       data: {
         creatorId: userId,
-        quizId: quizId,
+        title: values.title,
+        gameType: values.gameType,
+        quizId: params.quizId,
+        timeEnded: now,
       },
     });
     return NextResponse.json(game);
