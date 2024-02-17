@@ -1,10 +1,10 @@
 // Jangan Lupa buat komponen umumnya kalau navcar utama saudah dibaiki
 
-import { NavbarRoutes } from '@/components/navbar-routes';
 import Image from 'next/image';
 import { Question, Quiz, Option, Game } from '@prisma/client';
 import Link from 'next/link';
-import { Clock, ClockIcon } from 'lucide-react';
+import { differenceInSeconds } from 'date-fns';
+
 import Timer from './timer';
 
 interface GameNavbarProps {

@@ -17,12 +17,21 @@ interface GameLogicProps {
   };
 }
 const GameLogic = ({ game }: GameLogicProps) => {
+  const initialQuestions = useMemo(() => {
+    return game.quiz.questions.map((question) => ({
+      ...question,
+      selectedOptionId: null as string | null,
+    }));
+  }, [game]);
+
+  const [questions, setQuestions] = useState(initialQuestions);
+
   const [questionNumber, setQuestionNumber] = useState<number>(1);
 
   const totalQuestion = game.quiz.questions.length;
   const currentQuestion = useMemo(() => {
-    return game.quiz.questions[questionNumber - 1];
-  }, [questionNumber, game.quiz.questions]);
+    return questions[questionNumber - 1];
+  }, [questionNumber, questions]);
 
   const onNextQuestion = () => {
     if (questionNumber < totalQuestion) {
@@ -34,12 +43,26 @@ const GameLogic = ({ game }: GameLogicProps) => {
     }
   };
 
+  const updateSelectedOptionId = (selectedOptionId: string) => {
+    const updatedQuestions = questions.map((question) => {
+      if (question.id === currentQuestion.id) {
+        return {
+          ...question,
+          selectedOptionId: selectedOptionId,
+        };
+      }
+      return question;
+    });
+    setQuestions(updatedQuestions); // Memperbarui nilai questions dengan nilai terbaru
+  };
+
   return (
     <div className="h-full flex flex-col justify-center items-center">
       <div className="p-4">
         <QuestionCard
           initialData={currentQuestion}
           questionNumber={questionNumber}
+          updateSelectedOption={updateSelectedOptionId}
         />
       </div>
       <div className="mt-4 flex justify-end gap-x-2">
@@ -54,7 +77,7 @@ const GameLogic = ({ game }: GameLogicProps) => {
         </Button>
         <Button
           variant="default"
-          className="flex items-center  hover:bg-blue-600 text-white"
+          className="flex items-center  hover:bg-slate-700 text-white"
           onClick={onNextQuestion}
         >
           {questionNumber === totalQuestion ? 'Kirim' : 'Selanjutnya'}
