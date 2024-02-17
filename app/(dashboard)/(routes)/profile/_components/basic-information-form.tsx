@@ -19,17 +19,15 @@ import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { Button } from '@/components/ui/button';
 import { Pencil } from 'lucide-react';
+import { Profile } from '@prisma/client';
 interface BasicInformationProps {
-  profile: {
-    name: string;
-    email: string;
-  };
+  profile: Profile;
 }
 const formSchema = z.object({
   name: z.string().min(1, {
     message: 'This is Required',
   }),
-  email: z.string().min(1, {
+  bio: z.string().min(1, {
     message: 'This is Required',
   }),
 });
@@ -37,8 +35,8 @@ const BasicInformation = ({ profile }: BasicInformationProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: profile.name,
-      email: profile.email,
+      name: profile.fullname,
+      bio: profile.bio || '',
     },
   });
   const [isEditing, setIsEditing] = useState(false);
@@ -75,11 +73,11 @@ const BasicInformation = ({ profile }: BasicInformationProps) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 gap-y-2 mt-4">
           <div className="space-y-2">
             <Label htmlFor="username">Username</Label>
-            <p>{profile.name}</p>
+            <p>{profile.fullname}</p>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <p>{profile.email}</p>
+            <Label htmlFor="bio">Bio</Label>
+            <p>{profile.bio}</p>
           </div>
         </div>
       )}
@@ -100,7 +98,7 @@ const BasicInformation = ({ profile }: BasicInformationProps) => {
                         <Label htmlFor="username">Username</Label>
                         <Input
                           disabled={isSubmitting}
-                          placeholder={profile.name}
+                          placeholder={profile.fullname}
                           {...field}
                         />
                       </div>
@@ -111,15 +109,15 @@ const BasicInformation = ({ profile }: BasicInformationProps) => {
               />
               <FormField
                 control={form.control}
-                name="email"
+                name="bio"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
                       <div className="space-y-2">
-                        <Label htmlFor="email">Email</Label>
+                        <Label htmlFor="bio">Email</Label>
                         <Input
                           disabled={isSubmitting}
-                          placeholder={profile.email}
+                          placeholder={profile.bio || ''}
                           {...field}
                         />
                       </div>
