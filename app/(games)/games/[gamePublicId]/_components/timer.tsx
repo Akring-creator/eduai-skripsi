@@ -28,7 +28,7 @@ const Timer = ({ initialTime }: TimerProps) => {
   return (
     <div className="flex mr-4 gap-x-2 items-center">
       <Clock className="h-5 w-5" />
-      <div>{formatTime(time)}</div>
+      {time > 0 ? <div>{formatTime(time)}</div> : <div>00:00</div>}
     </div>
   );
 };
