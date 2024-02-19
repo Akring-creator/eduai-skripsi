@@ -11,22 +11,23 @@ import { Actions } from './_components/actions';
 import LearningFlowList from './_components/learning-flow-list';
 import { LearningFlowForm } from './_components/learning-flow-form';
 import { ModuleVariableForm } from './_components/module-variable-form';
+import { getProfile } from '@/actions/get-profile';
 
 const LearningModuleIdPage = async ({
   params,
 }: {
   params: { learningModuleId: string };
 }) => {
-  const { userId } = auth();
+  const profile = await getProfile();
 
-  if (!userId) {
+  if (!profile) {
     return redirect('/');
   }
 
   const learningModule = await db.learningModule.findUnique({
     where: {
       id: params.learningModuleId,
-      userId: userId,
+      profileId: profile.id,
     },
     include: {
       // Profil Pelajar Pancasila

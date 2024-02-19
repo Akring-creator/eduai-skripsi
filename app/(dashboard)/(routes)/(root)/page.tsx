@@ -55,11 +55,11 @@ const SearchPage = async ({ searchParams }: SearchPageProps) => {
   const dataType = searchParams.categoryId;
 
   const quizzes = await getQuizzes({
-    userId,
+    profileId: profile.id,
     title: searchParams.title,
   });
   const courses = await getCourses({
-    userId,
+    profileId: profile.id,
     title: searchParams.title,
   });
 

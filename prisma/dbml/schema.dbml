@@ -24,6 +24,7 @@ Table Profile {
 
 Table Course {
   id String [pk]
+  publicId String [unique, not null]
   profileId String [not null]
   profile Profile [not null]
   title String [not null]
@@ -42,6 +43,7 @@ Table Course {
 
 Table Chapter {
   id String [pk]
+  publicId String [unique, not null]
   title String [not null]
   description String
   videoUrl String
@@ -99,6 +101,7 @@ Table Attachment {
 
 Table Question {
   id String [pk]
+  publicId String [unique, not null]
   question String [not null]
   questionType QuestionType [not null]
   imageUrl String
@@ -115,6 +118,7 @@ Table Question {
 
 Table Option {
   id String [pk]
+  publicId String [unique, not null]
   option String [not null]
   imageUrl String
   position Int [not null, default: 0]
@@ -125,6 +129,7 @@ Table Option {
 
 Table Quiz {
   id String [pk]
+  publicId String [unique, not null]
   title String [not null]
   description String
   imageUrl String
@@ -145,6 +150,7 @@ Table Quiz {
 
 Table QuizAttachment {
   id String [pk]
+  publicId String [unique, not null]
   name String [not null]
   url String [not null]
   quizId String [not null]
@@ -288,6 +294,7 @@ Table EducationLevel {
 
 Table LearningModule {
   id String [pk]
+  publicId String [unique, not null]
   profileId String [not null]
   profile Profile [not null]
   writer String
@@ -326,6 +333,7 @@ Table LearningModule {
 
 Table File {
   id String [pk]
+  publicId String [unique, not null]
   profileId String [not null]
   profile Profile [not null]
   name String [not null]

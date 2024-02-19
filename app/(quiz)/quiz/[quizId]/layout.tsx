@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation';
 import { db } from '@/lib/db';
 
 import { QuizNavbar } from './_components/quiz-navbar';
+import { getProfile } from '@/actions/get-profile';
 
 const QuizLayout = async ({
   children,
@@ -12,9 +13,9 @@ const QuizLayout = async ({
   children: React.ReactNode;
   params: { quizId: string };
 }) => {
-  const { userId } = auth();
+  const profile = await getProfile();
 
-  if (!userId) {
+  if (!profile) {
     return redirect('/');
   }
 

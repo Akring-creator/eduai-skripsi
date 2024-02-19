@@ -37,6 +37,7 @@ model Profile {
 
 model Course {
   id          String  @id @default(uuid())
+  publicId String @unique @default(nanoid())
   profileId String
   profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
   
@@ -63,6 +64,7 @@ model Course {
 
 model Chapter {
   id          String  @id @default(uuid())
+  publicId String @unique @default(nanoid())
   title       String
   description String? @db.MediumText
   videoUrl    String? @db.Text
@@ -140,6 +142,7 @@ enum QuestionType {
 
 model Question {
   id          String   @id @default(uuid())
+  publicId String @unique @default(nanoid())
   question    String   @db.MediumText
   questionType QuestionType 
   imageUrl    String?  @db.Text
@@ -160,6 +163,7 @@ model Question {
 
 model Option {
   id       String  @id @default(uuid())
+  publicId String @unique @default(nanoid())
   option   String  @db.Text
   imageUrl String? @db.Text
   position Int     @default(0)
@@ -173,6 +177,7 @@ model Option {
 
 model Quiz {
   id          String  @id @default(uuid())
+  publicId String @unique @default(nanoid())
   title       String  @db.Text
   description String? @db.Text
   imageUrl    String? @db.Text
@@ -203,6 +208,7 @@ model Quiz {
 
 model QuizAttachment {
   id   String @id @default(uuid())
+  publicId String @unique @default(nanoid())
   name String
   url  String @db.Text
 
@@ -400,6 +406,7 @@ model EducationLevel {
 
 model LearningModule {
   id String @id @default(uuid())
+  publicId String @unique @default(nanoid())
   
   profileId String
   profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
@@ -496,6 +503,7 @@ enum uploadStatus {
 }
 model File {
   id String @id @default(uuid())
+  publicId String @unique @default(nanoid())
   profileId String
   profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
   

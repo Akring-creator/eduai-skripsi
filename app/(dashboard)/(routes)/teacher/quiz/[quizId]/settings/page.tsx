@@ -10,11 +10,12 @@ import { QuizCategoryForm } from './_components/quiz-category-form';
 import { QuizDescriptionForms } from './_components/quiz-description-form';
 import { QuizImageForm } from './_components/quiz-image-form';
 import { QuizTitleForm } from './_components/quiz-title-form';
+import { getProfile } from '@/actions/get-profile';
 
 const CreateIdQuiz = async ({ params }: { params: { quizId: string } }) => {
   // Mengecek apakah user yang mengakses adalah user yang sama
-  const { userId } = auth();
-  if (!userId) {
+  const profile = await getProfile();
+  if (!profile) {
     return redirect('/');
   }
 
@@ -22,7 +23,7 @@ const CreateIdQuiz = async ({ params }: { params: { quizId: string } }) => {
   const quiz = await db.quiz.findUnique({
     where: {
       id: params.quizId,
-      userId: userId,
+      profileId: profile.id,
     },
   });
 

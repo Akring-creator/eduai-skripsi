@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Bot, Pencil } from 'lucide-react';
 import { AutomaticForm } from './_components/automatic-form';
 import { ManualForm } from './_components/manual-form';
+import { getProfile } from '@/actions/get-profile';
 
 const CreatePage = () => {
   const router = useRouter();

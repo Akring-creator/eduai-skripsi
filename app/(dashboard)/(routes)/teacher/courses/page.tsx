@@ -5,16 +5,17 @@ import { columns } from './_components/columns';
 import { auth } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
 import { db } from '@/lib/db';
+import { getProfile } from '@/actions/get-profile';
 
 const CoursesPage = async () => {
-  const { userId } = auth();
-  if (!userId) {
+  const profile = await getProfile();
+  if (!profile) {
     return redirect('/');
   }
 
   const courses = await db.course.findMany({
     where: {
-      userId,
+      profileId: profile.id,
     },
     orderBy: {
       createdAt: 'desc',

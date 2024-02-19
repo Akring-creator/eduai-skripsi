@@ -11,6 +11,7 @@ import { ChapterAccessForm } from './_components/chapter-access-form copy';
 import { ChapterVideoForm } from './_components/chapter-video-form';
 import { Banner } from '@/components/banners';
 import { ChapterActions } from './_components/chapter-actions';
+import { getProfile } from '@/actions/get-profile';
 
 const ChapterIdPage = async ({
   params,
@@ -18,10 +19,10 @@ const ChapterIdPage = async ({
   params: { courseId: string; chapterId: string };
 }) => {
   // Mendapatkan userId melalui auth. dan juga memastikan bahwa pengguna sudah login
-  const { userId } = auth();
+  const profile = await getProfile();
 
   // Kalau tidak kembalikan ke semula
-  if (!userId) {
+  if (!profile) {
     return redirect('/');
   }
 

@@ -5,16 +5,17 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { DataTable } from './_components/data-table';
 import { columns } from './_components/columns';
+import { getProfile } from '@/actions/get-profile';
 
 const QuizPage = async () => {
-  const { userId } = auth();
-  if (!userId) {
+  const profile = await getProfile();
+  if (!profile) {
     return redirect('/');
   }
 
   const quiz = await db.quiz.findMany({
     where: {
-      userId,
+      profileId: profile.id,
     },
     orderBy: {
       createdAt: 'desc',

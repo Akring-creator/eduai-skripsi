@@ -6,6 +6,7 @@ import { getProgress } from '@/actions/get-progress';
 
 import { CourseSidebar } from './_components/course-sidebar';
 import { CourseNavbar } from './_components/course-navbar';
+import { getProfile } from '@/actions/get-profile';
 
 const CourseLayout = async ({
   children,
@@ -14,9 +15,9 @@ const CourseLayout = async ({
   children: React.ReactNode;
   params: { courseId: string };
 }) => {
-  const { userId } = auth();
+  const profile = await getProfile();
 
-  if (!userId) {
+  if (!profile) {
     return redirect('/');
   }
 
@@ -32,7 +33,7 @@ const CourseLayout = async ({
         include: {
           userProgress: {
             where: {
-              userId,
+              profileId: profile.id,
             },
           },
         },
@@ -47,7 +48,7 @@ const CourseLayout = async ({
     return redirect('/');
   }
 
-  const progressCount = await getProgress(userId, course.id);
+  const progressCount = await getProgress(profile.id, course.id);
 
   return (
     <div className="h-full">

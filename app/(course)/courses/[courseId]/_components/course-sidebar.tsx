@@ -6,6 +6,7 @@ import { db } from '@/lib/db';
 import { CourseProgress } from '@/components/course-progress';
 
 import { CourseSidebarItem } from './course-sidebar-item';
+import { getProfile } from '@/actions/get-profile';
 
 interface CourseSidebarProps {
   course: Course & {
@@ -20,16 +21,16 @@ export const CourseSidebar = async ({
   course,
   progressCount,
 }: CourseSidebarProps) => {
-  const { userId } = auth();
+  const profile = await getProfile();
 
-  if (!userId) {
+  if (!profile) {
     return redirect('/');
   }
 
   const purchase = await db.purchase.findUnique({
     where: {
-      userId_courseId: {
-        userId,
+      profileId_courseId: {
+        profileId: profile.id,
         courseId: course.id,
       },
     },
