@@ -353,6 +353,8 @@ Table GameResult {
   profile Profile [not null]
   gameId String [not null]
   game Game [not null]
+  isCompleted Boolean
+  time Int [not null]
   finalScore String [not null]
   questionData String [not null]
   createdAt DateTime [default: `now()`, not null]

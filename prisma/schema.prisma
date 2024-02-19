@@ -514,13 +514,9 @@ model Game {
   quizId String
   quiz   Quiz   @relation(fields: [quizId], references: [id])
 
-
   timeEnded   DateTime?
-
   timeLimit DateTime?
-
   gameResult GameResult[]
-
   createdAt DateTime @default(now())
   
 
@@ -534,6 +530,8 @@ model GameResult {
   
   gameId String
   game Game @relation(fields: [gameId], references: [id])
+  isCompleted Boolean?
+  time Int
   finalScore String @db.Text
   questionData String @db.LongText
 
