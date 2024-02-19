@@ -1,24 +1,25 @@
 import { auth } from '@clerk/nextjs';
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { getProfile } from '@/actions/get-profile';
 
 export const POST = async (
   req: Request,
   { params }: { params: { quizId: string } }
 ) => {
   try {
-    const { userId } = auth();
+    const profile = await getProfile();
     const rawData = await req.json();
 
     console.log(rawData);
-    if (!userId) {
+    if (!profile) {
       return new NextResponse('Unathourized', { status: 401 });
     }
 
     const quizOwner = await db.quiz.findUnique({
       where: {
         id: params.quizId,
-        userId: userId,
+        profileId: profile.id,
       },
     });
 

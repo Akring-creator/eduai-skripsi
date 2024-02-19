@@ -1,3 +1,4 @@
+import { getProfile } from '@/actions/get-profile';
 import { db } from '@/lib/db';
 import { auth } from '@clerk/nextjs';
 import { NextResponse } from 'next/server';
@@ -7,16 +8,16 @@ export async function DELETE(
   { params }: { params: { quizId: string } }
 ) {
   try {
-    const { userId } = auth();
+    const profile = await getProfile();
 
-    if (!userId) {
+    if (!profile) {
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
     const quizOwner = await db.quiz.findUnique({
       where: {
         id: params.quizId,
-        userId,
+        profileId: profile.id,
       },
     });
 
@@ -27,7 +28,7 @@ export async function DELETE(
     const deletedQuiz = await db.quiz.delete({
       where: {
         id: params.quizId,
-        userId,
+        profileId: profile.id,
       },
     });
 
@@ -42,7 +43,7 @@ export async function PATCH(
 ) {
   try {
     // Memanggil UserID yang Login
-    const { userId } = auth();
+    const profile = await getProfile();
 
     // Mengakses nilai quizId, data dapat dari parameter website
     const { quizId } = params;
@@ -51,7 +52,7 @@ export async function PATCH(
     const values = await req.json();
 
     // Kalau bukan usernya, batalkan
-    if (!userId) {
+    if (!profile) {
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
@@ -59,7 +60,7 @@ export async function PATCH(
     const quiz = await db.quiz.update({
       where: {
         id: quizId,
-        userId,
+        profileId: profile.id,
       },
       data: {
         ...values,

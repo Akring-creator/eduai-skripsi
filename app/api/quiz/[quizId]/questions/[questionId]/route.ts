@@ -1,3 +1,4 @@
+import { getProfile } from '@/actions/get-profile';
 import { db } from '@/lib/db';
 import { auth } from '@clerk/nextjs';
 import { NextResponse } from 'next/server';
@@ -7,8 +8,8 @@ export async function DELETE(
   { params }: { params: { quizId: string; questionId: string } }
 ) {
   try {
-    const { userId } = auth();
-    if (!userId) {
+    const profile = await getProfile();
+    if (!profile) {
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
@@ -16,7 +17,7 @@ export async function DELETE(
     const quizOwner = await db.quiz.findUnique({
       where: {
         id: params.quizId,
-        userId,
+        profileId: profile.id,
       },
     });
 
@@ -53,9 +54,9 @@ export async function GET(
 ) {
   try {
     // mendapatkan info login pengguna
-    const { userId } = auth();
+    const profile = await getProfile();
 
-    if (!userId) {
+    if (!profile) {
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
@@ -63,7 +64,7 @@ export async function GET(
     const quizOwner = await db.quiz.findUnique({
       where: {
         id: params.quizId,
-        userId,
+        profileId: profile.id,
       },
     });
 
@@ -90,10 +91,10 @@ export async function PATCH(
 ) {
   try {
     // Memastikan pengguna login dan mengambil data Json
-    const { userId } = auth();
+    const profile = await getProfile();
     const values = await req.json();
 
-    if (!userId) {
+    if (!profile) {
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
@@ -101,7 +102,7 @@ export async function PATCH(
     const quizOwner = await db.quiz.findUnique({
       where: {
         id: params.quizId,
-        userId,
+        profileId: profile.id,
       },
     });
 

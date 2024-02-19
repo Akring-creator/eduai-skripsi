@@ -4,7 +4,7 @@ export const getProfile = async () => {
   const { userId } = auth();
 
   if (!userId) {
-    redirectToSignIn();
+    redirectToSignUp();
   }
 
   const profile = await db.profile.findUnique({
@@ -14,7 +14,7 @@ export const getProfile = async () => {
   });
 
   if (!profile) {
-    redirectToSignUp();
+    return null;
   }
   return profile;
 };

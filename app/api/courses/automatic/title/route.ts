@@ -1,11 +1,12 @@
 import { auth } from '@clerk/nextjs';
 import { NextResponse } from 'next/server';
 import { chapterGenerator } from '@/lib/openai';
+import { getProfile } from '@/actions/get-profile';
 export const POST = async (req: Request) => {
   try {
-    const { userId } = auth();
+    const profile = await getProfile();
 
-    if (!userId) {
+    if (!profile) {
       return new NextResponse('Unathourized', { status: 401 });
     }
 

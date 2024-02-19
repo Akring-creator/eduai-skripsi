@@ -1,22 +1,23 @@
 import { auth } from '@clerk/nextjs';
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { getProfile } from '@/actions/get-profile';
 
 export async function DELETE(
   req: Request,
   { params }: { params: { courseId: string; attachmentId: string } }
 ) {
   try {
-    const { userId } = auth();
+    const profile = await getProfile();
 
-    if (!userId) {
+    if (!profile) {
       return new NextResponse('Unathourized', { status: 401 });
     }
 
     const courseOwner = await db.course.findUnique({
       where: {
         id: params.courseId,
-        userId: userId,
+        profileId: profile.id,
       },
     });
 

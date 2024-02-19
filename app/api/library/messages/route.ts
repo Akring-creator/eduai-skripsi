@@ -1,3 +1,4 @@
+import { getProfile } from '@/actions/get-profile';
 import { MAX_MESSAGES_LIMIT } from '@/config/constant';
 import { db } from '@/lib/db';
 import { auth } from '@clerk/nextjs';
@@ -6,14 +7,14 @@ import { NextResponse } from 'next/server';
 
 export async function GET(req: Request) {
   try {
-    const { userId } = auth();
+    const profile = await getProfile();
     const { searchParams } = new URL(req.url);
     const cursor = searchParams.get('cursor');
     const fileId = searchParams.get('fileId');
     const limit = MAX_MESSAGES_LIMIT;
     console.log('masuk sini dulu');
 
-    if (!userId) {
+    if (!profile) {
       return new NextResponse('Unauthorized', { status: 401 });
     }
     if (!fileId) {
@@ -23,7 +24,7 @@ export async function GET(req: Request) {
     const file = await db.file.findUnique({
       where: {
         id: fileId,
-        userId,
+        profileId: profile.id,
       },
     });
     console.log('masuk sini');

@@ -1,3 +1,4 @@
+import { getProfile } from '@/actions/get-profile';
 import { db } from '@/lib/db';
 import { auth } from '@clerk/nextjs';
 import { NextResponse } from 'next/server';
@@ -7,9 +8,9 @@ export async function DELETE(
   { params }: { params: { fileId: string } }
 ) {
   try {
-    const { userId } = auth();
+    const profile = await getProfile();
 
-    if (!userId) {
+    if (!profile) {
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
@@ -17,7 +18,7 @@ export async function DELETE(
     const fileToDelete = await db.file.findFirst({
       where: {
         id: params.fileId,
-        userId,
+        profileId: profile.id,
       },
     });
 
@@ -30,7 +31,7 @@ export async function DELETE(
     // Lakukan penghapusan file dari database
     await db.file.delete({
       where: {
-        userId,
+        profileId: profile.id,
         id: params.fileId,
       },
     });

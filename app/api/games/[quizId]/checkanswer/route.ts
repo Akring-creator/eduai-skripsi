@@ -1,3 +1,4 @@
+import { getProfile } from '@/actions/get-profile';
 import { db } from '@/lib/db';
 import { auth } from '@clerk/nextjs';
 import { NextResponse } from 'next/server';
@@ -7,10 +8,10 @@ export async function POST(
   { params }: { params: { quizId: string } }
 ) {
   try {
-    const { userId } = await auth();
+    const profile = await getProfile();
     const { data } = await req.json();
 
-    if (!userId) {
+    if (!profile) {
       return new NextResponse('Unauthorized', { status: 401 });
     }
 

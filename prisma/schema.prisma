@@ -21,8 +21,15 @@ model Profile {
   username String @unique
   bio String? @db.Text
 
-  gameResult GameResult[]
+  gameResults GameResult[]
   gameCreated Game[]
+  quiz Quiz[]
+  courses Course[]
+  userProgresses UserProgress[]
+  coursePurchases Purchase[]
+  learningModule LearningModule[]
+  messages Message[]
+  files File[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -30,7 +37,9 @@ model Profile {
 
 model Course {
   id          String  @id @default(uuid())
-  userId      String
+  profileId String
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  
   title       String  @db.Text
   description String? @db.Text
   imageUrl    String? @db.Text
@@ -48,6 +57,7 @@ model Course {
   purchases Purchase[]
 
   @@index([categoryId])
+  @@index([profileId])
   @@fulltext([title])
 }
 
@@ -83,7 +93,9 @@ model MuxData {
 
 model UserProgress {
   id     String @id @default(uuid())
-  userId String
+  profileId String
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  
 
   chapterId String
   chapter   Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
@@ -92,8 +104,9 @@ model UserProgress {
   createdAt   DateTime @default(now())
   updateAt    DateTime @updatedAt
 
-  @@unique([userId, chapterId])
+  @@unique([profileId, chapterId])
   @@index([chapterId])
+  @@index([profileId])
 }
 
 
@@ -160,7 +173,6 @@ model Option {
 
 model Quiz {
   id          String  @id @default(uuid())
-  userId      String
   title       String  @db.Text
   description String? @db.Text
   imageUrl    String? @db.Text
@@ -173,6 +185,9 @@ model Quiz {
   learningActivitiesId String?
   learningActivities  LearningActivities?  @relation(fields: [learningActivitiesId], references: [id])
 
+  profileId String
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+ 
   questions   Question[]
   attachments QuizAttachment[]
   games Game[]
@@ -182,6 +197,7 @@ model Quiz {
 
   @@index([categoryId])
   @@index([learningActivitiesId])
+  @@index([profileId])
   @@fulltext([title])
 }
 
@@ -201,7 +217,9 @@ model QuizAttachment {
 
 model Purchase {
   id     String @id @default(uuid())
-  userId String
+  profileId String
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
 
   courseId String
   course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
@@ -209,8 +227,9 @@ model Purchase {
   createdAt DateTime @default(now())
   updateAt  DateTime @updatedAt
 
-  @@unique([userId, courseId])
+  @@unique([profileId,courseId])
   @@index([courseId])
+  @@index([profileId])
 }
 
 // Part schema for Modul Ajar
@@ -381,7 +400,9 @@ model EducationLevel {
 
 model LearningModule {
   id String @id @default(uuid())
-  userId String
+  
+  profileId String
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
   // Nama Penulis
   writer String?
   // Instansi Penulis
@@ -459,6 +480,7 @@ model LearningModule {
   // Metadata pembuatan
   createdAt DateTime @default(now())
   updateAt  DateTime @updatedAt
+  @@index([profileId])
   @@index([phaseId])
   @@index([studentTargetId])
   @@index([modaId])
@@ -474,7 +496,9 @@ enum uploadStatus {
 }
 model File {
   id String @id @default(uuid())
-  userId String
+  profileId String
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  
   name String
    messages Message[]
 
@@ -483,6 +507,7 @@ model File {
   url String
   createdAt DateTime @default(now())
   updateAt DateTime @updatedAt
+  @@index([profileId])
 }
 
 model Message {
@@ -493,11 +518,14 @@ model Message {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  userId    String?
+  profileId String
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  
   File      File?    @relation(fields: [fileId], references: [id])
   fileId    String?
 
   @@index([fileId])
+  @@index([profileId])
 }
 
 enum GameType {

@@ -5,19 +5,20 @@ import { OpenAIEmbeddings } from '@langchain/openai';
 import { PDFLoader } from 'langchain/document_loaders/fs/pdf';
 import { PineconeStore } from '@langchain/pinecone';
 import { pinecone } from '@/lib/pinecone';
+import { getProfile } from '@/actions/get-profile';
 
 export async function GET(req: Request) {
   try {
-    const { userId } = auth();
+    const profile = await getProfile();
     const { title } = await req.json();
 
-    if (!userId) {
+    if (!profile) {
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
     const file = await db.file.findMany({
       where: {
-        userId,
+        profileId: profile.id,
       },
     });
     return NextResponse.json(file);
@@ -28,16 +29,16 @@ export async function GET(req: Request) {
 }
 export async function POST(req: Request) {
   try {
-    const { userId } = auth();
+    const profile = await getProfile();
     const { url, name } = await req.json();
 
-    if (!userId) {
+    if (!profile) {
       return new NextResponse('Unathourized', { status: 401 });
     }
 
     const file = await db.file.create({
       data: {
-        userId: userId,
+        profileId: profile.id,
         url,
         name: name,
         uploadStatus: 'PROCESSING',
@@ -92,9 +93,9 @@ export async function POST(req: Request) {
 }
 export async function DELETE(req: Request) {
   try {
-    const { userId } = auth();
+    const profile = await getProfile();
 
-    if (!userId) {
+    if (!profile) {
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
@@ -104,7 +105,7 @@ export async function DELETE(req: Request) {
     const fileToDelete = await db.file.findFirst({
       where: {
         id: fileId,
-        userId,
+        profileId: profile.id,
       },
     });
 
@@ -117,7 +118,7 @@ export async function DELETE(req: Request) {
     // Lakukan penghapusan file dari database
     await db.file.delete({
       where: {
-        userId,
+        profileId: profile.id,
         id: fileId,
       },
     });

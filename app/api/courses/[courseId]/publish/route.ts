@@ -2,22 +2,23 @@ import { auth } from '@clerk/nextjs';
 import { NextResponse } from 'next/server';
 
 import { db } from '@/lib/db';
+import { getProfile } from '@/actions/get-profile';
 
 export async function PATCH(
   req: Request,
   { params }: { params: { courseId: string } }
 ) {
   try {
-    const { userId } = auth();
+    const profile = await getProfile();
 
-    if (!userId) {
+    if (!profile) {
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
     const course = await db.course.findUnique({
       where: {
         id: params.courseId,
-        userId,
+        profileId: profile.id,
       },
       include: {
         chapters: {
@@ -49,7 +50,7 @@ export async function PATCH(
     const publishedCourse = await db.course.update({
       where: {
         id: params.courseId,
-        userId,
+        profileId: profile.id,
       },
       data: {
         isPublished: true,

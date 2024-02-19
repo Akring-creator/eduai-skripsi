@@ -2,22 +2,23 @@ import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { auth } from '@clerk/nextjs';
 import { basicType } from '@/lib/openai';
+import { getProfile } from '@/actions/get-profile';
 
 export const POST = async (
   req: Request,
   { params }: { params: { quizId: string } }
 ) => {
   try {
-    const { userId } = auth();
+    const profile = await getProfile();
 
-    if (!userId) {
+    if (!profile) {
       return new NextResponse('Unathourized', { status: 401 });
     }
 
     const quizOwner = await db.quiz.findUnique({
       where: {
         id: params.quizId,
-        userId: userId,
+        profileId: profile.id,
       },
     });
 

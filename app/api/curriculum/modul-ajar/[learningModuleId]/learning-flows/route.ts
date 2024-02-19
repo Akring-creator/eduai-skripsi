@@ -1,23 +1,24 @@
 import { auth } from '@clerk/nextjs';
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { getProfile } from '@/actions/get-profile';
 
 export async function POST(
   req: Request,
   { params }: { params: { learningModuleId: string } }
 ) {
   try {
-    const { userId } = auth();
+    const profile = await getProfile();
     const { title } = await req.json();
 
-    if (!userId) {
+    if (!profile) {
       return new NextResponse('Unathourized', { status: 401 });
     }
 
     const learningModuleOwner = await db.learningModule.findUnique({
       where: {
         id: params.learningModuleId,
-        userId: userId,
+        profileId: profile.id,
       },
     });
 
