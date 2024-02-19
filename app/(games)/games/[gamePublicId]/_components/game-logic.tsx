@@ -22,7 +22,8 @@ const GameLogic = ({ game }: GameLogicProps) => {
   const initialQuestions = useMemo(() => {
     return game.quiz.questions.map((question) => ({
       ...question,
-      selectedOptionId: null as string | null,
+      userAnswer: null as string | null,
+      correctAnswer: null as string | null,
     }));
   }, [game]);
 
@@ -53,12 +54,12 @@ const GameLogic = ({ game }: GameLogicProps) => {
     }
   };
 
-  const updateSelectedOptionId = (selectedOptionId: string) => {
+  const updateUserAnswer = (value: string) => {
     const updatedQuestions = questions.map((question) => {
       if (question.id === currentQuestion.id) {
         return {
           ...question,
-          selectedOptionId: selectedOptionId,
+          userAnswer: value,
         };
       }
       return question;
@@ -74,7 +75,7 @@ const GameLogic = ({ game }: GameLogicProps) => {
             <QuestionCard
               initialData={currentQuestion}
               questionNumber={questionNumber}
-              updateSelectedOption={updateSelectedOptionId}
+              updateUserAnswer={updateUserAnswer}
             />
           </div>
           <div className="mt-4 flex justify-end gap-x-2">
