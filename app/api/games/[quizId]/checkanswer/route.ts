@@ -15,6 +15,20 @@ export async function POST(
     }
 
     const result = { rightAnswer: 0, wrongAnswer: 0 };
+    const questions = data.map((question: any) => {
+      if (question.type === 'shortAnswer') {
+        return {
+          ...question,
+          correctAnswer: null as string | null,
+          explanation: null as string | null,
+        };
+      } else {
+        return {
+          ...question,
+          correctOptionId: null,
+        };
+      }
+    });
 
     await Promise.all(
       data.map(async (q: any) => {

@@ -37,6 +37,7 @@ import {
   BadgeCheck,
   Bot,
   ChevronRight,
+  Image,
   ListMinus,
   ListPlus,
   MoreHorizontal,
@@ -127,10 +128,10 @@ const QuestionAction = ({
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            {/* <DropdownMenuItem>
-              <ListPlus className="h-3 w-3 mr-2" />
-              <p className="text-xs">Tambah Option</p>
-            </DropdownMenuItem> */}
+            <DropdownMenuItem>
+              <Image className="h-3 w-3 mr-2" />
+              <p className="text-xs">Tambah Gambar</p>
+            </DropdownMenuItem>
             <DropdownMenuSub>
               <DropdownMenuSubTrigger>
                 <ArrowUpDown className="h-3 w-3 mr-2" />
@@ -178,9 +179,9 @@ const QuestionAction = ({
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel onClick={(event) => event.stopPropagation()}>
-                Cancel
+                Batal
               </AlertDialogCancel>
-              <AlertDialogAction onClick={onDelete}>Continue</AlertDialogAction>
+              <AlertDialogAction onClick={onDelete}>Lanjut</AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialogPortal>

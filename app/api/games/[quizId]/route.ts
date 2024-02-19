@@ -28,6 +28,7 @@ export async function POST(
         gameType: values.gameType,
         quizId: params.quizId,
         timeEnded: now,
+        timeLimit: values.time,
       },
     });
     return NextResponse.json(game);

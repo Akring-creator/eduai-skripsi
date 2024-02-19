@@ -2,6 +2,7 @@ import { db } from '@/lib/db';
 import { redirect } from 'next/navigation';
 import QuestionCard from './_components/question-card';
 import GameLogic from './_components/game-logic';
+import { differenceInSeconds } from 'date-fns';
 
 const GamePublicIdPage = async ({
   params,
@@ -41,8 +42,12 @@ const GamePublicIdPage = async ({
   if (!game) {
     return redirect('/');
   }
-
-  return <GameLogic game={game} />;
+  const timeInSeconds = differenceInSeconds(game.timeEnded!, new Date());
+  return timeInSeconds < 0 ? (
+    <div>Maaf Game Sudah tidak bisa dimainkan</div>
+  ) : (
+    <GameLogic game={game} />
+  );
 };
 
 export default GamePublicIdPage;

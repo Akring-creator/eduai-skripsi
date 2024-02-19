@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation';
 import { db } from '@/lib/db';
 import { getProgress } from '@/actions/get-progress';
 import { GameNavbar } from './_components/game-navbar';
+import { differenceInSeconds } from 'date-fns';
 
 const GamesLayout = async ({
   children,

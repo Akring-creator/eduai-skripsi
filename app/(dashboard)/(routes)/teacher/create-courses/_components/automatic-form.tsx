@@ -31,6 +31,7 @@ import Link from 'next/link';
 import toast from 'react-hot-toast';
 import { useState } from 'react';
 import { AutomaticChapterForm } from './automatic-chapter-form';
+import LoadingScreen from '@/components/loading-screen';
 const formSchema = z.object({
   title: z.string().min(1, {
     message: 'Oops kursusmu wajib punya nama',
@@ -69,6 +70,13 @@ export const AutomaticForm = () => {
   const [loadingChapterGeneration, setLoadingChapterGeneration] =
     useState(false);
   const [course, setCourse] = useState<Course>(InitialState);
+
+  const loadingSentences = [
+    'Mempersiapkan materi pembelajaran terbaru...',
+    'Menyiapkan chapter baru untukmu...',
+    'Mencari video pembelajaran yang relevan...',
+    'Menambahkan referensi pembelajaran...',
+  ];
 
   function transformData(originalData: any): Course {
     return {
@@ -188,30 +196,13 @@ export const AutomaticForm = () => {
       )}
 
       {!chapterReview && loadingChapterGeneration && (
-        <div>
-          <Card>
-            <CardContent className="flex flex-col items-center justify-center">
-              <Image
-                src={'/chapter-naming-loading.gif'}
-                height={200}
-                width={200}
-                alt="Import Excel GIF"
-              />
-              <div className="flex items-center mt-2">
-                <Blocks
-                  height="20"
-                  width="20"
-                  color="#0ea4e9"
-                  ariaLabel="blocks-loading"
-                  wrapperStyle={{}}
-                  wrapperClass="blocks-wrapper"
-                  visible={true}
-                />
-                <span className="text-base ml-2">Penamaan Chapter...</span>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+        <LoadingScreen
+          imgUrl="/chapter-naming-loading.gif"
+          imgHeight={200}
+          imgWidth={200}
+          loaderSize={20}
+          sentences={loadingSentences}
+        />
       )}
 
       {chapterReview && !loadingChapterGeneration && (

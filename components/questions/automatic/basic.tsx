@@ -22,6 +22,8 @@ import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 import { Checkbox } from '@/components/ui/checkbox';
+import Image from 'next/image';
+import LoadingScreen from '@/components/loading-screen';
 
 interface BasicAutomaticFormProps {
   quizId: string;
@@ -49,6 +51,12 @@ export const BasicAutomaticForm = ({ quizId }: BasicAutomaticFormProps) => {
       questionExample: '',
     },
   });
+  const loadingSentences = [
+    'Menyiapkan pertanyaan otomatis...',
+    'Bot sedang mempelajari materi...',
+    'Mencari referensi yang relevan...',
+    'Menambahkan jawaban...',
+  ];
 
   const { isSubmitting, isValid } = form.formState;
 
@@ -80,57 +88,102 @@ export const BasicAutomaticForm = ({ quizId }: BasicAutomaticFormProps) => {
 
   return (
     <div className="overflow-auto h-[500px] max-h-screen p-4">
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 mt-2">
-          <p className="text-lg font-bold">Materi</p>
-          <div className="items-top flex space-x-2">
-            <Checkbox
-              id="customMaterial"
-              checked={useCustom}
-              onCheckedChange={() => setUseCustom(!useCustom)}
+      {isSubmitting ? (
+        <div className="justify-center">
+          <LoadingScreen
+            imgUrl="/bot-question-generator.gif"
+            imgHeight={400}
+            imgWidth={400}
+            loaderSize={30}
+            sentences={loadingSentences}
+          />
+        </div>
+      ) : (
+        <div>
+          <div className="flex justify-center">
+            <Image
+              src={'/bot-question-generator.gif'}
+              height={400}
+              width={400}
+              alt="Bot Question Generator GIF"
             />
-            <div className="grid gap-1.5 leading-none">
-              <label
-                htmlFor="customMaterial"
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-              >
-                Gunakan materi kustom
-              </label>
-              <p className="text-sm text-muted-foreground">
-                Pakai materi kustom biar soalnya lebih nyambung sama yang kamu
-                mau.
-              </p>
-            </div>
           </div>
-          {useCustom ? (
-            <FormField
-              control={form.control}
-              name="materi"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Textarea
-                      rows={10}
-                      disabled={isSubmitting}
-                      placeholder="Cth: Atmosfer Inc merupakan sebuah perusahaan pionir di bidang energi terbarukan yang berkomitmen untuk menciptakan solusi inovatif demi memperkuat keberlanjutan lingkungan. Didirikan dengan visi memimpin perubahan menuju sumber daya energi yang berkelanjutan, perusahaan ini menggabungkan penelitian dan pengembangan terkini untuk menciptakan teknologi canggih, termasuk panel surya mutakhir, turbin angin efisien, dan sistem penyimpanan energi ramah lingkungan. Tim profesional Atmosfer Inc, yang terdiri dari insinyur, ilmuwan, dan ahli industri, bekerja bersama-sama untuk merancang solusi energi bersih yang dapat diandalkan dan efisien."
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="space-y-4 mt-2"
+            >
+              <p className="text-lg font-bold">Materi</p>
+
+              {useCustom ? (
+                <FormField
+                  control={form.control}
+                  name="materi"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Textarea
+                          rows={10}
+                          disabled={isSubmitting}
+                          placeholder="Cth: Atmosfer Inc merupakan sebuah perusahaan pionir di bidang energi terbarukan yang berkomitmen untuk menciptakan solusi inovatif demi memperkuat keberlanjutan lingkungan. Didirikan dengan visi memimpin perubahan menuju sumber daya energi yang berkelanjutan, perusahaan ini menggabungkan penelitian dan pengembangan terkini untuk menciptakan teknologi canggih, termasuk panel surya mutakhir, turbin angin efisien, dan sistem penyimpanan energi ramah lingkungan. Tim profesional Atmosfer Inc, yang terdiri dari insinyur, ilmuwan, dan ahli industri, bekerja bersama-sama untuk merancang solusi energi bersih yang dapat diandalkan dan efisien."
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              ) : (
+                <div>
+                  <FormField
+                    control={form.control}
+                    name="materi"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input
+                            disabled={isSubmitting}
+                            placeholder="Cth: Dinamika Atmosfer kelas X"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
               )}
-            />
-          ) : (
-            <div>
+              <div className="items-top flex space-x-2">
+                <Checkbox
+                  id="customMaterial"
+                  checked={useCustom}
+                  onCheckedChange={() => setUseCustom(!useCustom)}
+                />
+                <div className="grid gap-1.5 leading-none">
+                  <label
+                    htmlFor="customMaterial"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    Tambah materi kustom
+                  </label>
+                  <p className="text-sm text-muted-foreground">
+                    Tambah materi kustom biar soalnya lebih nyambung sama yang
+                    kamu mau.
+                  </p>
+                </div>
+              </div>
+              <p className="text-lg font-bold">Petunjuk Pembuatan Soal</p>
               <FormField
                 control={form.control}
-                name="materi"
+                name="guidance"
                 render={({ field }) => (
                   <FormItem>
+                    <FormDescription>Mau bikin soal apa nih?</FormDescription>
                     <FormControl>
-                      <Input
+                      <Textarea
+                        placeholder="Cth: Soal yang semuanya berupa hitungan"
                         disabled={isSubmitting}
-                        placeholder="Cth: Dinamika Atmosfer kelas X"
                         {...field}
                       />
                     </FormControl>
@@ -138,60 +191,64 @@ export const BasicAutomaticForm = ({ quizId }: BasicAutomaticFormProps) => {
                   </FormItem>
                 )}
               />
-            </div>
-          )}
-          <p className="text-lg font-bold">Petunjuk Pembuatan Soal</p>
-          <FormField
-            control={form.control}
-            name="guidance"
-            render={({ field }) => (
-              <FormItem>
-                <FormDescription>Mau bikin soal apa nih?</FormDescription>
-                <FormControl>
-                  <Textarea
-                    placeholder="Cth: Soal yang semuanya berupa hitungan"
-                    disabled={isSubmitting}
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <div className="items-top flex space-x-2">
-            <Checkbox
-              id="exampleQuestion"
-              checked={useExample}
-              onCheckedChange={() => setUseExample(!useExample)}
-            />
-            <div className="grid gap-1.5 leading-none">
-              <label
-                htmlFor="exampleQuestion"
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-              >
-                Tambah Contoh Soal
-              </label>
-              <p className="text-sm text-muted-foreground">
-                Masukkin contoh soal biar nanti hasilnya lebih sesuai sama yang
-                kamu pengen.
-              </p>
-            </div>
-          </div>
+              <div className="items-top flex space-x-2">
+                <Checkbox
+                  id="exampleQuestion"
+                  checked={useExample}
+                  onCheckedChange={() => setUseExample(!useExample)}
+                />
+                <div className="grid gap-1.5 leading-none">
+                  <label
+                    htmlFor="exampleQuestion"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    Tambah Contoh Soal
+                  </label>
+                  <p className="text-sm text-muted-foreground">
+                    Masukkin contoh soal biar nanti hasilnya lebih sesuai sama
+                    yang kamu pengen.
+                  </p>
+                </div>
+              </div>
 
-          {useExample && (
-            <div>
-              <p className="text-lg font-bold">Contoh Soal</p>
+              {useExample && (
+                <div>
+                  <p className="text-lg font-bold">Contoh Soal</p>
+                  <FormField
+                    control={form.control}
+                    name="questionExample"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormDescription>
+                          kasih contoh soal yang kamu inginkan
+                        </FormDescription>
+                        <FormControl>
+                          <Textarea
+                            placeholder="Masukkan contoh soalmu disini!"
+                            disabled={isSubmitting}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              )}
+              <p className="text-lg font-bold">Jumlah Pertanyaan</p>
               <FormField
                 control={form.control}
-                name="questionExample"
+                name="numberOfQuestions"
                 render={({ field }) => (
                   <FormItem>
                     <FormDescription>
-                      kasih contoh soal yang kamu inginkan
+                      Ada berapa pertanyaan yang ingin kamu buat?
                     </FormDescription>
                     <FormControl>
-                      <Textarea
-                        placeholder="Masukkan contoh soalmu disini!"
+                      <Input
+                        type="number"
+                        step="1"
+                        placeholder="Min: 1"
                         disabled={isSubmitting}
                         {...field}
                       />
@@ -200,60 +257,38 @@ export const BasicAutomaticForm = ({ quizId }: BasicAutomaticFormProps) => {
                   </FormItem>
                 )}
               />
-            </div>
-          )}
-          <p className="text-lg font-bold">Jumlah Pertanyaan</p>
-          <FormField
-            control={form.control}
-            name="numberOfQuestions"
-            render={({ field }) => (
-              <FormItem>
-                <FormDescription>
-                  Ada berapa pertanyaan yang ingin kamu buat?
-                </FormDescription>
-                <FormControl>
-                  <Input
-                    type="number"
-                    step="1"
-                    placeholder="Min: 1"
-                    disabled={isSubmitting}
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <p className="text-lg font-bold">Jumlah Pilihan Jawaban</p>
-          <FormField
-            control={form.control}
-            name="numberOfOptions"
-            render={({ field }) => (
-              <FormItem>
-                <FormDescription>
-                  Mau berapa pilihan jawaban setiap soalnya?
-                </FormDescription>
-                <FormControl>
-                  <Input
-                    type="number"
-                    step="1"
-                    placeholder="Min: 3"
-                    disabled={isSubmitting}
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+              <p className="text-lg font-bold">Jumlah Pilihan Jawaban</p>
+              <FormField
+                control={form.control}
+                name="numberOfOptions"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormDescription>
+                      Mau berapa pilihan jawaban setiap soalnya?
+                    </FormDescription>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        step="1"
+                        placeholder="Min: 3"
+                        disabled={isSubmitting}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-          <div className="flex items-center gap-x-2">
-            <Button type="submit" disabled={!isValid || isSubmitting}>
-              Buatin Soal!
-            </Button>
-          </div>
-        </form>
-      </Form>
+              <div className="flex items-center gap-x-2">
+                <Button type="submit" disabled={!isValid || isSubmitting}>
+                  Buatin Soal!
+                </Button>
+              </div>
+            </form>
+          </Form>
+        </div>
+      )}
     </div>
   );
 };

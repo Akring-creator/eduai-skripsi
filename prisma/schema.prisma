@@ -21,6 +21,8 @@ model Profile {
   username String @unique
   bio String? @db.Text
 
+  gameResult GameResult[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -92,6 +94,8 @@ model UserProgress {
   @@unique([userId, chapterId])
   @@index([chapterId])
 }
+
+
 
 model Category {
   id      String   @id @default(uuid())
@@ -508,15 +512,32 @@ model Game {
   gameType GameType
 
   quizId String
-  quiz   Quiz   @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  quiz   Quiz   @relation(fields: [quizId], references: [id])
 
-  timeStart DateTime?
+
   timeEnded   DateTime?
 
-  gameValidityTimeLimit DateTime?
+  timeLimit DateTime?
+
+  gameResult GameResult[]
 
   createdAt DateTime @default(now())
   
 
   @@index([quizId])
+}
+
+model GameResult {
+  id String @id @default(uuid())
+  profileId String
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  
+  gameId String
+  game Game @relation(fields: [gameId], references: [id])
+  finalScore String @db.Text
+  questionData String @db.LongText
+
+  createdAt   DateTime @default(now())
+  @@index([profileId])
+  @@index([gameId])
 }
