@@ -2,6 +2,7 @@ import { Category, Chapter, Course } from '@prisma/client';
 
 import { db } from '@/lib/db';
 import { getProgress } from '@/actions/get-progress';
+import { profile } from 'console';
 
 type CourseWithProgressWithCategory = Course & {
   category: Category;
@@ -15,12 +16,12 @@ type DashboardCourses = {
 };
 
 export const getDashboardCourses = async (
-  userId: string
+  profileId: string
 ): Promise<DashboardCourses> => {
   try {
     const purchasedCourses = await db.purchase.findMany({
       where: {
-        userId: userId,
+        profileId: profileId,
       },
       select: {
         course: {
@@ -41,7 +42,7 @@ export const getDashboardCourses = async (
     ) as CourseWithProgressWithCategory[];
 
     for (let course of courses) {
-      const progress = await getProgress(userId, course.id);
+      const progress = await getProgress(profileId, course.id);
       course['progress'] = progress;
     }
 

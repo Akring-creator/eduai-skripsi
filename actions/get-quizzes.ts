@@ -8,12 +8,12 @@ type QuizWithCategory = Quiz & {
 };
 
 type getQuizzes = {
-  userId: string;
+  profileId: string;
   title?: string;
 };
 
 export const getQuizzes = async ({
-  userId,
+  profileId,
   title,
 }: getQuizzes): Promise<QuizWithCategory[]> => {
   try {
