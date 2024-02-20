@@ -10,7 +10,6 @@ Table Profile {
   username String [unique, not null]
   bio String
   gameResult GameResult [not null]
-  gameCreated Game [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
 }
@@ -337,14 +336,13 @@ Table Message {
 Table Game {
   id String [pk]
   publicId String [unique, not null]
-  profileId String [not null]
-  profile Profile [not null]
+  creatorId String [not null]
   title String [not null]
   gameType GameType [not null]
   quizId String [not null]
   quiz Quiz [not null]
   timeEnded DateTime
-  timeLimit Int [not null]
+  timeLimit DateTime
   gameResult GameResult [not null]
   createdAt DateTime [default: `now()`, not null]
 }
@@ -433,8 +431,6 @@ Ref: LearningModule.modaId > learningModa.id
 Ref: LearningModule.studentTargetId > studentTarget.id
 
 Ref: Message.fileId > File.id
-
-Ref: Game.profileId > Profile.id [delete: Cascade]
 
 Ref: Game.quizId > Quiz.id
 

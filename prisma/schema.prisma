@@ -22,7 +22,6 @@ model Profile {
   bio String? @db.Text
 
   gameResult GameResult[]
-  gameCreated Game[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -508,10 +507,7 @@ enum GameType {
 model Game {
   id          String     @id @default(uuid())
   publicId String @unique @default(nanoid())
-
-  profileId String
-  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  
+  creatorId String
   title String
   gameType GameType
 
@@ -519,13 +515,12 @@ model Game {
   quiz   Quiz   @relation(fields: [quizId], references: [id])
 
   timeEnded   DateTime?
-  timeLimit Int
+  timeLimit DateTime?
   gameResult GameResult[]
   createdAt DateTime @default(now())
   
 
   @@index([quizId])
-  @@index([profileId])
 }
 
 model GameResult {

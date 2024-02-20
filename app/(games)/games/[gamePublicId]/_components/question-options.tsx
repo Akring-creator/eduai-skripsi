@@ -7,12 +7,12 @@ import { Option } from '@prisma/client';
 import { Button } from '@/components/ui/button';
 
 interface OptionFormProps {
-  onUpdateUserAnswer: (value: string) => void;
+  onSelectedOption: (optionId: string) => void;
   option: Pick<Option, 'id' | 'option'>;
   isSelected: boolean;
 }
 const OptionForm = ({
-  onUpdateUserAnswer,
+  onSelectedOption,
   option,
   isSelected,
 }: OptionFormProps) => {
@@ -21,7 +21,7 @@ const OptionForm = ({
       <Button
         className="w-full"
         variant={isSelected ? 'default' : 'outline'}
-        onClick={() => onUpdateUserAnswer(option.id)}
+        onClick={() => onSelectedOption(option.id)}
       >
         {option.option}
       </Button>
