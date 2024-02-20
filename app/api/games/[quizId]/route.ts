@@ -1,4 +1,3 @@
-import { getProfile } from '@/actions/get-profile';
 import { db } from '@/lib/db';
 import { auth } from '@clerk/nextjs';
 import { NextResponse } from 'next/server';
@@ -8,10 +7,12 @@ export async function POST(
   { params }: { params: { quizId: string } }
 ) {
   try {
-    const profile = await getProfile();
-    console.log(profile);
-
+    const { userId } = auth();
     const values = await req.json();
+
+    if (!userId) {
+      return new NextResponse('Unauthorized', { status: 401 });
+    }
 
     let now;
 
@@ -22,7 +23,7 @@ export async function POST(
 
     const game = await db.game.create({
       data: {
-        profileId: profile?.id!,
+        creatorId: userId,
         title: values.title,
         gameType: values.gameType,
         quizId: params.quizId,

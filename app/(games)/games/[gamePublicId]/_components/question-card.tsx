@@ -8,8 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 interface Question {
-  userAnswer: string | null;
-  correctAnswer: string | null;
+  selectedOptionId: string | null;
   id: string;
   question: string;
   questionType: QuestionType;
@@ -19,17 +18,25 @@ interface Question {
 interface QuestionCardProps {
   initialData: Pick<
     Question,
-    'id' | 'question' | 'questionType' | 'imageUrl' | 'position' | 'userAnswer'
+    | 'id'
+    | 'question'
+    | 'questionType'
+    | 'imageUrl'
+    | 'position'
+    | 'selectedOptionId'
   > & { options: Pick<Option, 'id' | 'option'>[] };
   questionNumber: number;
-  updateUserAnswer: (value: string) => void;
+  updateSelectedOption: (optionId: string) => void;
 }
 
 const QuestionCard = ({
   initialData,
   questionNumber,
-  updateUserAnswer,
+  updateSelectedOption,
 }: QuestionCardProps) => {
+  const onSelectedOption = (optionId: string) => {
+    updateSelectedOption(optionId);
+  };
   return (
     <Card className="mx-20">
       <CardHeader>
@@ -42,16 +49,16 @@ const QuestionCard = ({
             <div>
               {initialData.options.map((option, index) => (
                 <div key={option.id}>
-                  {option.id === initialData.userAnswer ? (
+                  {option.id === initialData.selectedOptionId ? (
                     <OptionForm
                       option={option}
-                      onUpdateUserAnswer={updateUserAnswer}
+                      onSelectedOption={onSelectedOption}
                       isSelected={true}
                     />
                   ) : (
                     <OptionForm
                       option={option}
-                      onUpdateUserAnswer={updateUserAnswer}
+                      onSelectedOption={onSelectedOption}
                       isSelected={false}
                     />
                   )}

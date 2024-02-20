@@ -21,15 +21,7 @@ model Profile {
   username String @unique
   bio String? @db.Text
 
-  gameResults GameResult[]
-  gameCreated Game[]
-  quiz Quiz[]
-  courses Course[]
-  userProgresses UserProgress[]
-  coursePurchases Purchase[]
-  learningModule LearningModule[]
-  messages Message[]
-  files File[]
+  gameResult GameResult[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -37,10 +29,7 @@ model Profile {
 
 model Course {
   id          String  @id @default(uuid())
-  publicId String @unique @default(nanoid())
-  profileId String
-  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  
+  userId      String
   title       String  @db.Text
   description String? @db.Text
   imageUrl    String? @db.Text
@@ -58,13 +47,11 @@ model Course {
   purchases Purchase[]
 
   @@index([categoryId])
-  @@index([profileId])
   @@fulltext([title])
 }
 
 model Chapter {
   id          String  @id @default(uuid())
-  publicId String @unique @default(nanoid())
   title       String
   description String? @db.MediumText
   videoUrl    String? @db.Text
@@ -95,9 +82,7 @@ model MuxData {
 
 model UserProgress {
   id     String @id @default(uuid())
-  profileId String
-  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  
+  userId String
 
   chapterId String
   chapter   Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
@@ -106,9 +91,8 @@ model UserProgress {
   createdAt   DateTime @default(now())
   updateAt    DateTime @updatedAt
 
-  @@unique([profileId, chapterId])
+  @@unique([userId, chapterId])
   @@index([chapterId])
-  @@index([profileId])
 }
 
 
@@ -142,7 +126,6 @@ enum QuestionType {
 
 model Question {
   id          String   @id @default(uuid())
-  publicId String @unique @default(nanoid())
   question    String   @db.MediumText
   questionType QuestionType 
   imageUrl    String?  @db.Text
@@ -163,7 +146,6 @@ model Question {
 
 model Option {
   id       String  @id @default(uuid())
-  publicId String @unique @default(nanoid())
   option   String  @db.Text
   imageUrl String? @db.Text
   position Int     @default(0)
@@ -177,7 +159,7 @@ model Option {
 
 model Quiz {
   id          String  @id @default(uuid())
-  publicId String @unique @default(nanoid())
+  userId      String
   title       String  @db.Text
   description String? @db.Text
   imageUrl    String? @db.Text
@@ -190,9 +172,6 @@ model Quiz {
   learningActivitiesId String?
   learningActivities  LearningActivities?  @relation(fields: [learningActivitiesId], references: [id])
 
-  profileId String
-  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
- 
   questions   Question[]
   attachments QuizAttachment[]
   games Game[]
@@ -202,13 +181,11 @@ model Quiz {
 
   @@index([categoryId])
   @@index([learningActivitiesId])
-  @@index([profileId])
   @@fulltext([title])
 }
 
 model QuizAttachment {
   id   String @id @default(uuid())
-  publicId String @unique @default(nanoid())
   name String
   url  String @db.Text
 
@@ -223,9 +200,7 @@ model QuizAttachment {
 
 model Purchase {
   id     String @id @default(uuid())
-  profileId String
-  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
-
+  userId String
 
   courseId String
   course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
@@ -233,9 +208,8 @@ model Purchase {
   createdAt DateTime @default(now())
   updateAt  DateTime @updatedAt
 
-  @@unique([profileId,courseId])
+  @@unique([userId, courseId])
   @@index([courseId])
-  @@index([profileId])
 }
 
 // Part schema for Modul Ajar
@@ -406,10 +380,7 @@ model EducationLevel {
 
 model LearningModule {
   id String @id @default(uuid())
-  publicId String @unique @default(nanoid())
-  
-  profileId String
-  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  userId String
   // Nama Penulis
   writer String?
   // Instansi Penulis
@@ -487,7 +458,6 @@ model LearningModule {
   // Metadata pembuatan
   createdAt DateTime @default(now())
   updateAt  DateTime @updatedAt
-  @@index([profileId])
   @@index([phaseId])
   @@index([studentTargetId])
   @@index([modaId])
@@ -503,10 +473,7 @@ enum uploadStatus {
 }
 model File {
   id String @id @default(uuid())
-  publicId String @unique @default(nanoid())
-  profileId String
-  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  
+  userId String
   name String
    messages Message[]
 
@@ -515,7 +482,6 @@ model File {
   url String
   createdAt DateTime @default(now())
   updateAt DateTime @updatedAt
-  @@index([profileId])
 }
 
 model Message {
@@ -526,14 +492,11 @@ model Message {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  profileId String
-  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  
+  userId    String?
   File      File?    @relation(fields: [fileId], references: [id])
   fileId    String?
 
   @@index([fileId])
-  @@index([profileId])
 }
 
 enum GameType {
@@ -544,10 +507,7 @@ enum GameType {
 model Game {
   id          String     @id @default(uuid())
   publicId String @unique @default(nanoid())
-
-  profileId String
-  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  
+  creatorId String
   title String
   gameType GameType
 
@@ -555,13 +515,12 @@ model Game {
   quiz   Quiz   @relation(fields: [quizId], references: [id])
 
   timeEnded   DateTime?
-  timeLimit Int
+  timeLimit DateTime?
   gameResult GameResult[]
   createdAt DateTime @default(now())
   
 
   @@index([quizId])
-  @@index([profileId])
 }
 
 model GameResult {

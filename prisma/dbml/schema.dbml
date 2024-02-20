@@ -9,15 +9,7 @@ Table Profile {
   imageUrl String [not null]
   username String [unique, not null]
   bio String
-  gameResults GameResult [not null]
-  gameCreated Game [not null]
-  quiz Quiz [not null]
-  courses Course [not null]
-  userProgresses UserProgress [not null]
-  coursePurchases Purchase [not null]
-  learningModule LearningModule [not null]
-  messages Message [not null]
-  files File [not null]
+  gameResult GameResult [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
 }
@@ -359,14 +351,13 @@ Table Message {
 Table Game {
   id String [pk]
   publicId String [unique, not null]
-  profileId String [not null]
-  profile Profile [not null]
+  creatorId String [not null]
   title String [not null]
   gameType GameType [not null]
   quizId String [not null]
   quiz Quiz [not null]
   timeEnded DateTime
-  timeLimit Int [not null]
+  timeLimit DateTime
   gameResult GameResult [not null]
   createdAt DateTime [default: `now()`, not null]
 }
@@ -469,8 +460,6 @@ Ref: File.profileId > Profile.id [delete: Cascade]
 Ref: Message.profileId > Profile.id [delete: Cascade]
 
 Ref: Message.fileId > File.id
-
-Ref: Game.profileId > Profile.id [delete: Cascade]
 
 Ref: Game.quizId > Quiz.id
 
