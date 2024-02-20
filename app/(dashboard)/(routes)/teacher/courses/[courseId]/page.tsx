@@ -17,19 +17,18 @@ import { AttachmentForm } from './_components/attachment-form';
 import { ChapterForm } from './_components/chapter-form';
 import { Banner } from '@/components/banners';
 import { Actions } from './_components/actions';
-import { getProfile } from '@/actions/get-profile';
 
 const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
-  const profile = await getProfile();
+  const { userId } = auth();
 
-  if (!profile) {
+  if (!userId) {
     return redirect('/');
   }
 
   const course = await db.course.findUnique({
     where: {
       id: params.courseId,
-      profileId: profile.id,
+      userId: userId,
     },
     include: {
       chapters: {

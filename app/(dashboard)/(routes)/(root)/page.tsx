@@ -9,8 +9,6 @@ import { CoursesList } from '@/components/courses-list';
 import { Categories } from './_components/categories';
 import { getQuizzes } from '@/actions/get-quizzes';
 import { QuizList } from '@/components/quiz-list';
-import { getProfile } from '@/actions/get-profile';
-import { getInitialProfile } from '@/lib/InitialProfile';
 
 interface SearchPageProps {
   searchParams: {
@@ -20,7 +18,11 @@ interface SearchPageProps {
 }
 
 const SearchPage = async ({ searchParams }: SearchPageProps) => {
-  const profile = await getProfile();
+  const { userId } = auth();
+
+  if (!userId) {
+    return redirect('/');
+  }
 
   const categories = [
     {
@@ -52,11 +54,11 @@ const SearchPage = async ({ searchParams }: SearchPageProps) => {
   const dataType = searchParams.categoryId;
 
   const quizzes = await getQuizzes({
-    profileId: profile!.id,
+    userId,
     title: searchParams.title,
   });
   const courses = await getCourses({
-    profileId: profile!.id,
+    userId,
     title: searchParams.title,
   });
 

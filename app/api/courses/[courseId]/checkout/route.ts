@@ -2,17 +2,16 @@ import { currentUser } from '@clerk/nextjs';
 import { NextResponse } from 'next/server';
 
 import { db } from '@/lib/db';
-import { getProfile } from '@/actions/get-profile';
 
 export async function POST(
   req: Request,
   { params }: { params: { courseId: string } }
 ) {
   try {
-    const profile = await getProfile();
+    const user = await currentUser();
     console.log('1 Tahap Auten');
 
-    if (!profile || !profile.id) {
+    if (!user || !user.id || !user.emailAddresses?.[0]?.emailAddress) {
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
@@ -26,8 +25,8 @@ export async function POST(
 
     const purchase = await db.purchase.findUnique({
       where: {
-        profileId_courseId: {
-          profileId: profile.id,
+        userId_courseId: {
+          userId: user.id,
           courseId: params.courseId,
         },
       },
@@ -44,10 +43,10 @@ export async function POST(
     const purchased = await db.purchase.create({
       data: {
         courseId: params.courseId,
-        profileId: profile.id,
+        userId: user.id,
       },
     });
-    console.log(purchased.profileId);
+    console.log(purchased.userId);
 
     return NextResponse.json(purchased);
   } catch (error) {

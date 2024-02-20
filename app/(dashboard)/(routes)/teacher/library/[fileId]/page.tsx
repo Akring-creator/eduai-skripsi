@@ -4,7 +4,6 @@ import { notFound, redirect } from 'next/navigation';
 import { auth } from '@clerk/nextjs';
 import PDFRenderer from './_components/pdf-render';
 import ChatWrapper from './_components/chat/chat';
-import { getProfile } from '@/actions/get-profile';
 
 interface PageProps {
   params: {
@@ -15,14 +14,14 @@ interface PageProps {
 const Page = async ({ params }: PageProps) => {
   const { fileId } = params;
 
-  const profile = await getProfile();
+  const { userId } = auth();
 
-  if (!profile) redirect(`/`);
+  if (!userId) redirect(`/`);
 
   const file = await db.file.findFirst({
     where: {
       id: fileId,
-      profileId: profile.id,
+      userId: userId,
     },
   });
 

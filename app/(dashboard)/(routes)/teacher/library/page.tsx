@@ -3,17 +3,16 @@ import { redirect } from 'next/navigation';
 import Dashboard from './_components/dashboard';
 import { use } from 'react';
 import { db } from '@/lib/db';
-import { getProfile } from '@/actions/get-profile';
 
 const LibraryPage = async () => {
-  const profile = await getProfile();
-  if (!profile) {
+  const { userId } = auth();
+  if (!userId) {
     return redirect('/');
   }
 
   const files = await db.file.findMany({
     where: {
-      profileId: profile.id,
+      userId: userId,
     },
   });
 

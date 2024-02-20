@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { auth } from '@clerk/nextjs';
 import { DocumentCreator, ExperimentDocumentCreator } from '@/lib/export-quiz';
-import { getProfile } from '@/actions/get-profile';
 const docx = require('docx');
 const { Packer, Document } = docx;
 
@@ -12,15 +11,16 @@ export const POST = async (
 ) => {
   console.log(1);
   try {
-    const profile = await getProfile();
-    if (!profile) {
+    const { userId } = auth();
+    console.log(2);
+    if (!userId) {
       return new NextResponse('Unauthorized', { status: 401 });
     }
     console.log(3);
     const quiz = await db.quiz.findUnique({
       where: {
         id: params.quizId,
-        profileId: profile.id,
+        userId: userId,
       },
       include: {
         questions: { include: { options: true } },

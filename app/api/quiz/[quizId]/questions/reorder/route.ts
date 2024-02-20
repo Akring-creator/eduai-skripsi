@@ -2,16 +2,15 @@ import { auth } from '@clerk/nextjs';
 import { NextResponse } from 'next/server';
 
 import { db } from '@/lib/db';
-import { getProfile } from '@/actions/get-profile';
 
 export async function PUT(
   req: Request,
   { params }: { params: { quizId: string } }
 ) {
   try {
-    const profile = await getProfile();
+    const { userId } = auth();
 
-    if (!profile) {
+    if (!userId) {
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
@@ -20,7 +19,7 @@ export async function PUT(
     const quizOwner = await db.quiz.findUnique({
       where: {
         id: params.quizId,
-        profileId: profile.id,
+        userId: userId,
       },
     });
 

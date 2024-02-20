@@ -5,17 +5,16 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { DataTable } from './_components/data-table';
 import { columns } from './_components/columns';
-import { getProfile } from '@/actions/get-profile';
 
 const LearningModulePage = async () => {
-  const profile = await getProfile();
-  if (!profile) {
+  const { userId } = auth();
+  if (!userId) {
     return redirect('/');
   }
 
   const lm = await db.learningModule.findMany({
     where: {
-      profileId: profile.id,
+      userId,
     },
     orderBy: {
       createdAt: 'desc',

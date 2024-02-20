@@ -2,7 +2,6 @@ import { db } from '@/lib/db';
 import { auth } from '@clerk/nextjs';
 import { NextResponse } from 'next/server';
 import Mux from '@mux/mux-node';
-import { getProfile } from '@/actions/get-profile';
 
 const { Video } = new Mux(
   process.env.MUX_TOKEN_ID!,
@@ -14,16 +13,16 @@ export async function DELETE(
   { params }: { params: { courseId: string } }
 ) {
   try {
-    const profile = await getProfile();
+    const { userId } = auth();
 
-    if (!profile) {
+    if (!userId) {
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
     const course = await db.course.findUnique({
       where: {
         id: params.courseId,
-        profileId: profile.id,
+        userId,
       },
       include: {
         chapters: {
@@ -60,17 +59,17 @@ export async function PATCH(
   { params }: { params: { courseId: string } }
 ) {
   try {
-    const profile = await getProfile();
+    const { userId } = auth();
+    const values = await req.json();
 
-    if (!profile) {
+    if (!userId) {
       return new NextResponse('Unauthorized', { status: 401 });
     }
-    const values = await req.json();
 
     const course = await db.course.update({
       where: {
         id: params.courseId,
-        profileId: profile.id,
+        userId,
       },
       data: {
         ...values,

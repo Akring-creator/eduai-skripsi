@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 
 interface GameResultProps {
   imageUrl: string | null;
@@ -9,10 +10,13 @@ const GameResult = ({ imageUrl, gamename, result }: GameResultProps) => {
   console.log(result);
   return (
     <div className="grid h-screen items-center justify-center p-4 text-center">
+      <div className="flex items-center justify-between space-y-2">
+        <p className="text-3xl font-bold tracking-tighter sm:text-4xl">
+          Statistik
+        </p>
+        <Link href={'/'}>Keluar</Link>
+      </div>
       <div className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl">
-          Hasil {gamename}
-        </h1>
         <div className="flex justify-center">
           <Image
             src={

@@ -10,16 +10,15 @@ import { VideoPlayer } from './_components/video-player';
 import { CourseEnrollButton } from './_components/course-enroll-button';
 import { CourseProgressButton } from './_components/course-progress-button';
 import { Banner } from '@/components/banners';
-import { getProfile } from '@/actions/get-profile';
 
 const ChapterIdPage = async ({
   params,
 }: {
   params: { courseId: string; chapterId: string };
 }) => {
-  const profile = await getProfile();
+  const { userId } = auth();
 
-  if (!profile) {
+  if (!userId) {
     return redirect('/');
   }
 
@@ -32,7 +31,7 @@ const ChapterIdPage = async ({
     userProgress,
     purchase,
   } = await getChapter({
-    profileId: profile.id,
+    userId,
     chapterId: params.chapterId,
     courseId: params.courseId,
   });

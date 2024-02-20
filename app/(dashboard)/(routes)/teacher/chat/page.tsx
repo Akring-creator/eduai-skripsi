@@ -3,17 +3,16 @@ import { ChatInput } from './_components/chat-input';
 import { auth } from '@clerk/nextjs';
 import { db } from '@/lib/db';
 import { redirect } from 'next/navigation';
-import { getProfile } from '@/actions/get-profile';
 
 const ChatPage = async () => {
-  const profile = await getProfile();
+  const { userId } = auth();
 
-  if (!profile) {
+  if (!userId) {
     redirect('/');
   }
   const file = await db.file.findUnique({
     where: {
-      profileId: profile.id,
+      userId: userId,
       id: 'f97a7f22-26cd-4e15-8db3-c230e24b7935',
     },
   });

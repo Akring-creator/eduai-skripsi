@@ -1,4 +1,3 @@
-import { getProfile } from '@/actions/get-profile';
 import { db } from '@/lib/db';
 import { auth } from '@clerk/nextjs';
 import { NextResponse } from 'next/server';
@@ -8,16 +7,16 @@ export async function DELETE(
   { params }: { params: { learningModuleId: string } }
 ) {
   try {
-    const profile = await getProfile();
+    const { userId } = auth();
 
-    if (!profile) {
+    if (!userId) {
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
     const learningModule = await db.learningModule.findUnique({
       where: {
         id: params.learningModuleId,
-        profileId: profile.id,
+        userId,
       },
     });
 
@@ -41,17 +40,17 @@ export async function PATCH(
   { params }: { params: { learningModuleId: string } }
 ) {
   try {
-    const profile = await getProfile();
+    const { userId } = auth();
     const values = await req.json();
 
-    if (!profile) {
+    if (!userId) {
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
     const learningModule = await db.learningModule.update({
       where: {
         id: params.learningModuleId,
-        profileId: profile.id,
+        userId,
       },
       data: {
         ...values,

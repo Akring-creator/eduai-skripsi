@@ -6,20 +6,19 @@ import { LibrarySquare } from 'lucide-react';
 import { Metadata } from './_components/quiz-metadata';
 import { QuestionForm } from './_components/question-form';
 import { Banner } from '@/components/banners';
-import { getProfile } from '@/actions/get-profile';
 
 const QuizDraft = async ({ params }: { params: { quizId: string } }) => {
   // Memastikan Autentifikasi
-  const profile = await getProfile();
+  const { userId } = auth();
 
-  if (!profile) {
+  if (!userId) {
     return redirect('/');
   }
 
   const quiz = await db.quiz.findUnique({
     where: {
       id: params.quizId,
-      profileId: profile.id,
+      userId: userId,
     },
     include: {
       questions: {

@@ -10,13 +10,13 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
+import { currentProfile } from '@/lib/initial-profile';
 import { redirect } from 'next/navigation';
 import { ProfileImage } from './_components/profile-image-form';
 import BasicInformation from './_components/basic-information-form';
-import { getProfile } from '@/actions/get-profile';
 
 const ProfilePage = async () => {
-  const profile = await getProfile();
+  const profile = await currentProfile();
   if (!profile) {
     return redirect('/');
   }

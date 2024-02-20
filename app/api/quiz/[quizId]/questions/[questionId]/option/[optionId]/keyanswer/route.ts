@@ -1,4 +1,3 @@
-import { getProfile } from '@/actions/get-profile';
 import { db } from '@/lib/db';
 import { auth } from '@clerk/nextjs';
 import { NextResponse } from 'next/server';
@@ -10,10 +9,10 @@ export async function PATCH(
   }: { params: { quizId: string; questionId: string; optionId: string } }
 ) {
   try {
-    const profile = await getProfile();
+    const { userId } = auth();
     const values = await req.json();
 
-    if (!profile) {
+    if (!userId) {
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
@@ -21,7 +20,7 @@ export async function PATCH(
     const quizOwner = await db.quiz.findUnique({
       where: {
         id: params.quizId,
-        profileId: profile.id,
+        userId,
       },
     });
 

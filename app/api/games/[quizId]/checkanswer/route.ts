@@ -1,4 +1,3 @@
-import { getProfile } from '@/actions/get-profile';
 import { db } from '@/lib/db';
 import { auth } from '@clerk/nextjs';
 import { NextResponse } from 'next/server';
@@ -8,35 +7,21 @@ export async function POST(
   { params }: { params: { quizId: string } }
 ) {
   try {
-    const profile = await getProfile();
+    const { userId } = await auth();
     const { data } = await req.json();
 
-    if (!profile) {
+    if (!userId) {
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
     const result = { rightAnswer: 0, wrongAnswer: 0 };
-    const questions = data.map((question: any) => {
-      if (question.type === 'shortAnswer') {
-        return {
-          ...question,
-          correctAnswer: null as string | null,
-          explanation: null as string | null,
-        };
-      } else {
-        return {
-          ...question,
-          correctOptionId: null,
-        };
-      }
-    });
 
     await Promise.all(
       data.map(async (q: any) => {
         if (q.questionType === 'multipleChoice') {
           const correct = await db.option.findUnique({
             where: {
-              id: q.selectedOptionId,
+              id: q.userAnswer,
               isKeyAnswer: true,
             },
           });

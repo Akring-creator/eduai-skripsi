@@ -5,7 +5,6 @@ import { db } from '@/lib/db';
 import { getProgress } from '@/actions/get-progress';
 import { GameNavbar } from './_components/game-navbar';
 import { differenceInSeconds } from 'date-fns';
-import { getProfile } from '@/actions/get-profile';
 
 const GamesLayout = async ({
   children,
@@ -14,9 +13,9 @@ const GamesLayout = async ({
   children: React.ReactNode;
   params: { gamePublicId: string };
 }) => {
-  const profile = await getProfile();
+  const { userId } = auth();
 
-  if (!profile) {
+  if (!userId) {
     return redirect('/');
   }
 

@@ -6,18 +6,16 @@ import { getDashboardCourses } from '@/actions/get-dashboard-courses';
 import { CoursesList } from '@/components/courses-list';
 
 import { InfoCard } from './_components/info-card';
-import { getProfile } from '@/actions/get-profile';
 
 export default async function Dashboard() {
-  const profile = await getProfile();
+  const { userId } = auth();
 
-  if (!profile) {
+  if (!userId) {
     return redirect('/');
   }
 
-  const { completedCourses, coursesInProgress } = await getDashboardCourses(
-    profile.id
-  );
+  const { completedCourses, coursesInProgress } =
+    await getDashboardCourses(userId);
 
   return (
     <div className="p-6 space-y-4">

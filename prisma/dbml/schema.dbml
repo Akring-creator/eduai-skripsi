@@ -10,15 +10,14 @@ Table Profile {
   username String [unique, not null]
   bio String
   gameResult GameResult [not null]
+  gameCreated Game [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
 }
 
 Table Course {
   id String [pk]
-  publicId String [unique, not null]
-  profileId String [not null]
-  profile Profile [not null]
+  userId String [not null]
   title String [not null]
   description String
   imageUrl String
@@ -35,7 +34,6 @@ Table Course {
 
 Table Chapter {
   id String [pk]
-  publicId String [unique, not null]
   title String [not null]
   description String
   videoUrl String
@@ -61,8 +59,7 @@ Table MuxData {
 
 Table UserProgress {
   id String [pk]
-  profileId String [not null]
-  profile Profile [not null]
+  userId String [not null]
   chapterId String [not null]
   chapter Chapter [not null]
   isCompleted Boolean [not null, default: false]
@@ -70,7 +67,7 @@ Table UserProgress {
   updateAt DateTime [not null]
 
   indexes {
-    (profileId, chapterId) [unique]
+    (userId, chapterId) [unique]
   }
 }
 
@@ -93,7 +90,6 @@ Table Attachment {
 
 Table Question {
   id String [pk]
-  publicId String [unique, not null]
   question String [not null]
   questionType QuestionType [not null]
   imageUrl String
@@ -110,7 +106,6 @@ Table Question {
 
 Table Option {
   id String [pk]
-  publicId String [unique, not null]
   option String [not null]
   imageUrl String
   position Int [not null, default: 0]
@@ -121,7 +116,7 @@ Table Option {
 
 Table Quiz {
   id String [pk]
-  publicId String [unique, not null]
+  userId String [not null]
   title String [not null]
   description String
   imageUrl String
@@ -131,8 +126,6 @@ Table Quiz {
   category Category
   learningActivitiesId String
   learningActivities LearningActivities
-  profileId String [not null]
-  profile Profile [not null]
   questions Question [not null]
   attachments QuizAttachment [not null]
   games Game [not null]
@@ -142,7 +135,6 @@ Table Quiz {
 
 Table QuizAttachment {
   id String [pk]
-  publicId String [unique, not null]
   name String [not null]
   url String [not null]
   quizId String [not null]
@@ -153,15 +145,14 @@ Table QuizAttachment {
 
 Table Purchase {
   id String [pk]
-  profileId String [not null]
-  profile Profile [not null]
+  userId String [not null]
   courseId String [not null]
   course Course [not null]
   createdAt DateTime [default: `now()`, not null]
   updateAt DateTime [not null]
 
   indexes {
-    (profileId, courseId) [unique]
+    (userId, courseId) [unique]
   }
 }
 
@@ -286,9 +277,7 @@ Table EducationLevel {
 
 Table LearningModule {
   id String [pk]
-  publicId String [unique, not null]
-  profileId String [not null]
-  profile Profile [not null]
+  userId String [not null]
   writer String
   institute String
   learningYear String
@@ -325,9 +314,7 @@ Table LearningModule {
 
 Table File {
   id String [pk]
-  publicId String [unique, not null]
-  profileId String [not null]
-  profile Profile [not null]
+  userId String [not null]
   name String [not null]
   messages Message [not null]
   uploadStatus uploadStatus [not null, default: 'PENDING']
@@ -342,8 +329,7 @@ Table Message {
   isUserMessage Boolean [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
-  profileId String [not null]
-  profile Profile [not null]
+  userId String
   File File
   fileId String
 }
@@ -351,13 +337,14 @@ Table Message {
 Table Game {
   id String [pk]
   publicId String [unique, not null]
-  creatorId String [not null]
+  profileId String [not null]
+  profile Profile [not null]
   title String [not null]
   gameType GameType [not null]
   quizId String [not null]
   quiz Quiz [not null]
   timeEnded DateTime
-  timeLimit DateTime
+  timeLimit Int [not null]
   gameResult GameResult [not null]
   createdAt DateTime [default: `now()`, not null]
 }
@@ -393,15 +380,11 @@ Enum GameType {
   FLASH
 }
 
-Ref: Course.profileId > Profile.id [delete: Cascade]
-
 Ref: Course.categoryId > Category.id
 
 Ref: Chapter.courseId > Course.id [delete: Cascade]
 
 Ref: MuxData.chapterId - Chapter.id [delete: Cascade]
-
-Ref: UserProgress.profileId > Profile.id [delete: Cascade]
 
 Ref: UserProgress.chapterId > Chapter.id [delete: Cascade]
 
@@ -415,11 +398,7 @@ Ref: Quiz.categoryId > Category.id
 
 Ref: Quiz.learningActivitiesId > LearningActivities.id
 
-Ref: Quiz.profileId > Profile.id [delete: Cascade]
-
 Ref: QuizAttachment.quizId > Quiz.id [delete: Cascade]
-
-Ref: Purchase.profileId > Profile.id [delete: Cascade]
 
 Ref: Purchase.courseId > Course.id [delete: Cascade]
 
@@ -443,8 +422,6 @@ Ref: LearningActivities.learningFlowId > LearningFlow.id [delete: Cascade]
 
 Ref: LearningPhase.learningActivitiesId > LearningActivities.id [delete: Cascade]
 
-Ref: LearningModule.profileId > Profile.id [delete: Cascade]
-
 Ref: LearningModule.phaseId > Phase.id
 
 Ref: LearningModule.educationLevelId > EducationLevel.id
@@ -455,11 +432,9 @@ Ref: LearningModule.modaId > learningModa.id
 
 Ref: LearningModule.studentTargetId > studentTarget.id
 
-Ref: File.profileId > Profile.id [delete: Cascade]
-
-Ref: Message.profileId > Profile.id [delete: Cascade]
-
 Ref: Message.fileId > File.id
+
+Ref: Game.profileId > Profile.id [delete: Cascade]
 
 Ref: Game.quizId > Quiz.id
 

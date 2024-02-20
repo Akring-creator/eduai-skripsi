@@ -7,19 +7,18 @@ import { NextResponse } from 'next/server';
 import { openai } from '@/lib/openai';
 import { OpenAIStream, StreamingTextResponse } from 'ai';
 import { MAX_MESSAGES_LIMIT } from '@/config/constant';
-import { getProfile } from '@/actions/get-profile';
 
 export async function GET(
   req: Request,
   { params }: { params: { fileId: string } }
 ) {
   try {
-    const profile = await getProfile();
+    const { userId } = auth();
     const { searchParams } = new URL(req.url);
     const cursor = searchParams.get('cursor');
     const limit = MAX_MESSAGES_LIMIT;
 
-    if (!profile) {
+    if (!userId) {
       return new NextResponse('Unauthorized', { status: 401 });
     }
     if (!cursor) {
@@ -29,7 +28,7 @@ export async function GET(
     const file = await db.file.findUnique({
       where: {
         id: params.fileId,
-        profileId: profile.id,
+        userId,
       },
     });
 
@@ -72,18 +71,18 @@ export async function POST(
   { params }: { params: { fileId: string } }
 ) {
   try {
-    const profile = await getProfile();
+    const { userId } = auth();
     const { msg } = await req.json();
     console.log('msg');
 
-    if (!profile) {
+    if (!userId) {
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
     const file = await db.file.findUnique({
       where: {
         id: params.fileId,
-        profileId: profile.id,
+        userId,
       },
     });
 
@@ -94,7 +93,7 @@ export async function POST(
       data: {
         text: msg,
         isUserMessage: true,
-        profileId: profile.id,
+        userId,
         fileId: params.fileId,
       },
     });
@@ -166,7 +165,7 @@ export async function POST(
             text: completion,
             isUserMessage: false,
             fileId: params.fileId,
-            profileId: profile.id,
+            userId,
           },
         });
       },

@@ -2,23 +2,22 @@ import { auth } from '@clerk/nextjs';
 import { NextResponse } from 'next/server';
 
 import { db } from '@/lib/db';
-import { getProfile } from '@/actions/get-profile';
 
 export async function PATCH(
   req: Request,
   { params }: { params: { quizId: string } }
 ) {
   try {
-    const profile = await getProfile();
+    const { userId } = auth();
 
-    if (!profile) {
+    if (!userId) {
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
     const quiz = await db.quiz.findUnique({
       where: {
         id: params.quizId,
-        profileId: profile.id,
+        userId,
       },
       include: {
         questions: {
@@ -49,7 +48,7 @@ export async function PATCH(
     const publishedQuiz = await db.quiz.update({
       where: {
         id: params.quizId,
-        profileId: profile.id,
+        userId,
       },
       data: {
         isPublished: true,
