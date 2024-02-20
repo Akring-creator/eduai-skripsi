@@ -2,26 +2,23 @@ import { db } from '@/lib/db';
 import {
   RedirectToSignIn,
   auth,
+  currentUser,
   redirectToSignIn,
   redirectToSignUp,
 } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
-export const getProfile = async () => {
-  const { userId } = auth();
+export const getInitialProfile = async () => {
+  const user = await currentUser();
 
-  if (!userId) {
-    return redirectToSignUp();
+  if (!user) {
+    return redirectToSignIn();
   }
 
   const profile = await db.profile.findUnique({
     where: {
-      externalUserId: userId!,
+      externalUserId: user.id!,
     },
   });
-
-  if (!profile) {
-    return redirectToSignUp({ returnBackUrl: 'http://localhost:3000/sign-up' });
-  }
 
   return profile;
 };
