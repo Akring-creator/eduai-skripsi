@@ -10,8 +10,6 @@ import { Categories } from './_components/categories';
 import { getQuizzes } from '@/actions/get-quizzes';
 import { QuizList } from '@/components/quiz-list';
 
-import { currentProfile } from '@/lib/initial-profile';
-
 interface SearchPageProps {
   searchParams: {
     title: string;
