@@ -15,4 +15,6 @@ The study involved **32 geography teachers** from the MGMP community in Samarind
 EdTek demonstrates effectiveness in generating high-quality HOTS questions for geography education. To scale its impact, government support is recommended—through infrastructure provision and teacher training—to enhance technology literacy in education.  
 
 **Keywords**: ChatGPT, High Order Thinking Skills (HOTS), Geography Education, Question Generation, ADDIE Model  
+![EdTek Logo](./public/EdTek.png.png "Halaman Login")
+
 
