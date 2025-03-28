@@ -1,8 +1,9 @@
 # EdTek: A ChatGPT-Based Application for Generating HOTS Questions in Geography Education  
 
 ## Overview
-![Halaman Login](./public/Login.png "Halaman Login")
+
 ![Beranda](./public/EdTek.png "Beranda")
+![Draft Quiz](./public/QuizDraft.png "Draft Quiz")
 
 
 ## Details 
