@@ -1,6 +1,11 @@
 # EdTek: A ChatGPT-Based Application for Generating HOTS Questions in Geography Education  
 
-## Abstract  
+## Overview
+![Halaman Login](./public/Login.png "Halaman Login")
+![Beranda](./public/EdTek.png "Beranda")
+
+
+## Details 
 The high-order thinking skills (HOTS) of Indonesian students remain low, as evidenced by PISA results. Teachers also face challenges in creating HOTS questions that foster students' analytical, evaluative, and creative abilities. This study developed **EdTek**, a ChatGPT-based application designed to assist teachers in automatically generating HOTS-aligned questions. The development followed the **ADDIE model** (Analysis, Design, Development, Implementation, and Evaluation).  
 
 EdTek was evaluated based on:  
@@ -15,6 +20,6 @@ The study involved **32 geography teachers** from the MGMP community in Samarind
 EdTek demonstrates effectiveness in generating high-quality HOTS questions for geography education. To scale its impact, government support is recommended—through infrastructure provision and teacher training—to enhance technology literacy in education.  
 
 **Keywords**: ChatGPT, High Order Thinking Skills (HOTS), Geography Education, Question Generation, ADDIE Model  
-![Halaman Login](./public/EdTek.png "Halaman Login")
+
 
 
